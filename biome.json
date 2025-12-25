@@ -22,5 +22,13 @@
       "!**/convex/_generated"
     ]
   },
-  "extends": ["ultracite/core", "ultracite/next"]
+  "extends": ["ultracite/core", "ultracite/next"],
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "performance": {
+        "noBarrelFile": "off"
+      }
+    }
+  }
 }

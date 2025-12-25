@@ -1,9 +1,5 @@
-import { Button, Container } from "@mantine/core";
+import { DataTable } from "@repo/ui";
 
 export default function Home() {
-  return (
-    <Container>
-      <Button>Click me</Button>
-    </Container>
-  );
+  return <DataTable />;
 }

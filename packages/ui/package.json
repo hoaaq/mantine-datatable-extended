@@ -1,0 +1,26 @@
+{
+  "name": "@repo/ui",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.tsx"
+    },
+    "./*": {
+      "default": "./src/*.tsx"
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@repo/config": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:"
+  },
+  "peerDependencies": {
+    "@mantine/core": ">=8.3",
+    "@mantine/hooks": ">=8.3",
+    "clsx": ">=2",
+    "react": ">=19",
+    "react-dom": ">=19",
+    "mantine-datatable": ">=8.3"
+  }
+}
