@@ -1,14 +1,12 @@
 import { useDataTableQueryParams } from "@repo/ui/data-table/hooks";
 import type { ExtendedDataTableProps } from "@repo/ui/data-table/types";
 import { cleanSearch } from "@repo/ui/data-table/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { tasks } from "@/asset/data";
 import type { Task } from "@/asset/types";
 
 // Mockup API
-const getTasks = (
-  _props: ExtendedDataTableProps = {}
-): Promise<{
+export const getTasks = (): Promise<{
   items: Task[];
   totalRecords: number;
 }> => {
@@ -23,15 +21,14 @@ const getTasks = (
 };
 
 export function useData(props: ExtendedDataTableProps = {}) {
-  const { page, pageSize, sorts, search, filters } =
-    useDataTableQueryParams(props);
+  const { search } = useDataTableQueryParams(props);
 
-  const cleanedSearch = cleanSearch(search);
+  const _cleanedSearch = cleanSearch(search);
 
-  const { data, isFetching } = useQuery({
-    queryKey: ["tasks", page, pageSize, sorts, cleanedSearch, filters],
+  const { data, isFetching } = useSuspenseQuery({
+    queryKey: ["tasks"],
     queryFn: async () => {
-      const res = await getTasks(props);
+      const res = await getTasks();
       return {
         items: res?.items || [],
         totalRecords: res?.totalRecords || 0,

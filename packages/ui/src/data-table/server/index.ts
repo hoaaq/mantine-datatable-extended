@@ -8,6 +8,8 @@ import {
 } from "../types/data-table-query-params";
 import { mergeQueryKey } from "../utils";
 
+export * from "./data-table-skeleton";
+
 export const createDataTableLoader = (props: ExtendedDataTableProps = {}) => {
   const { prefixQueryKey, defaultSorts } = props;
   const searchParams = {
