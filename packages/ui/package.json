@@ -3,10 +3,25 @@
   "type": "module",
   "exports": {
     ".": {
-      "default": "./src/index.tsx"
+      "default": "./src/index.ts"
     },
-    "./*": {
-      "default": "./src/*.tsx"
+    "./data-table/types": {
+      "default": "./src/data-table/types/index.ts"
+    },
+    "./data-table/components": {
+      "default": "./src/data-table/components/index.ts"
+    },
+    "./data-table/enums": {
+      "default": "./src/data-table/enums/index.ts"
+    },
+    "./data-table/hooks": {
+      "default": "./src/data-table/hooks/index.ts"
+    },
+    "./data-table/server": {
+      "default": "./src/data-table/server/index.ts"
+    },
+    "./data-table/utils": {
+      "default": "./src/data-table/utils/index.ts"
     }
   },
   "devDependencies": {
@@ -18,9 +33,13 @@
   "peerDependencies": {
     "@mantine/core": ">=8.3",
     "@mantine/hooks": ">=8.3",
+    "@mantine/dates": ">=8.3",
     "clsx": ">=2",
     "react": ">=19",
     "react-dom": ">=19",
-    "mantine-datatable": ">=8.3"
+    "mantine-datatable": ">=8.3",
+    "nuqs": ">=2.8",
+    "@tabler/icons-react": ">=3.35",
+    "dayjs": ">=1.11"
   }
 }

@@ -8,16 +8,21 @@
     "start": "next start"
   },
   "dependencies": {
+    "@mantine/core": "catalog:",
+    "@mantine/dates": "^8.3.10",
+    "@mantine/hooks": "catalog:",
     "@repo/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.12",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.19",
     "dotenv": "catalog:",
+    "mantine-datatable": "^8.3.11",
     "next": "^16.1.0",
+    "nuqs": "^2.8.6",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "zod": "catalog:",
-    "@mantine/core": "catalog:",
-    "@mantine/hooks": "catalog:"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",

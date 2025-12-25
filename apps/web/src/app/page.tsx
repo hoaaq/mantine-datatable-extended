@@ -1,5 +1,11 @@
-import { DataTable } from "@repo/ui";
+import { Container, Space } from "@mantine/core";
+import { DataTable } from "./(data-table)/table";
 
 export default function Home() {
-  return <DataTable />;
+  return (
+    <Container size="xl">
+      <Space h="xl" />
+      <DataTable />
+    </Container>
+  );
 }

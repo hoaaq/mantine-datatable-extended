@@ -28,6 +28,9 @@
     "rules": {
       "performance": {
         "noBarrelFile": "off"
+      },
+      "style": {
+        "useConsistentTypeDefinitions": "off"
       }
     }
   }
