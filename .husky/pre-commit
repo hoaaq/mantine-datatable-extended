@@ -1,4 +1,4 @@
-pnpm test
+pnpm check
 
 #!/bin/sh
 # Exit on any error
