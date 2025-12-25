@@ -13,18 +13,23 @@
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx --env-file ../../apps/web/.env src/seed.ts"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.8",
+    "@faker-js/faker": "^10.1.0",
+    "@repo/config": "workspace:*",
     "@types/pg": "^8.15.6",
+    "drizzle-kit": "^0.31.8",
     "typescript": "^5",
-    "@repo/config": "workspace:*"
+    "tsx": "^4.21.0"
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.1",
-    "pg": "^8.16.3",
+    "@sinclair/typebox": "^0.34.45",
     "dotenv": "catalog:",
+    "drizzle-orm": "^0.45.1",
+    "drizzle-typebox": "^0.3.3",
+    "pg": "^8.16.3",
     "zod": "catalog:"
   }
 }
