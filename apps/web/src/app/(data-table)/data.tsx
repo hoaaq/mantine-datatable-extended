@@ -1,46 +1,42 @@
 import { useDataTableQueryParams } from "@repo/ui/data-table/hooks";
-import type { ExtendedDataTableProps } from "@repo/ui/data-table/types";
+import type {
+  ExtendedDataTableProps,
+  TFilterCondition,
+  TSearchCondition,
+  TSortCondition,
+} from "@repo/ui/data-table/types";
 import { cleanSearch } from "@repo/ui/data-table/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { tasks } from "@/asset/data";
-import type { Task } from "@/asset/types";
-
-// Mockup API
-export const getTasks = (): Promise<{
-  items: Task[];
-  totalRecords: number;
-}> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        items: tasks,
-        totalRecords: tasks.length,
-      });
-    }, 1000);
-  });
-};
+import { client } from "@/lib/treaty";
 
 export function useData(props: ExtendedDataTableProps = {}) {
-  const { search } = useDataTableQueryParams(props);
+  const { page, pageSize, sorts, search, filters } =
+    useDataTableQueryParams(props);
 
-  const _cleanedSearch = cleanSearch(search);
+  const cleanedSearch = cleanSearch(search);
 
   const { data, isFetching } = useSuspenseQuery({
-    queryKey: ["tasks"],
+    queryKey: ["tasks", page, pageSize, sorts, cleanedSearch, filters],
     queryFn: async () => {
-      const res = await getTasks();
+      const { data: res } = await client.api.todo.task.get({
+        query: {
+          page,
+          pageSize,
+          sorts: JSON.stringify(sorts) as unknown as TSortCondition[],
+          search: JSON.stringify(cleanedSearch) as unknown as TSearchCondition,
+          filters: JSON.stringify(filters) as unknown as TFilterCondition[],
+        },
+      });
       return {
-        items: res?.items || [],
-        totalRecords: res?.totalRecords || 0,
+        items: res?.data.items || [],
+        totalRecords: res?.data.totalRecords || 0,
       };
     },
   });
-  const records = data?.items || [];
-  const totalRecords = data?.totalRecords || 0;
 
   return {
-    paginatedRecords: records,
-    totalRecords,
+    paginatedRecords: data?.items || [],
+    totalRecords: data?.totalRecords || 0,
     isFetching,
   };
 }

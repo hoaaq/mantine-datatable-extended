@@ -3,7 +3,12 @@ import {
   createDataTableLoader,
   DataTableSkeleton,
 } from "@repo/ui/data-table/server";
-import type { ExtendedDataTableProps } from "@repo/ui/data-table/types";
+import type {
+  ExtendedDataTableProps,
+  TFilterCondition,
+  TSearchCondition,
+  TSortCondition,
+} from "@repo/ui/data-table/types";
 import { extractOriginalQueryParams } from "@repo/ui/data-table/utils";
 import {
   dehydrate,
@@ -12,11 +17,11 @@ import {
 } from "@tanstack/react-query";
 import type { SearchParams } from "nuqs";
 import { Suspense } from "react";
-import { getTasks } from "./(data-table)/data";
-import { DataTable } from "./(data-table)/table";
+import { client } from "@/lib/treaty";
+import { DataTable, DataTableExtended } from "./(data-table)/table";
 
 const dataTableProps: ExtendedDataTableProps = {
-  prefixQueryKey: "todo",
+  prefixQueryKey: undefined,
   defaultSorts: [{ accessor: "createdAt", direction: "desc" }],
 };
 
@@ -28,21 +33,35 @@ export default async function Home({
   searchParams: Promise<SearchParams>;
 }) {
   const loadedSearchParams = await loader(searchParams);
-  const _ = dataTableProps.prefixQueryKey
-    ? extractOriginalQueryParams(
-        loadedSearchParams,
-        dataTableProps.prefixQueryKey
-      )
-    : loadedSearchParams;
+  const { page, pageSize, sorts, search, filters } =
+    dataTableProps.prefixQueryKey
+      ? extractOriginalQueryParams(
+          loadedSearchParams,
+          dataTableProps.prefixQueryKey
+        )
+      : loadedSearchParams;
+
+  const _sorts =
+    Array.isArray(sorts) && sorts.length > 0
+      ? (sorts as TSortCondition[])
+      : dataTableProps.defaultSorts;
 
   const queryClient = new QueryClient();
   queryClient.prefetchQuery({
-    queryKey: ["tasks"],
+    queryKey: ["tasks", page, pageSize, _sorts, search, filters],
     queryFn: async () => {
-      const res = await getTasks();
+      const { data: res } = await client.api.todo.task.get({
+        query: {
+          page: page as number,
+          pageSize: pageSize as number,
+          sorts: JSON.stringify(_sorts) as unknown as TSortCondition[],
+          search: JSON.stringify(search) as unknown as TSearchCondition,
+          filters: JSON.stringify(filters) as unknown as TFilterCondition[],
+        },
+      });
       return {
-        items: res?.items || [],
-        totalRecords: res?.totalRecords || 0,
+        items: res?.data?.items || [],
+        totalRecords: res?.data?.totalRecords || 0,
       };
     },
   });
@@ -50,9 +69,11 @@ export default async function Home({
   return (
     <Container size="xl">
       <Space h="xl" />
+      <DataTableExtended {...dataTableProps} />
+      <Space h="md" />
       <Suspense fallback={<DataTableSkeleton />}>
         <HydrationBoundary state={dehydrate(queryClient)}>
-          <DataTable />
+          <DataTable {...dataTableProps} />
         </HydrationBoundary>
       </Suspense>
     </Container>

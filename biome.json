@@ -27,7 +27,11 @@
     "enabled": true,
     "rules": {
       "performance": {
-        "noBarrelFile": "off"
+        "noBarrelFile": "off",
+        "noNamespaceImport": "off"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "off"
       },
       "style": {
         "useConsistentTypeDefinitions": "off"
