@@ -1,10 +1,10 @@
 import { Button, Group } from "@mantine/core";
-import { EFilterVariant } from "../enums/data-table-query-param.enum";
 import { useDataTableQueryParams } from "../hooks";
 import type {
   ExtendedDataTableColumnProps,
   i18nDataTableFilterOptions,
 } from "../types";
+import { EFilterVariant } from "../types/data-table-query-param.enum";
 import { DataTableFilterDate } from "./filters/date";
 import { DataTableFilterDateRange } from "./filters/date-range";
 import {

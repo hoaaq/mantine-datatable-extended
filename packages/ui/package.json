@@ -3,43 +3,42 @@
   "type": "module",
   "exports": {
     ".": {
-      "default": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     },
-    "./data-table/types": {
-      "default": "./src/data-table/types/index.ts"
-    },
-    "./data-table/components": {
-      "default": "./src/data-table/components/index.ts"
-    },
-    "./data-table/enums": {
-      "default": "./src/data-table/enums/index.ts"
-    },
-    "./data-table/hooks": {
-      "default": "./src/data-table/hooks/index.ts"
-    },
-    "./data-table/server": {
-      "default": "./src/data-table/server/index.ts"
-    },
-    "./data-table/utils": {
-      "default": "./src/data-table/utils/index.ts"
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.cjs"
     }
   },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "devDependencies": {
-    "typescript": "^5",
     "@repo/config": "workspace:*",
     "@types/react": "catalog:",
-    "@types/react-dom": "catalog:"
+    "@types/react-dom": "catalog:",
+    "tsup": "^8.0.0",
+    "typescript": "^5"
   },
   "peerDependencies": {
     "@mantine/core": ">=8.3",
-    "@mantine/hooks": ">=8.3",
     "@mantine/dates": ">=8.3",
+    "@mantine/hooks": ">=8.3",
+    "@tabler/icons-react": ">=3.35",
     "clsx": ">=2",
-    "react": ">=19",
-    "react-dom": ">=19",
+    "dayjs": ">=1.11",
     "mantine-datatable": ">=8.3",
     "nuqs": ">=2.8",
-    "@tabler/icons-react": ">=3.35",
-    "dayjs": ">=1.11"
-  }
+    "react": ">=19",
+    "react-dom": ">=19",
+    "zod": ">=4.1"
+  },
+  "sideEffects": false
 }

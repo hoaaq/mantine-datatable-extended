@@ -3,9 +3,8 @@ import { DatePicker } from "@mantine/dates";
 import { IconX } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useState } from "react";
-import type { EFilterVariant } from "../../enums";
 import { useDataTableQueryParams } from "../../hooks";
-import type { ExtendedDataTableColumnProps } from "../../types";
+import type { EFilterVariant, ExtendedDataTableColumnProps } from "../../types";
 
 type TDataTableFilterDateRangeProps<T = Record<string, unknown>> = {
   prefixQueryKey?: string;
@@ -28,7 +27,7 @@ export function DataTableFilterDateRange<T = Record<string, unknown>>({
   const countFilters = thisAccessorFilter?.value.length ?? 0;
 
   const [values, setValues] = useState<[string | null, string | null]>(
-    thisAccessorFilter
+    thisAccessorFilter?.value[0] && thisAccessorFilter?.value[1]
       ? [
           dayjs(Number.parseInt(thisAccessorFilter.value[0], 10)).toISOString(),
           dayjs(Number.parseInt(thisAccessorFilter.value[1], 10)).toISOString(),

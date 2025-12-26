@@ -1,15 +1,12 @@
 import { Container, Space } from "@mantine/core";
 import {
-  createDataTableLoader,
-  DataTableSkeleton,
-} from "@repo/ui/data-table/server";
-import type {
-  ExtendedDataTableProps,
-  TFilterCondition,
-  TSearchCondition,
-  TSortCondition,
-} from "@repo/ui/data-table/types";
-import { extractOriginalQueryParams } from "@repo/ui/data-table/utils";
+  type ExtendedDataTableProps,
+  extractOriginalQueryParams,
+  type TFilterCondition,
+  type TSearchCondition,
+  type TSortCondition,
+} from "@repo/ui";
+import { createDataTableLoader } from "@repo/ui/server";
 import {
   dehydrate,
   HydrationBoundary,
@@ -17,6 +14,7 @@ import {
 } from "@tanstack/react-query";
 import type { SearchParams } from "nuqs";
 import { Suspense } from "react";
+import { DataTableSkeleton } from "@/components/data-table-skeleton";
 import { client } from "@/lib/treaty";
 import { DataTable, DataTableExtended } from "./(data-table)/table";
 

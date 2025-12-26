@@ -3,9 +3,8 @@ import { DatePicker } from "@mantine/dates";
 import { IconX } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useState } from "react";
-import type { EFilterVariant } from "../../enums";
 import { useDataTableQueryParams } from "../../hooks";
-import type { ExtendedDataTableColumnProps } from "../../types";
+import type { EFilterVariant, ExtendedDataTableColumnProps } from "../../types";
 
 type TDataTableFilterDateProps<T = Record<string, unknown>> = {
   prefixQueryKey?: string;

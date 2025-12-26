@@ -15,12 +15,12 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import React from "react";
-import { ESortDirection } from "../enums";
 import { useDataTableQueryParams } from "../hooks";
-import type {
-  ExtendedDataTableColumnProps,
-  i18nDataTableSortOptions,
-  TSortCondition,
+import {
+  ESortDirection,
+  type ExtendedDataTableColumnProps,
+  type i18nDataTableSortOptions,
+  type TSortCondition,
 } from "../types";
 
 type TDataTableSortListProps<T = Record<string, unknown>> = {
@@ -56,7 +56,7 @@ export function DataTableSortList<T = Record<string, unknown>>({
   const countSorts = sorts.length;
 
   const onAddSort = () => {
-    if (remainingColumns.length > 0) {
+    if (remainingColumns.length > 0 && remainingColumns[0]) {
       const newSort = {
         accessor: remainingColumns[0].accessor as string,
         direction: ESortDirection.ASC,

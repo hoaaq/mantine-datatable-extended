@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-  EFilterVariant,
-  ESortDirection,
-} from "../enums/data-table-query-param.enum";
+import { EFilterVariant, ESortDirection } from "./data-table-query-param.enum";
 
 export const sortSchema = z.object({
   accessor: z.string(),

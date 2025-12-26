@@ -2,9 +2,8 @@ import { Button, Indicator, Popover, RangeSlider } from "@mantine/core";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
-import type { EFilterVariant } from "../../enums";
 import { useDataTableQueryParams } from "../../hooks";
-import type { ExtendedDataTableColumnProps } from "../../types";
+import type { EFilterVariant, ExtendedDataTableColumnProps } from "../../types";
 
 export type TDataTableFilterNumberRangeOptions<T = Record<string, unknown>> = {
   accessor: keyof T | (string & NonNullable<unknown>);
@@ -45,7 +44,7 @@ export function DataTableFilterNumberRange<T = Record<string, unknown>>({
   const countFilters = thisAccessorFilter?.value.length ?? 0;
 
   const [values, setValues] = useState<[number, number]>(
-    thisAccessorFilter
+    thisAccessorFilter?.value[0] && thisAccessorFilter?.value[1]
       ? [
           Number.parseInt(thisAccessorFilter.value[0], 10),
           Number.parseInt(thisAccessorFilter.value[1], 10),

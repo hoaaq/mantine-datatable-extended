@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDataTableQueryParams } from "../hooks";
 import type {
   ExtendedDataTableColumnProps,
@@ -111,11 +111,30 @@ export function DataTableSearch<T = Record<string, unknown>>({
   i18n = defaultI18n,
   debounceTimeout = 300,
 }: TDataTableSearchProps<T>) {
+  // Call useState FIRST
+  const [searchValue, setSearchValue] = useState("");
+
+  // Use ref to store the search value so we can access it in useEffect
+  const searchValueRef = useRef("");
+  searchValueRef.current = searchValue;
+
+  // Call useEffect BEFORE useDataTableQueryParams to ensure consistent hook order
+  // This effect will be a no-op initially, but ensures useEffect is always called
+  useEffect(() => {
+    // This will be populated after useDataTableQueryParams is called
+  }, []);
+
+  // Then call useDataTableQueryParams (which internally calls useQueryState/useId)
   const { search, setSearch } = useDataTableQueryParams({
     prefixQueryKey,
   });
 
-  const [searchValue, setSearchValue] = useState(search.value);
+  // Sync searchValue with search.value when it changes externally
+  useEffect(() => {
+    if (searchValueRef.current !== search.value) {
+      setSearchValue(search.value);
+    }
+  }, [search.value]);
 
   const debouncedSetSearchValue = useDebouncedCallback(
     (value: string) => setSearch({ ...search, value }),

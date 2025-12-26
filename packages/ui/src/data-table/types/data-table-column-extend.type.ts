@@ -1,5 +1,5 @@
 import type { DataTableColumn } from "mantine-datatable";
-import type { EFilterVariant } from "../enums/data-table-query-param.enum";
+import type { EFilterVariant } from "./data-table-query-param.enum";
 
 export type ExtendedDataTableColumnProps<T = Record<string, unknown>> =
   DataTableColumn<T> & {

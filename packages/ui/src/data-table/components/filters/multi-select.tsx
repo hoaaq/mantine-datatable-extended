@@ -1,8 +1,7 @@
 import { Button, Checkbox, Indicator, Popover, Stack } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
-import type { EFilterVariant } from "../../enums";
 import { useDataTableQueryParams } from "../../hooks";
-import type { ExtendedDataTableColumnProps } from "../../types";
+import type { EFilterVariant, ExtendedDataTableColumnProps } from "../../types";
 
 export type TDataTableFilterMultiSelectFacet<T = Record<string, unknown>> = {
   accessor: keyof T | (string & NonNullable<unknown>);

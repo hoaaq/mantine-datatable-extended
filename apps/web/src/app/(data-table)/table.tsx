@@ -6,9 +6,9 @@ import {
   DataTableFilter,
   DataTableSearch,
   DataTableSortList,
-} from "@repo/ui/data-table/components";
-import { useDataTableQueryParams } from "@repo/ui/data-table/hooks";
-import type { ExtendedDataTableProps } from "@repo/ui/data-table/types";
+  type ExtendedDataTableProps,
+  useDataTableQueryParams,
+} from "@repo/ui";
 import { DataTable as MantineDataTable } from "mantine-datatable";
 import { useColumns } from "./columns";
 import { useData } from "./data";

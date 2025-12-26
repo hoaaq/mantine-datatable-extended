@@ -1,6 +1,8 @@
 import { Text } from "@mantine/core";
-import { useDataTableColumnsExtend } from "@repo/ui/data-table/hooks";
-import type { ExtendedDataTableColumnProps } from "@repo/ui/data-table/types";
+import {
+  type ExtendedDataTableColumnProps,
+  useDataTableColumnsExtend,
+} from "@repo/ui";
 import { useDateFormatter } from "@/hooks/date-format";
 import type { client } from "@/lib/treaty";
 

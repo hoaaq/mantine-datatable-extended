@@ -1,11 +1,10 @@
-import { useDataTableQueryParams } from "@repo/ui/data-table/hooks";
 import type {
   ExtendedDataTableProps,
   TFilterCondition,
   TSearchCondition,
   TSortCondition,
-} from "@repo/ui/data-table/types";
-import { cleanSearch } from "@repo/ui/data-table/utils";
+} from "@repo/ui";
+import { cleanSearch, useDataTableQueryParams } from "@repo/ui";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { client } from "@/lib/treaty";
 
