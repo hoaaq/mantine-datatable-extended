@@ -1,6 +1,11 @@
 import { createLoader, parseAsInteger, parseAsJson } from "nuqs/server";
 import { z } from "zod";
-import type { ExtendedDataTableProps } from "../types";
+import type {
+  ExtendedDataTableProps,
+  TFilterCondition,
+  TSearchCondition,
+  TSortCondition,
+} from "../types";
 import {
   filterSchema,
   searchSchema,
@@ -27,4 +32,33 @@ export const createDataTableLoader = (props: ExtendedDataTableProps = {}) => {
     ).withDefault([]),
   };
   return createLoader(searchParams);
+};
+
+export const cleanSearch = (search: TSearchCondition): TSearchCondition => {
+  if (search.accessors.length <= 0 || search.value.length <= 0) {
+    return {
+      accessors: [],
+      value: "",
+    };
+  }
+  return search;
+};
+
+export const extractOriginalQueryParams = (
+  searchParams: Record<string, unknown>,
+  prefixQueryKey: string
+) => {
+  return {
+    page: searchParams[mergeQueryKey("page", prefixQueryKey)] as number,
+    pageSize: searchParams[mergeQueryKey("pageSize", prefixQueryKey)] as number,
+    sorts: searchParams[
+      mergeQueryKey("sorts", prefixQueryKey)
+    ] as TSortCondition[],
+    search: searchParams[
+      mergeQueryKey("search", prefixQueryKey)
+    ] as TSearchCondition,
+    filters: searchParams[
+      mergeQueryKey("filters", prefixQueryKey)
+    ] as TFilterCondition[],
+  };
 };

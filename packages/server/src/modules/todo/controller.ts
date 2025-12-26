@@ -1,13 +1,18 @@
 import { Elysia, t } from "elysia";
-import { queryParamsElysiaModel, taskModel } from "./model";
+import {
+  queryParamsElysiaModel,
+  type StaticQueryParamsType,
+  taskModel,
+} from "./model";
 import { TodoService } from "./service";
 
 const getManyTasks = new Elysia({ name: "get-many-tasks" }).get(
   "/task",
   async ({ query }) => {
     const { items, totalRecords } = await TodoService.getManyTasks({
-      query,
+      query: query as unknown as StaticQueryParamsType,
     });
+    await new Promise((resolve) => setTimeout(resolve, query.sleep ?? 0));
     return {
       data: {
         items,

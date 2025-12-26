@@ -1,25 +1,21 @@
 import { Container, Space } from "@mantine/core";
+import type { ExtendedDataTableProps } from "@repo/ui";
 import {
-  type ExtendedDataTableProps,
+  createDataTableLoader,
   extractOriginalQueryParams,
-  type TFilterCondition,
-  type TSearchCondition,
-  type TSortCondition,
-} from "@repo/ui";
-import { createDataTableLoader } from "@repo/ui/server";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+} from "@repo/ui/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { SearchParams } from "nuqs";
+import { createLoader, parseAsInteger } from "nuqs/server";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/data-table-skeleton";
+import { getQueryClient } from "@/components/providers/query-provider/create-client";
+import { QueryTimeout } from "@/components/query-timeout";
 import { client } from "@/lib/treaty";
 import { DataTable, DataTableExtended } from "./(data-table)/table";
 
 const dataTableProps: ExtendedDataTableProps = {
-  prefixQueryKey: undefined,
+  prefixQueryKey: "todo",
   defaultSorts: [{ accessor: "createdAt", direction: "desc" }],
 };
 
@@ -39,17 +35,23 @@ export default async function Home({
         )
       : loadedSearchParams;
 
-  const queryClient = new QueryClient();
+  const loadTimeout = createLoader({
+    st: parseAsInteger.withDefault(200),
+  });
+  const { st } = await loadTimeout(searchParams);
+
+  const queryClient = getQueryClient();
   queryClient.prefetchQuery({
     queryKey: ["tasks", page, pageSize, sorts, search, filters],
     queryFn: async () => {
       const { data: res } = await client.api.todo.task.get({
         query: {
+          sleep: st,
           page: page as number,
           pageSize: pageSize as number,
-          sorts: JSON.stringify(sorts) as unknown as TSortCondition[],
-          search: JSON.stringify(search) as unknown as TSearchCondition,
-          filters: JSON.stringify(filters) as unknown as TFilterCondition[],
+          sorts: JSON.stringify(sorts),
+          search: JSON.stringify(search),
+          filters: JSON.stringify(filters),
         },
       });
       return {
@@ -61,14 +63,15 @@ export default async function Home({
 
   return (
     <Container size="xl">
+      <QueryTimeout />
       <Space h="xl" />
       <DataTableExtended {...dataTableProps} />
       <Space h="md" />
-      <Suspense fallback={<DataTableSkeleton />}>
-        <HydrationBoundary state={dehydrate(queryClient)}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<DataTableSkeleton />}>
           <DataTable {...dataTableProps} />
-        </HydrationBoundary>
-      </Suspense>
+        </Suspense>
+      </HydrationBoundary>
     </Container>
   );
 }

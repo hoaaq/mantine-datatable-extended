@@ -1,13 +1,13 @@
 import { db, table } from "@repo/db";
 import { createQueryBuilder } from "@repo/db/find-many-query-builder";
 import { count } from "drizzle-orm";
-import type { queryParamsElysiaModel, taskModel } from "./model";
+import type { StaticQueryParamsType, taskModel } from "./model";
 
 export abstract class TodoService {
   static async getManyTasks({
     query,
   }: {
-    query: typeof queryParamsElysiaModel.static;
+    query: StaticQueryParamsType;
   }): Promise<{
     items: (typeof taskModel.entity.static)[];
     totalRecords: number;
