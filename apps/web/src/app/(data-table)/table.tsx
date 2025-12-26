@@ -67,11 +67,11 @@ export function DataTable(props: ExtendedDataTableProps = {}) {
       columns={effectiveColumns}
       fetching={isFetching}
       height={484}
-      onPageChange={(p: number) => setPage(p)}
-      onRecordsPerPageChange={(size: number) => setPageSize(size)}
+      onPageChange={setPage}
+      onRecordsPerPageChange={setPageSize}
       page={page}
       records={paginatedRecords}
-      recordsPerPage={PAGE_SIZES.includes(pageSize) ? pageSize : PAGE_SIZES[0]}
+      recordsPerPage={pageSize}
       recordsPerPageOptions={PAGE_SIZES}
       storeColumnsKey={columnStoreKey}
       totalRecords={totalRecords}

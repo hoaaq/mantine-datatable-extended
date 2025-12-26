@@ -6,12 +6,30 @@ settings:
 
 catalogs:
   default:
+    '@mantine/core':
+      specifier: ^8.3.8
+      version: 8.3.10
+    '@mantine/hooks':
+      specifier: ^8.3.8
+      version: 8.3.10
     '@types/react':
       specifier: ^19.2.7
       version: 19.2.7
     '@types/react-dom':
       specifier: ^19.2.3
       version: 19.2.3
+    dotenv:
+      specifier: ^17.2.2
+      version: 17.2.3
+    react:
+      specifier: ^19.2.3
+      version: 19.2.3
+    react-dom:
+      specifier: ^19.2.3
+      version: 19.2.3
+    zod:
+      specifier: ^4.1.13
+      version: 4.2.1
 
 importers:
 
@@ -118,6 +136,9 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@tabler/icons-react':
+        specifier: ^3.36.0
+        version: 3.36.0(react@19.2.3)
       '@tanstack/react-query':
         specifier: ^5.90.12
         version: 5.90.12(react@19.2.3)

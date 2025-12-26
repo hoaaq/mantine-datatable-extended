@@ -104,7 +104,7 @@ export function useColumns() {
     },
   ];
 
-  const columnStoreKey = "todo-task-columns";
+  const columnStoreKey = "todo";
   const { effectiveColumns } = useDataTableColumnsExtend({
     key: columnStoreKey,
     columns,

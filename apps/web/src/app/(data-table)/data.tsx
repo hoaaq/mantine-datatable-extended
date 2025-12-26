@@ -11,7 +11,6 @@ import { client } from "@/lib/treaty";
 export function useData(props: ExtendedDataTableProps = {}) {
   const { page, pageSize, sorts, search, filters } =
     useDataTableQueryParams(props);
-
   const cleanedSearch = cleanSearch(search);
 
   const { data, isFetching } = useSuspenseQuery({

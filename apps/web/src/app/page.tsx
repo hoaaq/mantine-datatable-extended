@@ -23,7 +23,7 @@ const dataTableProps: ExtendedDataTableProps = {
   defaultSorts: [{ accessor: "createdAt", direction: "desc" }],
 };
 
-const loader = createDataTableLoader();
+const loader = createDataTableLoader(dataTableProps);
 
 export default async function Home({
   searchParams,
@@ -39,20 +39,15 @@ export default async function Home({
         )
       : loadedSearchParams;
 
-  const _sorts =
-    Array.isArray(sorts) && sorts.length > 0
-      ? (sorts as TSortCondition[])
-      : dataTableProps.defaultSorts;
-
   const queryClient = new QueryClient();
   queryClient.prefetchQuery({
-    queryKey: ["tasks", page, pageSize, _sorts, search, filters],
+    queryKey: ["tasks", page, pageSize, sorts, search, filters],
     queryFn: async () => {
       const { data: res } = await client.api.todo.task.get({
         query: {
           page: page as number,
           pageSize: pageSize as number,
-          sorts: JSON.stringify(_sorts) as unknown as TSortCondition[],
+          sorts: JSON.stringify(sorts) as unknown as TSortCondition[],
           search: JSON.stringify(search) as unknown as TSearchCondition,
           filters: JSON.stringify(filters) as unknown as TFilterCondition[],
         },

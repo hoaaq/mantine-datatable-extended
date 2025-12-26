@@ -7,7 +7,8 @@ import {
   mantineHtmlProps,
 } from "@mantine/core";
 import type { Metadata, Viewport } from "next";
-import { NuqsAdapter } from "nuqs/adapters/next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { AppWrapper } from "@/components/app-shell";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -31,12 +32,14 @@ export default function RootLayout({
   return (
     <html lang="en" {...mantineHtmlProps}>
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body>
         <NuqsAdapter>
           <QueryProvider>
-            <MantineProvider>{children}</MantineProvider>
+            <MantineProvider defaultColorScheme="dark">
+              <AppWrapper>{children}</AppWrapper>
+            </MantineProvider>
           </QueryProvider>
         </NuqsAdapter>
       </body>
