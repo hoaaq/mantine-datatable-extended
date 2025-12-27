@@ -3,6 +3,7 @@
 export {
   DataTableColumnsToggle,
   DataTableFilter,
+  DataTablePagination,
   DataTableSearch,
   DataTableSortList,
 } from "./data-table/components";

@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useMemo } from "react";
-import type { DataTableContextProps } from "../types";
+import { createContext, useContext, useMemo, useState } from "react";
+import type { DataTableContextProps, PaginationPropsType } from "../types";
 
 const DataTableContext = createContext<
   DataTableContextProps<Record<string, unknown>> | undefined
@@ -40,6 +40,11 @@ export function DataTableProvider<T = Record<string, unknown>>({
     throw new Error("columns property is required");
   }
 
+  const [paginationProps, setPaginationProps] = useState<PaginationPropsType>({
+    totalRecords: 0,
+    recordsPerPageOptions: [10, 20, 30, 40, 50],
+  });
+
   const value = useMemo(
     () =>
       ({
@@ -59,7 +64,13 @@ export function DataTableProvider<T = Record<string, unknown>>({
   );
 
   return (
-    <DataTableContext.Provider value={value}>
+    <DataTableContext.Provider
+      value={{
+        ...value,
+        paginationProps,
+        setPaginationProps,
+      }}
+    >
       {children}
     </DataTableContext.Provider>
   );

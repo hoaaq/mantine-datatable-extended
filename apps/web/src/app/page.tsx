@@ -9,7 +9,11 @@ import { DataTableSkeleton } from "@/components/data-table-skeleton";
 import { getQueryClient } from "@/components/providers/query-provider/create-client";
 import { QueryTimeout } from "@/components/query-timeout";
 import { client } from "@/lib/treaty";
-import { DataTable, DataTableExtended } from "./(data-table)/table";
+import {
+  DataTable,
+  DataTableExtended,
+  DataTableFooter,
+} from "./(data-table)/table";
 import { DataTableWrapper } from "./(data-table)/wrapper";
 
 const loaderProps: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {
@@ -65,6 +69,8 @@ export default async function Home({
             <DataTable />
           </Suspense>
         </HydrationBoundary>
+        <Space h="md" />
+        <DataTableFooter />
       </DataTableWrapper>
     </Container>
   );

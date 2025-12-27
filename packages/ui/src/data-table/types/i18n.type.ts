@@ -41,3 +41,23 @@ export type i18nDataTableFilterOptions = {
    */
   resetFilter: string;
 };
+
+export type i18nDataTablePaginationOptions = {
+  /**
+   * The label for the rows per page.
+   */
+  rowsPerPage: string;
+  /**
+   * The label for the page of total pages.
+   * The first string is "Page".
+   * The second string is "of".
+   */
+  pageOfTotalPages: [string, string];
+  /**
+   * The label for the start record - end record / total records.
+   * The first string is "From".
+   * The second string is "to".
+   * The third string is "of total".
+   */
+  startEndRecordOfTotalRecords: [string, string, string];
+};

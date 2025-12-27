@@ -159,11 +159,11 @@ export function DataTableSortList({
         <Space h="md" />
         <Group>
           <Button
-            color="gray"
+            color="dark"
             disabled={remainingColumns.length === 0}
             leftSection={<IconPlus size={16} />}
             onClick={onAddSort}
-            size="xs"
+            size="sm"
             variant="filled"
           >
             {i18n.addSort}
@@ -171,7 +171,7 @@ export function DataTableSortList({
           <Button
             leftSection={<IconRefresh size={16} />}
             onClick={onResetSort}
-            size="xs"
+            size="sm"
             variant="default"
           >
             {i18n.resetSort}

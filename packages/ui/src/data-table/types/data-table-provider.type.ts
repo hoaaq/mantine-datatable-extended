@@ -52,6 +52,17 @@ export type DefaultParamsType = {
   filters?: TFilterCondition[];
 };
 
+export type PaginationPropsType = {
+  /**
+   * The total records.
+   */
+  totalRecords: number;
+  /**
+   * The records per page options.
+   */
+  recordsPerPageOptions: number[];
+};
+
 export type DataTableContextProps<T = Record<string, unknown>> = {
   /**
    * The keys of the URL parameters.
@@ -77,4 +88,12 @@ export type DataTableContextProps<T = Record<string, unknown>> = {
    * The result of the useDataTableColumns hook from mantine-datatable.
    */
   originalUseDataTableColumnsResult: ReturnType<typeof useDataTableColumns<T>>;
+  /**
+   * The pagination props.
+   */
+  paginationProps?: PaginationPropsType;
+  /**
+   * The function to set the pagination props.
+   */
+  setPaginationProps?: (props: PaginationPropsType) => void;
 };
