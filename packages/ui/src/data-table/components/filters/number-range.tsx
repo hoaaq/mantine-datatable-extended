@@ -1,29 +1,24 @@
-import { Button, Indicator, Popover, RangeSlider } from "@mantine/core";
-import { useDebouncedCallback } from "@mantine/hooks";
+import {
+  Button,
+  Indicator,
+  Popover,
+  RangeSlider,
+  type RangeSliderValue,
+} from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
-import { useState } from "react";
 import { useDataTableQueryParams } from "../../hooks";
-import type { EFilterVariant, ExtendedDataTableColumnProps } from "../../types";
-
-export type TDataTableFilterNumberRangeOptions<T = Record<string, unknown>> = {
-  accessor: keyof T | (string & NonNullable<unknown>);
-  min: number;
-  max: number;
-  step?: number;
-  minRange?: number;
-  debounceTimeout?: number;
-};
+import type {
+  DataTableExtendedColumnProps,
+  EFilterVariant,
+  FilterNumberRangeOptions,
+} from "../../types";
 
 type TDataTableFilterNumberRangeProps<T = Record<string, unknown>> = {
-  prefixQueryKey?: string;
-  column: ExtendedDataTableColumnProps<T>;
-  numberRangeOptions: TDataTableFilterNumberRangeOptions<T>;
+  column: DataTableExtendedColumnProps<T>;
 };
 
 export function DataTableFilterNumberRange<T = Record<string, unknown>>({
-  prefixQueryKey,
   column,
-  numberRangeOptions,
 }: TDataTableFilterNumberRangeProps<T>) {
   const accessor = column.accessor as string;
   const variant = column.extend?.filterVariant as EFilterVariant;
@@ -32,59 +27,40 @@ export function DataTableFilterNumberRange<T = Record<string, unknown>>({
     max,
     step = 1,
     minRange = 1,
-    debounceTimeout = 300,
-  } = numberRangeOptions;
+  } = column.extend?.filterOptions as FilterNumberRangeOptions;
 
-  const { filters, setFilters } = useDataTableQueryParams({
-    prefixQueryKey,
-  });
+  const { filters, setFilters } = useDataTableQueryParams();
   const thisAccessorFilter = filters.find(
     (filter) => filter.accessor === accessor
   );
   const countFilters = thisAccessorFilter?.value.length ?? 0;
 
-  const [values, setValues] = useState<[number, number]>(
-    thisAccessorFilter?.value[0] && thisAccessorFilter?.value[1]
-      ? [
-          Number.parseInt(thisAccessorFilter.value[0], 10),
-          Number.parseInt(thisAccessorFilter.value[1], 10),
-        ]
-      : [min, max]
-  );
-
-  const debouncedSetFilterValues = useDebouncedCallback(
-    (values: [number, number]) => {
-      const [fromValueString, toValueString] = [
-        values[0].toString(),
-        values[1].toString(),
-      ];
-      if (thisAccessorFilter) {
-        setFilters(
-          filters.map((filter) =>
-            filter.accessor === accessor
-              ? { ...filter, value: [fromValueString, toValueString] }
-              : filter
-          )
-        );
-      } else {
-        setFilters([
-          ...filters,
-          { variant, accessor, value: [fromValueString, toValueString] },
-        ]);
-      }
-    },
-    debounceTimeout
-  );
-
-  const onFilterChange = ([fromValue, toValue]: [number, number]) => {
-    setValues([fromValue, toValue]);
-    if (fromValue && toValue) {
-      debouncedSetFilterValues([fromValue, toValue]);
+  const setFilterValues = (values: [number, number]) => {
+    const [fromValueString, toValueString] = [
+      values[0].toString(),
+      values[1].toString(),
+    ];
+    if (thisAccessorFilter) {
+      setFilters(
+        filters.map((filter) =>
+          filter.accessor === accessor
+            ? { ...filter, value: [fromValueString, toValueString] }
+            : filter
+        )
+      );
+    } else {
+      setFilters([
+        ...filters,
+        { variant, accessor, value: [fromValueString, toValueString] },
+      ]);
     }
   };
 
+  const onFilterChange = ([fromValue, toValue]: RangeSliderValue) => {
+    setFilterValues([fromValue, toValue]);
+  };
+
   const onResetFilter = () => {
-    setValues([min, max]);
     setFilters(filters.filter((filter) => filter.accessor !== accessor));
   };
 
@@ -109,7 +85,14 @@ export function DataTableFilterNumberRange<T = Record<string, unknown>>({
           minRange={minRange}
           onChange={onFilterChange}
           step={step}
-          value={values}
+          value={
+            thisAccessorFilter?.value[0] && thisAccessorFilter?.value[1]
+              ? [
+                  Number.parseInt(thisAccessorFilter.value[0], 10),
+                  Number.parseInt(thisAccessorFilter.value[1], 10),
+                ]
+              : [min, max]
+          }
         />
       </Popover.Dropdown>
     </Popover>

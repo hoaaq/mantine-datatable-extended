@@ -1,37 +1,17 @@
 import { Button, Group } from "@mantine/core";
 import { useDataTableQueryParams } from "../hooks";
-import type {
-  ExtendedDataTableColumnProps,
-  i18nDataTableFilterOptions,
-} from "../types";
-import { EFilterVariant } from "../types/data-table-query-param.enum";
+import { useDataTableContext } from "../provider";
+import type { i18nDataTableFilterOptions } from "../types";
+import { EFilterVariant } from "../types";
 import { DataTableFilterDate } from "./filters/date";
 import { DataTableFilterDateRange } from "./filters/date-range";
-import {
-  DataTableFilterMultiSelect,
-  type TDataTableFilterMultiSelectFacet,
-} from "./filters/multi-select";
-import {
-  DataTableFilterNumber,
-  type TDataTableFilterNumberOptions,
-} from "./filters/number";
-import {
-  DataTableFilterNumberRange,
-  type TDataTableFilterNumberRangeOptions,
-} from "./filters/number-range";
+import { DataTableFilterMultiSelect } from "./filters/multi-select";
+import { DataTableFilterNumber } from "./filters/number";
+import { DataTableFilterNumberRange } from "./filters/number-range";
 import { DataTableFilterSingleSelect } from "./filters/single-select";
-import {
-  DataTableFilterText,
-  type TDataTableFilterTextOptions,
-} from "./filters/text";
+import { DataTableFilterText } from "./filters/text";
 
-type TDataTableFilterProps<T = Record<string, unknown>> = {
-  prefixQueryKey?: string;
-  columns: ExtendedDataTableColumnProps<T>[];
-  facets?: TDataTableFilterMultiSelectFacet<T>[];
-  numberRangeOptions?: TDataTableFilterNumberRangeOptions<T>[];
-  textOptions?: TDataTableFilterTextOptions<T>[];
-  numberOptions?: TDataTableFilterNumberOptions<T>[];
+type TDataTableFilterProps = {
   i18n?: i18nDataTableFilterOptions;
 };
 
@@ -39,99 +19,52 @@ const defaultI18n: i18nDataTableFilterOptions = {
   resetFilter: "Reset Filter",
 };
 
-export function DataTableFilter<T = Record<string, unknown>>({
-  prefixQueryKey,
-  columns,
-  facets,
-  numberRangeOptions,
-  textOptions,
-  numberOptions,
-  i18n = defaultI18n,
-}: TDataTableFilterProps<T>) {
-  const { filters, setFilters } = useDataTableQueryParams({
-    prefixQueryKey,
-  });
+export function DataTableFilter({ i18n = defaultI18n }: TDataTableFilterProps) {
+  const { filters, resetFilters } = useDataTableQueryParams();
+  const { columns } = useDataTableContext();
 
   const onReset = () => {
-    setFilters([]);
+    resetFilters();
   };
 
   const filterableColumns = columns.filter(
     (column) => column.extend?.filterable
   );
 
-  const getFacet = (accessor: keyof T | (string & NonNullable<unknown>)) => {
-    return facets?.find((facet) => facet.accessor === accessor);
-  };
-
-  const getNumberRangeOptions = (
-    accessor: keyof T | (string & NonNullable<unknown>)
-  ) => {
-    return numberRangeOptions?.find((option) => option.accessor === accessor);
-  };
-
-  const getTextOptions = (
-    accessor: keyof T | (string & NonNullable<unknown>)
-  ) => {
-    return textOptions?.find((option) => option.accessor === accessor);
-  };
-
-  const getNumberOptions = (
-    accessor: keyof T | (string & NonNullable<unknown>)
-  ) => {
-    return numberOptions?.find((option) => option.accessor === accessor);
-  };
-
   return (
     <Group gap="xs">
       {filterableColumns.map((column) => {
         switch (column.extend?.filterVariant) {
           case EFilterVariant.TEXT: {
-            const textOptions = getTextOptions(column.accessor);
             return (
               <DataTableFilterText
                 column={column}
                 key={column.accessor as string}
-                prefixQueryKey={prefixQueryKey}
-                textOptions={textOptions}
               />
             );
           }
           case EFilterVariant.NUMBER: {
-            const numberOptions = getNumberOptions(column.accessor);
             return (
               <DataTableFilterNumber
                 column={column}
                 key={column.accessor as string}
-                numberOptions={numberOptions}
-                prefixQueryKey={prefixQueryKey}
               />
             );
           }
           case EFilterVariant.SINGLE_SELECT: {
-            const facet = getFacet(column.accessor);
             return (
-              facet && (
-                <DataTableFilterSingleSelect
-                  column={column}
-                  facet={facet}
-                  key={column.accessor as string}
-                  prefixQueryKey={prefixQueryKey}
-                />
-              )
+              <DataTableFilterSingleSelect
+                column={column}
+                key={column.accessor as string}
+              />
             );
           }
           case EFilterVariant.MULTI_SELECT: {
-            const facet = getFacet(column.accessor);
             return (
-              facet && (
-                <DataTableFilterMultiSelect
-                  column={column}
-                  facet={facet}
-                  key={column.accessor as string}
-                  prefixQueryKey={prefixQueryKey}
-                />
-              )
+              <DataTableFilterMultiSelect
+                column={column}
+                key={column.accessor as string}
+              />
             );
           }
           case EFilterVariant.DATE: {
@@ -139,7 +72,6 @@ export function DataTableFilter<T = Record<string, unknown>>({
               <DataTableFilterDate
                 column={column}
                 key={column.accessor as string}
-                prefixQueryKey={prefixQueryKey}
               />
             );
           }
@@ -148,21 +80,15 @@ export function DataTableFilter<T = Record<string, unknown>>({
               <DataTableFilterDateRange
                 column={column}
                 key={column.accessor as string}
-                prefixQueryKey={prefixQueryKey}
               />
             );
           }
           case EFilterVariant.NUMBER_RANGE: {
-            const numberRangeOptions = getNumberRangeOptions(column.accessor);
             return (
-              numberRangeOptions && (
-                <DataTableFilterNumberRange
-                  column={column}
-                  key={column.accessor as string}
-                  numberRangeOptions={numberRangeOptions}
-                  prefixQueryKey={prefixQueryKey}
-                />
-              )
+              <DataTableFilterNumberRange
+                column={column}
+                key={column.accessor as string}
+              />
             );
           }
           default:

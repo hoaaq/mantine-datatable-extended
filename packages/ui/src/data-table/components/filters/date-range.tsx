@@ -4,23 +4,19 @@ import { IconX } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useDataTableQueryParams } from "../../hooks";
-import type { EFilterVariant, ExtendedDataTableColumnProps } from "../../types";
+import type { DataTableExtendedColumnProps, EFilterVariant } from "../../types";
 
 type TDataTableFilterDateRangeProps<T = Record<string, unknown>> = {
-  prefixQueryKey?: string;
-  column: ExtendedDataTableColumnProps<T>;
+  column: DataTableExtendedColumnProps<T>;
 };
 
 export function DataTableFilterDateRange<T = Record<string, unknown>>({
-  prefixQueryKey,
   column,
 }: TDataTableFilterDateRangeProps<T>) {
   const accessor = column.accessor as string;
   const variant = column.extend?.filterVariant as EFilterVariant;
 
-  const { filters, setFilters } = useDataTableQueryParams({
-    prefixQueryKey,
-  });
+  const { filters, setFilters } = useDataTableQueryParams();
   const thisAccessorFilter = filters.find(
     (filter) => filter.accessor === accessor
   );

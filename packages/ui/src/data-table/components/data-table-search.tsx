@@ -9,27 +9,14 @@ import {
   Stack,
   TextInput,
 } from "@mantine/core";
-import { useDebouncedCallback } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
 import { useDataTableQueryParams } from "../hooks";
-import type {
-  ExtendedDataTableColumnProps,
-  i18nDataTableSearchOptions,
-} from "../types";
+import { useDataTableContext } from "../provider";
+import type { i18nDataTableSearchOptions } from "../types";
 
-type TDataTableSearchAccessorsToggleProps<T = Record<string, unknown>> = {
-  prefixQueryKey?: string;
-  columns: ExtendedDataTableColumnProps<T>[];
-};
-
-function DataTableSearchAccessorsToggle<T = Record<string, unknown>>({
-  prefixQueryKey,
-  columns,
-}: TDataTableSearchAccessorsToggleProps<T>) {
-  const { search, setSearch } = useDataTableQueryParams({
-    prefixQueryKey,
-  });
+function DataTableSearchAccessorsToggle() {
+  const { columns } = useDataTableContext();
+  const { search, setSearch } = useDataTableQueryParams();
   const countSearches = search.accessors.length;
 
   const searchableColumns = columns.filter(
@@ -51,7 +38,7 @@ function DataTableSearchAccessorsToggle<T = Record<string, unknown>>({
   };
 
   return (
-    <Popover position="bottom-end" shadow="md" width="max-content" withArrow>
+    <Popover shadow="md" width="max-content" withArrow>
       <Popover.Target>
         <Indicator
           color="transparent"
@@ -62,7 +49,7 @@ function DataTableSearchAccessorsToggle<T = Record<string, unknown>>({
             </Badge>
           }
         >
-          <ActionIcon size="lg" variant="default">
+          <ActionIcon size={36} variant="default">
             <IconSearch size={16} />
           </ActionIcon>
         </Indicator>
@@ -94,69 +81,29 @@ function DataTableSearchAccessorsToggle<T = Record<string, unknown>>({
   );
 }
 
-type TDataTableSearchProps<T = Record<string, unknown>> = {
-  prefixQueryKey?: string;
-  columns: ExtendedDataTableColumnProps<T>[];
+type TDataTableSearchProps = {
   i18n?: i18nDataTableSearchOptions;
-  debounceTimeout?: number;
 };
 
 const defaultI18n: i18nDataTableSearchOptions = {
   search: "Search",
 };
 
-export function DataTableSearch<T = Record<string, unknown>>({
-  prefixQueryKey,
-  columns,
-  i18n = defaultI18n,
-  debounceTimeout = 300,
-}: TDataTableSearchProps<T>) {
-  // Call useState FIRST
-  const [searchValue, setSearchValue] = useState("");
-
-  // Use ref to store the search value so we can access it in useEffect
-  const searchValueRef = useRef("");
-  searchValueRef.current = searchValue;
-
-  // Call useEffect BEFORE useDataTableQueryParams to ensure consistent hook order
-  // This effect will be a no-op initially, but ensures useEffect is always called
-  useEffect(() => {
-    // This will be populated after useDataTableQueryParams is called
-  }, []);
-
-  // Then call useDataTableQueryParams (which internally calls useQueryState/useId)
-  const { search, setSearch } = useDataTableQueryParams({
-    prefixQueryKey,
-  });
-
-  // Sync searchValue with search.value when it changes externally
-  useEffect(() => {
-    if (searchValueRef.current !== search.value) {
-      setSearchValue(search.value);
-    }
-  }, [search.value]);
-
-  const debouncedSetSearchValue = useDebouncedCallback(
-    (value: string) => setSearch({ ...search, value }),
-    debounceTimeout
-  );
+export function DataTableSearch({ i18n = defaultI18n }: TDataTableSearchProps) {
+  const { search, setSearch } = useDataTableQueryParams();
 
   const onSearchValueChange = (value: string) => {
-    setSearchValue(value);
-    debouncedSetSearchValue(value);
+    setSearch({ ...search, value });
   };
 
   return (
     <Group gap="xs">
-      <DataTableSearchAccessorsToggle
-        columns={columns}
-        prefixQueryKey={prefixQueryKey}
-      />
+      <DataTableSearchAccessorsToggle />
       <TextInput
         onChange={(e) => onSearchValueChange(e.target.value)}
         placeholder={i18n.search}
         rightSection={
-          searchValue.length > 0 && (
+          search.value.length > 0 && (
             <CloseButton
               onClick={() => onSearchValueChange("")}
               size="sm"
@@ -164,7 +111,7 @@ export function DataTableSearch<T = Record<string, unknown>>({
             />
           )
         }
-        value={searchValue}
+        value={search.value}
         w="200px"
       />
     </Group>

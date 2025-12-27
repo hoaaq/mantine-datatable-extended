@@ -16,18 +16,11 @@ import {
 } from "@tabler/icons-react";
 import React from "react";
 import { useDataTableQueryParams } from "../hooks";
-import {
-  ESortDirection,
-  type ExtendedDataTableColumnProps,
-  type i18nDataTableSortOptions,
-  type TSortCondition,
-} from "../types";
+import { useDataTableContext } from "../provider";
+import { ESortDirection, type i18nDataTableSortOptions } from "../types";
 
-type TDataTableSortListProps<T = Record<string, unknown>> = {
-  prefixQueryKey?: string;
-  columns: ExtendedDataTableColumnProps<T>[];
+type TDataTableSortListProps = {
   i18n?: i18nDataTableSortOptions;
-  defaultSorts?: TSortCondition[];
 };
 
 const defaultI18n: i18nDataTableSortOptions = {
@@ -38,16 +31,11 @@ const defaultI18n: i18nDataTableSortOptions = {
   desc: "Desc",
 };
 
-export function DataTableSortList<T = Record<string, unknown>>({
-  prefixQueryKey,
-  columns,
+export function DataTableSortList({
   i18n = defaultI18n,
-  defaultSorts = [],
-}: TDataTableSortListProps<T>) {
-  const { sorts, setSorts } = useDataTableQueryParams({
-    prefixQueryKey,
-    defaultSorts,
-  });
+}: TDataTableSortListProps) {
+  const { sorts, setSorts, resetSorts } = useDataTableQueryParams();
+  const { columns } = useDataTableContext();
 
   const sortableColumns = columns.filter((column) => column.extend?.sortable);
   const remainingColumns = sortableColumns.filter(
@@ -66,7 +54,7 @@ export function DataTableSortList<T = Record<string, unknown>>({
   };
 
   const onResetSort = () => {
-    setSorts(defaultSorts);
+    resetSorts();
   };
 
   const onRemoveSort = (accessor: string) => {
@@ -109,7 +97,7 @@ export function DataTableSortList<T = Record<string, unknown>>({
   };
 
   return (
-    <Popover position="bottom-end" shadow="md" width="450" withArrow>
+    <Popover shadow="md" width="450px" withArrow>
       <Popover.Target>
         <Button
           leftSection={<IconSort09 />}

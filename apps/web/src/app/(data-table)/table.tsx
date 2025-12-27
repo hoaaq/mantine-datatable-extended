@@ -6,61 +6,35 @@ import {
   DataTableFilter,
   DataTableSearch,
   DataTableSortList,
-  type ExtendedDataTableProps,
+  useDataTableContext,
   useDataTableQueryParams,
 } from "@repo/ui";
 import { DataTable as MantineDataTable } from "mantine-datatable";
-import { useColumns } from "./columns";
 import { useData } from "./data";
 
 const PAGE_SIZES = [10, 20, 30, 40, 50];
 
-export function DataTableExtended(props: ExtendedDataTableProps = {}) {
-  const { prefixQueryKey, defaultSorts } = props;
-  const { columnStoreKey, effectiveColumns } = useColumns();
-
+export function DataTableExtended() {
   return (
     <Group justify="space-between">
       <Group>
-        <DataTableSearch
-          columns={effectiveColumns}
-          prefixQueryKey={prefixQueryKey}
-        />
-        <DataTableFilter
-          columns={effectiveColumns}
-          facets={[
-            {
-              accessor: "status",
-              data: [
-                { label: "Pending", value: "pending" },
-                { label: "Completed", value: "completed" },
-                { label: "In Progress", value: "in_progress" },
-              ],
-            },
-          ]}
-          prefixQueryKey={prefixQueryKey}
-        />
+        <DataTableSearch />
+        <DataTableFilter />
       </Group>
       <Group justify="end">
-        <DataTableSortList
-          columns={effectiveColumns}
-          defaultSorts={defaultSorts}
-          prefixQueryKey={prefixQueryKey}
-        />
-        <DataTableColumnsToggle
-          columnStoreKey={columnStoreKey}
-          columns={effectiveColumns}
-        />
+        <DataTableSortList />
+        <DataTableColumnsToggle />
       </Group>
     </Group>
   );
 }
 
-export function DataTable(props: ExtendedDataTableProps = {}) {
-  const { paginatedRecords, totalRecords, isFetching } = useData(props);
-  const { columnStoreKey, effectiveColumns } = useColumns();
-  const { page, pageSize, setPage, setPageSize } =
-    useDataTableQueryParams(props);
+export function DataTable() {
+  const { paginatedRecords, totalRecords, isFetching } = useData();
+  const { page, pageSize, setPage, setPageSize } = useDataTableQueryParams();
+  const { storeColumnsKey, originalUseDataTableColumnsResult } =
+    useDataTableContext();
+  const { effectiveColumns } = originalUseDataTableColumnsResult;
 
   return (
     <MantineDataTable
@@ -73,7 +47,7 @@ export function DataTable(props: ExtendedDataTableProps = {}) {
       records={paginatedRecords}
       recordsPerPage={pageSize}
       recordsPerPageOptions={PAGE_SIZES}
-      storeColumnsKey={columnStoreKey}
+      storeColumnsKey={storeColumnsKey}
       totalRecords={totalRecords}
       withColumnBorders
       withRowBorders

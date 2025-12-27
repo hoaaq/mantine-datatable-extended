@@ -1,28 +1,56 @@
-import type { ExtendedDataTableProps } from "@repo/ui";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useDataTableQueryParams } from "@repo/ui";
-import { cleanSearch } from "@repo/ui/server";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { client } from "@/lib/treaty";
 
-export function useData(props: ExtendedDataTableProps = {}) {
-  const { page, pageSize, sorts, search, filters } =
-    useDataTableQueryParams(props);
-  const cleanedSearch = cleanSearch(search);
+type SearchCondition = ReturnType<typeof useDataTableQueryParams>["search"];
 
-  const [clientTimeout] = useQueryState("ct", parseAsInteger.withDefault(1000));
+const cleanSearch = (search: SearchCondition): SearchCondition => {
+  if (search.accessors.length <= 0 || search.value.length <= 0) {
+    return {
+      accessors: [],
+      value: "",
+    };
+  }
+  return search;
+};
+
+export function useData() {
+  const { page, pageSize, sorts, search, filters } = useDataTableQueryParams();
+  const [[debouncedPage, debouncedPageSize]] = useDebouncedValue(
+    [page, pageSize],
+    200,
+    {
+      leading: false,
+    }
+  );
+  const [[debouncedSorts, debouncedSearch, debouncedFilters]] =
+    useDebouncedValue([sorts, search, filters], 500, {
+      leading: false,
+    });
+  const cleanedSearch = cleanSearch(debouncedSearch as SearchCondition);
+
+  const [clientTimeout] = useQueryState("ct", parseAsInteger.withDefault(600));
 
   const { data, isFetching } = useSuspenseQuery({
-    queryKey: ["tasks", page, pageSize, sorts, cleanedSearch, filters],
+    queryKey: [
+      "tasks",
+      debouncedPage,
+      debouncedPageSize,
+      debouncedSorts,
+      cleanedSearch,
+      debouncedFilters,
+    ],
     queryFn: async () => {
       const { data: res } = await client.api.todo.task.get({
         query: {
           sleep: clientTimeout,
-          page,
-          pageSize,
-          sorts: JSON.stringify(sorts),
+          page: debouncedPage,
+          pageSize: debouncedPageSize,
+          sorts: JSON.stringify(debouncedSorts),
           search: JSON.stringify(cleanedSearch),
-          filters: JSON.stringify(filters),
+          filters: JSON.stringify(debouncedFilters),
         },
       });
       return {

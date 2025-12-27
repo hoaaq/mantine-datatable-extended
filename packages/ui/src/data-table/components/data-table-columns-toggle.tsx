@@ -1,15 +1,10 @@
 import { Button, Checkbox, Popover, Stack } from "@mantine/core";
 import { IconColumns } from "@tabler/icons-react";
 import type { DataTableColumnToggle } from "mantine-datatable";
-import { useDataTableColumnsExtend } from "../hooks";
-import type {
-  ExtendedDataTableColumnProps,
-  i18nDataTableViewOptions,
-} from "../types";
+import { useDataTableContext } from "../provider";
+import type { i18nDataTableViewOptions } from "../types";
 
-type TDataTableColumnsToggleProps<T = Record<string, unknown>> = {
-  columnStoreKey: string;
-  columns: ExtendedDataTableColumnProps<T>[];
+type TDataTableColumnsToggleProps = {
   i18n?: i18nDataTableViewOptions;
 };
 
@@ -17,16 +12,12 @@ const defaultI18n: i18nDataTableViewOptions = {
   columnsToggle: "Columns Toggle",
 };
 
-export function DataTableColumnsToggle<T = Record<string, unknown>>({
-  columnStoreKey,
-  columns,
+export function DataTableColumnsToggle({
   i18n = defaultI18n,
-}: TDataTableColumnsToggleProps<T>) {
+}: TDataTableColumnsToggleProps) {
+  const { originalUseDataTableColumnsResult } = useDataTableContext();
   const { effectiveColumns, columnsToggle, setColumnsToggle } =
-    useDataTableColumnsExtend({
-      key: columnStoreKey,
-      columns,
-    });
+    originalUseDataTableColumnsResult;
 
   const onToggleChange = (column: DataTableColumnToggle) => {
     setColumnsToggle(
@@ -37,7 +28,7 @@ export function DataTableColumnsToggle<T = Record<string, unknown>>({
   };
 
   return (
-    <Popover position="bottom-end" shadow="md" width="target" withArrow>
+    <Popover shadow="md" width="max-content" withArrow>
       <Popover.Target>
         <Button leftSection={<IconColumns />} variant="default">
           {i18n.columnsToggle}

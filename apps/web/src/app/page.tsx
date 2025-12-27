@@ -1,9 +1,6 @@
 import { Container, Space } from "@mantine/core";
-import type { ExtendedDataTableProps } from "@repo/ui";
-import {
-  createDataTableLoader,
-  extractOriginalQueryParams,
-} from "@repo/ui/server";
+import type { DataTableContextProps } from "@repo/ui";
+import { createDataTableLoader } from "@repo/ui/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { SearchParams } from "nuqs";
 import { createLoader, parseAsInteger } from "nuqs/server";
@@ -13,32 +10,27 @@ import { getQueryClient } from "@/components/providers/query-provider/create-cli
 import { QueryTimeout } from "@/components/query-timeout";
 import { client } from "@/lib/treaty";
 import { DataTable, DataTableExtended } from "./(data-table)/table";
+import { DataTableWrapper } from "./(data-table)/wrapper";
 
-const dataTableProps: ExtendedDataTableProps = {
-  prefixQueryKey: "todo",
-  defaultSorts: [{ accessor: "createdAt", direction: "desc" }],
+const loaderProps: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {
+  defaultParams: {
+    sorts: [{ accessor: "createdAt", direction: "desc" }],
+  },
 };
-
-const loader = createDataTableLoader(dataTableProps);
+const loader = createDataTableLoader(loaderProps);
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const loadedSearchParams = await loader(searchParams);
-  const { page, pageSize, sorts, search, filters } =
-    dataTableProps.prefixQueryKey
-      ? extractOriginalQueryParams(
-          loadedSearchParams,
-          dataTableProps.prefixQueryKey
-        )
-      : loadedSearchParams;
-
   const loadTimeout = createLoader({
     st: parseAsInteger.withDefault(200),
   });
   const { st } = await loadTimeout(searchParams);
+
+  const loadedSearchParams = await loader(searchParams);
+  const { page, pageSize, sorts, search, filters } = loadedSearchParams;
 
   const queryClient = getQueryClient();
   queryClient.prefetchQuery({
@@ -62,16 +54,18 @@ export default async function Home({
   });
 
   return (
-    <Container size="xl">
+    <Container size={1600}>
       <QueryTimeout />
       <Space h="xl" />
-      <DataTableExtended {...dataTableProps} />
-      <Space h="md" />
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<DataTableSkeleton />}>
-          <DataTable {...dataTableProps} />
-        </Suspense>
-      </HydrationBoundary>
+      <DataTableWrapper {...loaderProps} storeColumnsKey="todo">
+        <DataTableExtended />
+        <Space h="md" />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <Suspense fallback={<DataTableSkeleton />}>
+            <DataTable />
+          </Suspense>
+        </HydrationBoundary>
+      </DataTableWrapper>
     </Container>
   );
 }

@@ -1,31 +1,26 @@
 import { Button, Checkbox, Indicator, Popover, Stack } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useDataTableQueryParams } from "../../hooks";
-import type { EFilterVariant, ExtendedDataTableColumnProps } from "../../types";
-
-export type TDataTableFilterMultiSelectFacet<T = Record<string, unknown>> = {
-  accessor: keyof T | (string & NonNullable<unknown>);
-  data: { value: string; label: string }[];
-};
+import type {
+  DataTableExtendedColumnProps,
+  EFilterVariant,
+  FilterMultiSelectOptions,
+} from "../../types";
 
 type TDataTableFilterMultiSelectProps<T = Record<string, unknown>> = {
-  prefixQueryKey?: string;
-  column: ExtendedDataTableColumnProps<T>;
-  facet: TDataTableFilterMultiSelectFacet<T>;
+  column: DataTableExtendedColumnProps<T>;
 };
 
 export function DataTableFilterMultiSelect<T = Record<string, unknown>>({
-  prefixQueryKey,
   column,
-  facet,
 }: TDataTableFilterMultiSelectProps<T>) {
   const accessor = column.accessor as string;
   const variant = column.extend?.filterVariant as EFilterVariant;
-  const facetData = facet.data;
+  const filterOptions = column.extend
+    ?.filterOptions as FilterMultiSelectOptions;
+  const filterOptionsData = filterOptions.data;
 
-  const { filters, setFilters } = useDataTableQueryParams({
-    prefixQueryKey,
-  });
+  const { filters, setFilters } = useDataTableQueryParams();
   const thisAccessorFilter = filters.find(
     (filter) => filter.accessor === accessor
   );
@@ -88,7 +83,7 @@ export function DataTableFilterMultiSelect<T = Record<string, unknown>>({
       </Popover.Target>
       <Popover.Dropdown>
         <Stack>
-          {facetData.map((data) => (
+          {filterOptionsData.map((data) => (
             <Checkbox
               checked={isChecked(data.value)}
               key={`${accessor}-${data.value}`}
