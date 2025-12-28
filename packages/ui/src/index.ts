@@ -2,6 +2,7 @@
 
 export {
   DataTableColumnsToggle,
+  DataTableExtended,
   DataTableFilter,
   DataTablePagination,
   DataTableSearch,

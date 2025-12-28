@@ -5,7 +5,7 @@ export function DataTableSkeleton() {
     <>
       <Skeleton height={40} radius={0} />
       <Divider />
-      <Skeleton height={351} radius={0} />
+      <Skeleton height={320} radius={0} />
       <Divider />
       <Skeleton height={44} radius={0} />
     </>

@@ -93,7 +93,11 @@ export type DataTableContextProps<T = Record<string, unknown>> = {
    */
   paginationProps?: PaginationPropsType;
   /**
-   * The function to set the pagination props.
+   * The function to set the pagination total records.
    */
-  setPaginationProps?: (props: PaginationPropsType) => void;
+  setTotalRecords?: (totalRecords: number) => void;
+  /**
+   * The function to set the pagination records per page options.
+   */
+  setRecordsPerPageOptions?: (recordsPerPageOptions: number[]) => void;
 };

@@ -5,6 +5,7 @@ import { useDataTableContext } from "../provider";
 import type { i18nDataTablePaginationOptions } from "../types/i18n.type";
 
 type TDataTablePaginationProps = {
+  recordsPerPageOptions?: number[];
   i18n?: i18nDataTablePaginationOptions;
 };
 
@@ -15,11 +16,12 @@ const defaultI18n: i18nDataTablePaginationOptions = {
 };
 
 export function DataTablePagination({
+  recordsPerPageOptions = [10, 20, 30, 40, 50],
   i18n = defaultI18n,
 }: TDataTablePaginationProps) {
   const { page, pageSize, setPage, setPageSize } = useDataTableQueryParams();
   const { paginationProps } = useDataTableContext();
-  const { totalRecords, recordsPerPageOptions } = paginationProps || {};
+  const { totalRecords } = paginationProps || {};
 
   const [totalPages, setTotalPages] = useState(0);
   const [{ startRecord, endRecord }, setStartEndRecord] = useState({
@@ -31,7 +33,7 @@ export function DataTablePagination({
     setTotalPages(
       Math.ceil(
         (totalRecords || 0) /
-          (pageSize ? pageSize : recordsPerPageOptions?.[0] || 10)
+          (pageSize ? pageSize : (recordsPerPageOptions[0] ?? 10))
       )
     );
   }, [totalRecords, pageSize, recordsPerPageOptions]);
@@ -56,7 +58,7 @@ export function DataTablePagination({
         <Group>
           <Text size="sm">{i18n.rowsPerPage}</Text>
           <NativeSelect
-            data={recordsPerPageOptions?.map((option) => ({
+            data={recordsPerPageOptions.map((option) => ({
               label: option.toString(),
               value: option.toString(),
             }))}

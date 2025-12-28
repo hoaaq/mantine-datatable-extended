@@ -42,10 +42,40 @@ type FilterableExtend = BaseExtend &
       }
   );
 
-export type DataTableExtendedColumnProps<T = Record<string, unknown>> =
-  DataTableColumn<T> & {
-    /**
-     * The extended properties of the column.
-     */
-    extend?: FilterableExtend;
-  };
+export type DataTableExtendedColumnProps<T = Record<string, unknown>> = Omit<
+  DataTableColumn<T>,
+  | "sortable"
+  | "sortKey"
+  | "filter"
+  | "filterPopoverProps"
+  | "filterPopoverDisableClickOutside"
+  | "filtering"
+  | "ellipsis"
+  | "noWrap"
+> & {
+  /**
+   * The extended properties of the column.
+   */
+  extend?: FilterableExtend;
+} & ( // Omit and then add these properties because TS wrongly compiles discriminated union types from mantine-datatable
+    | {
+        /**
+         * If true, cell content in this column will be truncated with ellipsis as needed and will not wrap
+         * to multiple lines (i.e. `overflow: hidden; text-overflow: ellipsis`; `white-space: nowrap`).
+         * On a column, you can either set this property or `noWrap`, but not both.
+         */
+        ellipsis?: boolean;
+
+        noWrap?: never;
+      }
+    | {
+        ellipsis?: never;
+
+        /**
+         * If true, cell content in this column will not wrap to multiple lines (i.e. `white-space: nowrap`).
+         * This is useful for columns containing long strings.
+         * On a column, you can either set this property or `ellipsis`, but not both.
+         */
+        noWrap?: boolean;
+      }
+  );

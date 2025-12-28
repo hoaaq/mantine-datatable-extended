@@ -1,5 +1,12 @@
-import { Container, Space } from "@mantine/core";
-import type { DataTableContextProps } from "@repo/ui";
+import { Container, Group, Space } from "@mantine/core";
+import {
+  DataTableColumnsToggle,
+  type DataTableContextProps,
+  DataTableFilter,
+  DataTablePagination,
+  DataTableSearch,
+  DataTableSortList,
+} from "@repo/ui";
 import { createDataTableLoader } from "@repo/ui/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { SearchParams } from "nuqs";
@@ -9,11 +16,7 @@ import { DataTableSkeleton } from "@/components/data-table-skeleton";
 import { getQueryClient } from "@/components/providers/query-provider/create-client";
 import { QueryTimeout } from "@/components/query-timeout";
 import { client } from "@/lib/treaty";
-import {
-  DataTable,
-  DataTableExtended,
-  DataTableFooter,
-} from "./(data-table)/table";
+import { DataTable } from "./(data-table)/table";
 import { DataTableWrapper } from "./(data-table)/wrapper";
 
 const loaderProps: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {
@@ -62,7 +65,7 @@ export default async function Home({
       <QueryTimeout />
       <Space h="xl" />
       <DataTableWrapper {...loaderProps} storeColumnsKey="todo">
-        <DataTableExtended />
+        <DataTableHeader />
         <Space h="md" />
         <HydrationBoundary state={dehydrate(queryClient)}>
           <Suspense fallback={<DataTableSkeleton />}>
@@ -74,4 +77,23 @@ export default async function Home({
       </DataTableWrapper>
     </Container>
   );
+}
+
+export function DataTableHeader() {
+  return (
+    <Group justify="space-between">
+      <Group>
+        <DataTableSearch />
+        <DataTableFilter />
+      </Group>
+      <Group justify="end">
+        <DataTableSortList />
+        <DataTableColumnsToggle />
+      </Group>
+    </Group>
+  );
+}
+
+export function DataTableFooter() {
+  return <DataTablePagination />;
 }
