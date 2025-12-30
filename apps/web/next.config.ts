@@ -1,8 +1,19 @@
 import type { NextConfig } from "next";
+import nextra from "nextra";
 
+const withNextra = nextra({
+  contentDirBasePath: "/docs",
+});
 const nextConfig: NextConfig = {
   typedRoutes: true,
   reactCompiler: true,
+  experimental: {
+    optimizePackageImports: [
+      "@mantine/core",
+      "@mantine/hooks",
+      "@mantine/dates",
+    ],
+  },
 };
 
-export default nextConfig;
+export default withNextra(nextConfig);

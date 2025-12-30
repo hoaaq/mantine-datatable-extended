@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "next dev --port 3000 --turbopack",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.0",
@@ -24,6 +25,8 @@
     "elysia": "^1.4.19",
     "mantine-datatable": "^8.3.11",
     "next": "^16.1.0",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
     "nuqs": "^2.8.6",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -36,7 +39,9 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "babel-plugin-react-compiler": "^1.0.0",
+    "pagefind": "^1.4.0",
     "postcss": "^8.5.6",
+    "postcss-import": "^16.1.1",
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
     "typescript": "^5"
