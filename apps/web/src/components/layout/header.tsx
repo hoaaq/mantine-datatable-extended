@@ -7,8 +7,9 @@ import {
   Group,
   useMantineTheme,
 } from "@mantine/core";
-import { IconBrandGithub, IconHome } from "@tabler/icons-react";
+import { IconBrandGithub } from "@tabler/icons-react";
 import { Link } from "nextra-theme-docs";
+import Logo from "../logo";
 import ThemeSwitcher from "../theme-control/theme-switcher";
 
 export function AppHeader() {
@@ -17,6 +18,7 @@ export function AppHeader() {
     <Group
       h="60px"
       justify="space-between"
+      px="md"
       styles={{
         root: {
           borderBottom: `1px solid light-dark(${theme.colors.gray[2]}, ${theme.colors.gray[8]})`,
@@ -29,24 +31,15 @@ export function AppHeader() {
         size="1440"
         style={{ flexGrow: 1, justifyContent: "space-between" }}
       >
-        <Group>
+        <Group gap="xs">
+          <Logo />
           <Button
             component={Link}
-            href={{ pathname: "/" }}
-            leftSection={<IconHome size={20} />}
+            href={{ pathname: "/demo" }}
             variant="subtle"
             visibleFrom="sm"
           >
-            Mantine DataTable Extended
-          </Button>
-          <Button
-            component={Link}
-            hiddenFrom="sm"
-            href={{ pathname: "/" }}
-            leftSection={<IconHome size={20} />}
-            variant="subtle"
-          >
-            MDE
+            Full Demo
           </Button>
           <Button
             component={Link}

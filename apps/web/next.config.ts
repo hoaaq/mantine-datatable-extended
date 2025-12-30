@@ -3,6 +3,9 @@ import nextra from "nextra";
 
 const withNextra = nextra({
   contentDirBasePath: "/docs",
+  search: {
+    codeblocks: false,
+  },
 });
 const nextConfig: NextConfig = {
   typedRoutes: true,

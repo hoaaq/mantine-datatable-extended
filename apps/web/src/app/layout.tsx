@@ -4,7 +4,7 @@ import {
   mantineHtmlProps,
 } from "@mantine/core";
 import type { Metadata, Viewport } from "next";
-import { Head } from "nextra/components";
+import { Head, Search } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 import { Layout } from "nextra-theme-docs";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -49,6 +49,7 @@ export default async function RootLayout({
                 footer={<AppFooter />}
                 navbar={<AppHeader />}
                 pageMap={await getPageMap()}
+                search={<Search />}
               >
                 {children}
               </Layout>
