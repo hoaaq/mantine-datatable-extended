@@ -1,7 +1,34 @@
-# Welcome to Nextra
+# Introduction
 
-Hello, world!
+Mantine and Mantine Datatable are two extremely excellent libraries, trusted and used by many programmers.
+Especially Mantine Datatable, which simplifies the way we create datatables for web applications.
 
-import Demo1 from "@/examples/demo-1";
+However, during use, I also realized that it has some limitations, such as:
 
-<Demo1 />
+- The `column toggling` function does not yet have a dedicated component.
+- The `sort` function can only be applied to one column at a time.
+- The `search and filtering` function is not standardized and must be fully customized.
+- The `pagination` function is fixed to the footer of the table. If you use asynchronous data loading from the client, you will see the loader component overlay the pagination bar every time you switch pages. This can sometimes be quite inconvenient for users.
+
+So I decided to create the Mantine Datatable Extended library to solve the above problems. And there are also some other useful features:
+
+- Tips for creating a clean and easy-to-maintain Datatable
+- Use `Nuqs` to store the query state of the datatable in the URL, convenient for server calls or sharing links.
+- Examples of client-server combinations. Example using `Tanstack Query` combined with NextJS Streaming to create a hybrid fetching solution for datatables.
+
+This library was strongly inspired by [tablecn.com](https://tablecn.com).
+
+You can find a full demo of this library at [demo page](/demo).
+
+
+import { Callout } from 'nextra/components'
+ 
+<Callout type="warning">
+  Before you begin, please note that this is an opinionated library.
+  This means it is built with many personal opinions, to reduce customization time and achieve immediate results.
+  So use it if you really need it.
+</Callout>
+<Callout>However, you can still use it alongside the original Mantine Datatable library without any conflicts.</Callout>
+
+Let's go to the [installation](./installation) section to get started.
+
