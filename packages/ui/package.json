@@ -1,9 +1,27 @@
 {
   "name": "@repo/ui",
   "type": "module",
-  "version": "0.1.0",
-  "publishConfig": {
-    "access": "public"
+  "version": "0.2.0",
+  "description": "An extension library for Mantine DataTable, providing powerful and easy-to-use features for building data tables in React applications.",
+  "tags": [
+    "mantine",
+    "datatable",
+    "react",
+    "typescript",
+    "data-table",
+    "table-component",
+    "react-table"
+  ],
+  "repository": "hoaaq/mantine-datatable-extended",
+  "homepage": "https://mantine-datatable-extended.hoaaq.dev/",
+  "bugs": {
+    "url": "https://github.com/hoaaq/mantine-datatable-extended/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Au Quoc Hoa",
+    "email": "hoaauquoc@gmail.com",
+    "url": "https://hoaaq.dev"
   },
   "exports": {
     ".": {
@@ -18,7 +36,9 @@
     }
   },
   "files": [
-    "dist"
+    "./dist",
+    "./README.md",
+    "./LICENSE"
   ],
   "scripts": {
     "build": "tsup",

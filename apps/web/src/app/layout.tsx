@@ -91,6 +91,8 @@ export default async function RootLayout({
           <QueryProvider>
             <MantineProvider defaultColorScheme="dark">
               <Layout
+                docsRepositoryBase="https://github.com/hoaaq/mantine-datatable-extended"
+                editLink={false}
                 footer={<AppFooter />}
                 navbar={<AppHeader />}
                 pageMap={await getPageMap()}
