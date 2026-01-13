@@ -21,10 +21,11 @@
     "@repo/config": "workspace:*",
     "@types/pg": "^8.15.6",
     "drizzle-kit": "^0.31.8",
-    "typescript": "^5",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "typescript": "^5"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "@sinclair/typebox": "^0.34.45",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.45.1",

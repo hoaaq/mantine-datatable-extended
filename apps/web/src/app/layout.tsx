@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://mantine-datatable-extended.vercel.app",
+    url: "https://mantine-datatable-extended.hoaaq.dev",
     siteName: "Mantine DataTable Extended",
     title: "Mantine DataTable Extended",
     description:
