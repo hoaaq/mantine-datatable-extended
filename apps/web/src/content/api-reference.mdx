@@ -1,0 +1,417 @@
+# API Reference
+
+## Types
+
+### DataTableExtendedColumnProps
+
+Extended column props with an additional `extend` property:
+
+```typescript
+type DataTableExtendedColumnProps<T = Record<string, unknown>> = 
+  Omit<
+    DataTableColumn<T>,
+    | "sortable"
+    | "sortKey"
+    | "filter"
+    | "filterPopoverProps"
+    | "filterPopoverDisableClickOutside"
+    | "filtering"
+    | "ellipsis"
+    | "noWrap"
+  > & {
+    extend?: FilterableExtend;
+  } & (
+    | { ellipsis?: boolean; noWrap?: never }
+    | { ellipsis?: never; noWrap?: boolean }
+  );
+```
+
+### FilterableExtend
+
+Type for the `extend` property:
+
+```typescript
+type FilterableExtend = {
+  searchable?: boolean;
+  sortable?: boolean;
+  filterable?: boolean;
+  filterVariant?: 
+    | "text"
+    | "number"
+    | "date"
+    | "date_range"
+    | "number_range"
+    | "single_select"
+    | "multi_select";
+  filterOptions?: 
+    | FilterNumberRangeOptions
+    | FilterSingleSelectOptions
+    | FilterMultiSelectOptions;
+};
+```
+
+### FilterNumberRangeOptions
+
+```typescript
+type FilterNumberRangeOptions = {
+  min: number;
+  max: number;
+  step?: number;
+  minRange?: number;
+};
+```
+
+### FilterSingleSelectOptions / FilterMultiSelectOptions
+
+```typescript
+type FilterSingleSelectOptions = {
+  data: {
+    value: string;
+    label: string;
+    count?: number;
+    icon?: React.ReactNode;
+  }[];
+};
+
+type FilterMultiSelectOptions = FilterSingleSelectOptions; // Same type
+```
+
+### UrlKeysType
+
+```typescript
+type UrlKeysType = {
+  page: string;
+  pageSize: string;
+  sorts: string;
+  search: string;
+  filters: string;
+};
+```
+
+### DefaultParamsType
+
+```typescript
+type DefaultParamsType = {
+  page?: number;
+  pageSize?: number;
+  sorts?: TSortCondition[];
+  search?: TSearchCondition;
+  filters?: TFilterCondition[];
+};
+```
+
+### TSortCondition
+
+```typescript
+type TSortCondition = {
+  accessor: string;
+  direction: "asc" | "desc";
+};
+```
+
+### TSearchCondition
+
+```typescript
+type TSearchCondition = {
+  accessors: string[];
+  value: string;
+};
+```
+
+### TFilterCondition
+
+```typescript
+type TFilterCondition = {
+  variant: 
+    | "text"
+    | "number"
+    | "date"
+    | "date_range"
+    | "number_range"
+    | "single_select"
+    | "multi_select";
+  accessor: string;
+  value: string | string[];
+};
+```
+
+## Components
+
+### DataTableProvider
+
+Provider component that supplies context to all child components.
+
+**Props:**
+
+```typescript
+type DataTableProviderProps<T = Record<string, unknown>> = {
+  children: React.ReactNode;
+  urlKeys?: UrlKeysType;
+  defaultParams?: DefaultParamsType;
+  storeColumnsKey: string; // Required
+  columns: DataTableExtendedColumnProps<T>[]; // Required
+  originalUseDataTableColumnsResult: ReturnType<
+    typeof useDataTableColumns<T>
+  >; // Required
+};
+```
+
+### DataTableExtended
+
+Main component for displaying data tables.
+
+**Props:**
+
+Accepts all props from `DataTable` in `mantine-datatable`, except:
+- `columns` (from context)
+- `storeColumnsKey` (from context)
+- `groups`
+- Pagination and Sort props
+
+### DataTableSearch
+
+Search component with multi-column selection capability.
+
+**Props:**
+
+```typescript
+type DataTableSearchProps = {
+  i18n?: {
+    search?: string; // Default: "Search"
+  };
+};
+```
+
+### DataTableFilter
+
+Filter component that automatically displays filters based on column configuration.
+
+**Props:**
+
+```typescript
+type DataTableFilterProps = {
+  i18n?: {
+    resetFilter?: string; // Default: "Reset Filter"
+  };
+};
+```
+
+### DataTableSortList
+
+Component for managing multi-column sorting.
+
+**Props:**
+
+```typescript
+type DataTableSortListProps = {
+  i18n?: {
+    sort?: string; // Default: "Sort"
+    addSort?: string; // Default: "Add Sort"
+    resetSort?: string; // Default: "Reset Sort"
+    asc?: string; // Default: "Asc"
+    desc?: string; // Default: "Desc"
+  };
+};
+```
+
+### DataTableColumnsToggle
+
+Component to show/hide columns.
+
+**Props:**
+
+```typescript
+type DataTableColumnsToggleProps = {
+  i18n?: {
+    columnsToggle?: string; // Default: "Columns Toggle"
+  };
+};
+```
+
+### DataTablePagination
+
+Pagination component that can be placed anywhere.
+
+**Props:**
+
+```typescript
+type DataTablePaginationProps = {
+  recordsPerPageOptions?: number[]; // Default: [10, 20, 30, 40, 50]
+  i18n?: {
+    rowsPerPage?: string; // Default: "Rows per page"
+    pageOfTotalPages?: [string, string]; // Default: ["Page", "of"]
+    startEndRecordOfTotalRecords?: [string, string, string]; 
+    // Default: ["", "-", "/"]
+  };
+};
+```
+
+## Hooks
+
+### useDataTableContext
+
+Hook to access DataTable context.
+
+```typescript
+function useDataTableContext<T = Record<string, unknown>>(): 
+  DataTableContextProps<T>;
+```
+
+**Returns:**
+
+```typescript
+type DataTableContextProps<T> = {
+  urlKeys?: UrlKeysType;
+  defaultParams?: DefaultParamsType;
+  storeColumnsKey: string;
+  columns: DataTableExtendedColumnProps<T>[];
+  originalUseDataTableColumnsResult: ReturnType<
+    typeof useDataTableColumns<T>
+  >;
+  paginationProps?: PaginationPropsType;
+  setTotalRecords?: (totalRecords: number) => void;
+  setRecordsPerPageOptions?: (recordsPerPageOptions: number[]) => void;
+};
+```
+
+### useDataTableQueryParams
+
+Hook to read and update query parameters.
+
+```typescript
+function useDataTableQueryParams(): {
+  page: number;
+  setPage: (page: number) => void;
+  pageSize: number;
+  setPageSize: (pageSize: number) => void;
+  sorts: TSortCondition[];
+  setSorts: (sorts: TSortCondition[]) => void;
+  search: TSearchCondition;
+  setSearch: (search: TSearchCondition) => void;
+  filters: TFilterCondition[];
+  setFilters: (filters: TFilterCondition[]) => void;
+  resetPage: () => void;
+  resetPageSize: () => void;
+  resetSorts: () => void;
+  resetSearch: () => void;
+  resetFilters: () => void;
+  resetAll: () => void;
+};
+```
+
+## Server Utilities
+
+### createDataTableLoader
+
+Create a loader function to read query params on the server.
+
+```typescript
+function createDataTableLoader(
+  props?: Pick<DataTableContextProps, "urlKeys" | "defaultParams">
+): (searchParams: Promise<SearchParams>) => Promise<{
+  page: number;
+  pageSize: number;
+  sorts: TSortCondition[];
+  search: TSearchCondition;
+  filters: TFilterCondition[];
+}>;
+```
+
+**Usage:**
+
+```typescript
+import { createDataTableLoader } from "mantine-datatable-extended/server";
+
+const loader = createDataTableLoader({
+  defaultParams: {
+    page: 1,
+    pageSize: 10,
+  },
+  urlKeys: {
+    page: "p",
+    pageSize: "ps",
+    sorts: "s",
+    search: "q",
+    filters: "f",
+  },
+});
+
+// In server component
+const params = await loader(searchParams);
+```
+
+## Enums
+
+### ESortDirection
+
+```typescript
+enum ESortDirection {
+  ASC = "asc",
+  DESC = "desc",
+}
+```
+
+### EFilterVariant
+
+```typescript
+enum EFilterVariant {
+  TEXT = "text",
+  NUMBER = "number",
+  NUMBER_RANGE = "number_range",
+  DATE = "date",
+  DATE_RANGE = "date_range",
+  SINGLE_SELECT = "single_select",
+  MULTI_SELECT = "multi_select",
+}
+```
+
+## Error Handling
+
+The library will throw errors in the following cases:
+
+### Missing storeColumnsKey
+
+```typescript
+// ❌ Error: storeColumnsKey property is required
+<DataTableProvider columns={columns} {...otherProps}>
+  {/* Missing storeColumnsKey */}
+</DataTableProvider>
+```
+
+### Missing columns
+
+```typescript
+// ❌ Error: columns property is required
+<DataTableProvider storeColumnsKey="table" {...otherProps}>
+  {/* Missing columns */}
+</DataTableProvider>
+```
+
+### useDataTableContext outside Provider
+
+```typescript
+// ❌ Error: useDataTableContext must be used within a DataTableProvider
+function Component() {
+  const context = useDataTableContext(); // Will throw
+  return null;
+}
+```
+
+## Type Exports
+
+All types are exported from the main package:
+
+```typescript
+import type {
+  DataTableExtendedColumnProps,
+  DataTableContextProps,
+  UrlKeysType,
+  DefaultParamsType,
+  TSortCondition,
+  TSearchCondition,
+  TFilterCondition,
+  FilterNumberRangeOptions,
+  FilterSingleSelectOptions,
+  FilterMultiSelectOptions,
+} from "mantine-datatable-extended";
+```

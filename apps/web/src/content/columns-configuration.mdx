@@ -1,0 +1,331 @@
+# Column Configuration
+
+Columns in `DataTableExtended` use the `DataTableExtendedColumnProps` type - an extension of the column type from `mantine-datatable` with an additional `extend` property to configure extended features.
+
+## Extend Property
+
+The `extend` property allows you to configure:
+- `searchable`: Column can be searched
+- `sortable`: Column can be sorted
+- `filterable`: Column can be filtered
+- `filterVariant`: Filter type (only applies when `filterable: true`)
+- `filterOptions`: Filter options (depends on `filterVariant`)
+
+```tsx
+type DataTableExtendedColumnProps<T> = {
+  // ... props from mantine-datatable
+  extend?: {
+    searchable?: boolean;
+    sortable?: boolean;
+    filterable?: boolean;
+    filterVariant?: FilterVariant;
+    filterOptions?: FilterOptions; // Depends on filterVariant
+  };
+};
+```
+
+## Searchable Columns
+
+Mark a column as `searchable` to allow searching in that column:
+
+```tsx
+const columns = [
+  {
+    accessor: "name",
+    title: "Name",
+    extend: {
+      searchable: true,
+    },
+  },
+];
+```
+
+When a column is marked as `searchable`, it will appear in the `DataTableSearch` popover for users to select and search within that column.
+
+## Sortable Columns
+
+Mark a column as `sortable` to allow sorting:
+
+```tsx
+const columns = [
+  {
+    accessor: "createdAt",
+    title: "Created At",
+    extend: {
+      sortable: true,
+    },
+  },
+];
+```
+
+`sortable` columns will appear in `DataTableSortList` and can be sorted by multiple columns simultaneously.
+
+## Filter Variants
+
+When marking a column as `filterable: true`, you need to specify `filterVariant` to determine the filter type. Available filter types:
+
+### Text Filter
+
+Filter by text string. No `filterOptions` needed.
+
+```tsx
+{
+  accessor: "name",
+  title: "Name",
+  extend: {
+    filterable: true,
+    filterVariant: "text",
+  },
+}
+```
+
+### Number Filter
+
+Filter by number. No `filterOptions` needed.
+
+```tsx
+{
+  accessor: "price",
+  title: "Price",
+  extend: {
+    filterable: true,
+    filterVariant: "number",
+  },
+}
+```
+
+### Number Range Filter
+
+Filter by number range. **Requires** `filterOptions` with `min`, `max`, and optional `step`, `minRange`.
+
+```tsx
+{
+  accessor: "age",
+  title: "Age",
+  extend: {
+    filterable: true,
+    filterVariant: "number_range",
+    filterOptions: {
+      min: 0,
+      max: 120,
+      step: 1,
+      minRange: 1, // Minimum range between min and max
+    },
+  },
+}
+```
+
+### Single Select Filter
+
+Filter by a single value selected from a list. **Requires** `filterOptions` with `data` array.
+
+```tsx
+{
+  accessor: "status",
+  title: "Status",
+  extend: {
+    filterable: true,
+    filterVariant: "single_select",
+    filterOptions: {
+      data: [
+        { label: "Active", value: "active" },
+        { label: "Inactive", value: "inactive" },
+        { label: "Pending", value: "pending" },
+      ],
+    },
+  },
+}
+```
+
+Each item in `data` can have:
+- `value`: Actual value
+- `label`: Display label
+- `count?`: Count (optional)
+- `icon?`: React icon element (optional)
+
+### Multi Select Filter
+
+Filter by multiple selected values. **Requires** `filterOptions` with `data` array (same as `single_select`).
+
+```tsx
+{
+  accessor: "tags",
+  title: "Tags",
+  extend: {
+    filterable: true,
+    filterVariant: "multi_select",
+    filterOptions: {
+      data: [
+        { label: "Frontend", value: "frontend" },
+        { label: "Backend", value: "backend" },
+        { label: "Mobile", value: "mobile" },
+      ],
+    },
+  },
+}
+```
+
+### Date Filter
+
+Filter by a specific date. No `filterOptions` needed.
+
+```tsx
+{
+  accessor: "createdAt",
+  title: "Created At",
+  extend: {
+    filterable: true,
+    filterVariant: "date",
+  },
+}
+```
+
+### Date Range Filter
+
+Filter by date range. No `filterOptions` needed.
+
+```tsx
+{
+  accessor: "dueDate",
+  title: "Due Date",
+  extend: {
+    filterable: true,
+    filterVariant: "date_range",
+  },
+}
+```
+
+## Complete Example
+
+```tsx
+import type { DataTableExtendedColumnProps } from "mantine-datatable-extended";
+
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  status: "active" | "inactive" | "pending";
+  category: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+const columns: DataTableExtendedColumnProps<Product>[] = [
+  {
+    accessor: "name",
+    title: "Product Name",
+    extend: {
+      searchable: true,
+      sortable: true,
+      filterable: true,
+      filterVariant: "text",
+    },
+  },
+  {
+    accessor: "price",
+    title: "Price",
+    textAlign: "right",
+    render: (record) => `$${record.price.toFixed(2)}`,
+    extend: {
+      sortable: true,
+      filterable: true,
+      filterVariant: "number_range",
+      filterOptions: {
+        min: 0,
+        max: 10000,
+        step: 10,
+        minRange: 100,
+      },
+    },
+  },
+  {
+    accessor: "quantity",
+    title: "Quantity",
+    textAlign: "center",
+    extend: {
+      sortable: true,
+      filterable: true,
+      filterVariant: "number",
+    },
+  },
+  {
+    accessor: "status",
+    title: "Status",
+    textAlign: "center",
+    render: (record) => (
+      <Badge color={record.status === "active" ? "green" : "gray"}>
+        {record.status}
+      </Badge>
+    ),
+    extend: {
+      sortable: true,
+      filterable: true,
+      filterVariant: "single_select",
+      filterOptions: {
+        data: [
+          { label: "Active", value: "active", icon: <IconCheck /> },
+          { label: "Inactive", value: "inactive", icon: <IconX /> },
+          { label: "Pending", value: "pending", icon: <IconClock /> },
+        ],
+      },
+    },
+  },
+  {
+    accessor: "category",
+    title: "Category",
+    extend: {
+      searchable: true,
+      sortable: true,
+      filterable: true,
+      filterVariant: "multi_select",
+      filterOptions: {
+        data: [
+          { label: "Electronics", value: "electronics" },
+          { label: "Clothing", value: "clothing" },
+          { label: "Food", value: "food" },
+        ],
+      },
+    },
+  },
+  {
+    accessor: "createdAt",
+    title: "Created At",
+    render: (record) => format(record.createdAt, "dd/MM/yyyy"),
+    extend: {
+      sortable: true,
+      filterable: true,
+      filterVariant: "date",
+    },
+  },
+  {
+    accessor: "updatedAt",
+    title: "Updated At",
+    render: (record) => format(record.updatedAt, "dd/MM/yyyy"),
+    extend: {
+      sortable: true,
+      filterable: true,
+      filterVariant: "date_range",
+    },
+  },
+];
+```
+
+## Combining Multiple Features
+
+You can combine multiple features for the same column:
+
+```tsx
+{
+  accessor: "name",
+  title: "Name",
+  extend: {
+    searchable: true,  // Can be searched
+    sortable: true,    // Can be sorted
+    filterable: true,  // Can be filtered
+    filterVariant: "text",
+  },
+}
+```
+
+Note: These features work independently of each other, you can enable/disable them as needed.

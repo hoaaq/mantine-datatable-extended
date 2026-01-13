@@ -1,0 +1,402 @@
+# Advanced Usage
+
+## Multiple Tables on Same Page
+
+When you have multiple data tables on the same page, you need to use `urlKeys` to avoid query parameter conflicts.
+
+### Example
+
+```tsx
+import { DataTableProvider } from "mantine-datatable-extended";
+
+function PageWithMultipleTables() {
+  return (
+    <Stack>
+      {/* Table 1 */}
+      <DataTableProvider
+        storeColumnsKey="users-table"
+        urlKeys={{
+          page: "users_page",
+          pageSize: "users_pageSize",
+          sorts: "users_sorts",
+          search: "users_search",
+          filters: "users_filters",
+        }}
+        columns={userColumns}
+        originalUseDataTableColumnsResult={userColumnsResult}
+      >
+        <DataTableExtended records={users} />
+        <DataTablePagination />
+      </DataTableProvider>
+
+      {/* Table 2 */}
+      <DataTableProvider
+        storeColumnsKey="products-table"
+        urlKeys={{
+          page: "products_page",
+          pageSize: "products_pageSize",
+          sorts: "products_sorts",
+          search: "products_search",
+          filters: "products_filters",
+        }}
+        columns={productColumns}
+        originalUseDataTableColumnsResult={productColumnsResult}
+      >
+        <DataTableExtended records={products} />
+        <DataTablePagination />
+      </DataTableProvider>
+    </Stack>
+  );
+}
+```
+
+### Server-side with Multiple Tables
+
+When using server-side, you also need to create a separate loader for each table:
+
+```tsx
+const usersLoader = createDataTableLoader({
+  urlKeys: {
+    page: "users_page",
+    pageSize: "users_pageSize",
+    sorts: "users_sorts",
+    search: "users_search",
+    filters: "users_filters",
+  },
+});
+
+const productsLoader = createDataTableLoader({
+  urlKeys: {
+    page: "products_page",
+    pageSize: "products_pageSize",
+    sorts: "products_sorts",
+    search: "products_search",
+    filters: "products_filters",
+  },
+});
+
+export default async function Page({ searchParams }: Props) {
+  const usersParams = await usersLoader(searchParams);
+  const productsParams = await productsLoader(searchParams);
+
+  // Prefetch for both tables
+  // ...
+}
+```
+
+## Custom URL Keys
+
+You can customize the names of query parameters in the URL:
+
+```tsx
+<DataTableProvider
+  urlKeys={{
+    page: "p",
+    pageSize: "ps",
+    sorts: "s",
+    search: "q",
+    filters: "f",
+  }}
+  // ...
+/>
+```
+
+Note: When customizing URL keys, you must use the same keys for both the server loader and client provider.
+
+## Custom Default Parameters
+
+Set default values for parameters:
+
+```tsx
+<DataTableProvider
+  defaultParams={{
+    page: 1,
+    pageSize: 20,
+    sorts: [
+      { accessor: "createdAt", direction: "desc" },
+      { accessor: "name", direction: "asc" },
+    ],
+    search: {
+      accessors: ["name", "email"],
+      value: "",
+    },
+    filters: [
+      {
+        variant: "single_select",
+        accessor: "status",
+        value: "active",
+      },
+    ],
+  }}
+  // ...
+/>
+```
+
+## Programmatic Control
+
+Use the `useDataTableQueryParams` hook to control parameters programmatically:
+
+```tsx
+import { useDataTableQueryParams } from "mantine-datatable-extended";
+
+function MyComponent() {
+  const {
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+    sorts,
+    setSorts,
+    search,
+    setSearch,
+    filters,
+    setFilters,
+    resetPage,
+    resetPageSize,
+    resetSorts,
+    resetSearch,
+    resetFilters,
+    resetAll,
+  } = useDataTableQueryParams();
+
+  const handleReset = () => {
+    resetAll(); // Reset all to default
+  };
+
+  const handleGoToPage = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleApplyFilter = () => {
+    setFilters([
+      ...filters,
+      {
+        variant: "single_select",
+        accessor: "category",
+        value: "electronics",
+      },
+    ]);
+  };
+
+  return (
+    <Group>
+      <Button onClick={handleReset}>Reset All</Button>
+      <Button onClick={() => handleGoToPage(1)}>Go to Page 1</Button>
+      <Button onClick={handleApplyFilter}>Apply Filter</Button>
+    </Group>
+  );
+}
+```
+
+## Accessing Context
+
+Use `useDataTableContext` to access context and utilities:
+
+```tsx
+import { useDataTableContext } from "mantine-datatable-extended";
+
+function MyComponent() {
+  const {
+    columns,
+    setTotalRecords,
+    setRecordsPerPageOptions,
+    paginationProps,
+    storeColumnsKey,
+  } = useDataTableContext();
+
+  // Use columns to render custom UI
+  const searchableColumns = columns.filter(
+    (col) => col.extend?.searchable
+  );
+
+  // Update total records when data changes
+  useEffect(() => {
+    setTotalRecords?.(totalRecords);
+  }, [totalRecords]);
+
+  // Custom records per page options
+  useEffect(() => {
+    setRecordsPerPageOptions?.([5, 10, 25, 50, 100]);
+  }, []);
+}
+```
+
+## Custom Pagination Options
+
+Change the records per page options:
+
+```tsx
+function MyTable() {
+  const { setRecordsPerPageOptions } = useDataTableContext();
+
+  useEffect(() => {
+    setRecordsPerPageOptions([5, 10, 25, 50, 100, 200]);
+  }, []);
+
+  return <DataTablePagination recordsPerPageOptions={[5, 10, 25, 50, 100]} />;
+}
+```
+
+## Conditional Rendering
+
+Render components based on conditions:
+
+```tsx
+function ConditionalDataTable() {
+  const { filters } = useDataTableQueryParams();
+  const { columns } = useDataTableContext();
+
+  const hasFilterableColumns = columns.some(
+    (col) => col.extend?.filterable
+  );
+
+  return (
+    <>
+      {hasFilterableColumns && <DataTableFilter />}
+      <DataTableExtended records={records} />
+      {filters.length > 0 && (
+        <Text size="sm" c="dimmed">
+          {filters.length} filter(s) applied
+        </Text>
+      )}
+    </>
+  );
+}
+```
+
+## Custom i18n
+
+Customize display text for all components:
+
+```tsx
+function InternationalizedTable() {
+  return (
+    <DataTableProvider {...props}>
+      <Group>
+        <DataTableSearch i18n={{ search: "Search..." }} />
+        <DataTableFilter i18n={{ resetFilter: "Clear Filters" }} />
+      </Group>
+
+      <DataTableSortList
+        i18n={{
+          sort: "Sort",
+          addSort: "Add Sort",
+          resetSort: "Reset",
+          asc: "Ascending",
+          desc: "Descending",
+        }}
+      />
+
+      <DataTableColumnsToggle i18n={{ columnsToggle: "Columns" }} />
+
+      <DataTablePagination
+        i18n={{
+          rowsPerPage: "Rows per page",
+          pageOfTotalPages: ["Page", "of"],
+          startEndRecordOfTotalRecords: ["Showing", "-", "of"],
+        }}
+      />
+    </DataTableProvider>
+  );
+}
+```
+
+## Integrating with Forms
+
+Combine with forms to export/import filters:
+
+```tsx
+import { useDataTableQueryParams } from "mantine-datatable-extended";
+
+function ExportFiltersButton() {
+  const { filters, sorts, search } = useDataTableQueryParams();
+
+  const handleExport = () => {
+    const config = {
+      filters,
+      sorts,
+      search,
+    };
+    const blob = new Blob([JSON.stringify(config, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "table-config.json";
+    a.click();
+  };
+
+  return <Button onClick={handleExport}>Export Config</Button>;
+}
+
+function ImportFiltersButton() {
+  const { setFilters, setSorts, setSearch } = useDataTableQueryParams();
+
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const text = await file.text();
+    const config = JSON.parse(text);
+
+    setFilters(config.filters || []);
+    setSorts(config.sorts || []);
+    setSearch(config.search || { accessors: [], value: "" });
+  };
+
+  return (
+    <input
+      type="file"
+      accept="application/json"
+      onChange={handleImport}
+    />
+  );
+}
+```
+
+## Type Safety
+
+The library has full TypeScript support. Use generic types for type safety:
+
+```tsx
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user" | "guest";
+};
+
+const columns: DataTableExtendedColumnProps<User>[] = [
+  {
+    accessor: "name", // Type-safe
+    title: "Name",
+    extend: {
+      searchable: true,
+    },
+  },
+  {
+    accessor: "role", // Type-safe with union type
+    title: "Role",
+    extend: {
+      filterable: true,
+      filterVariant: "single_select",
+      filterOptions: {
+        data: [
+          { label: "Admin", value: "admin" },
+          { label: "User", value: "user" },
+          { label: "Guest", value: "guest" },
+        ],
+      },
+    },
+  },
+];
+
+// Type-safe in DataTableProvider
+<DataTableProvider<User>
+  columns={columns}
+  // ...
+>
+  <DataTableExtended<User> records={users} />
+</DataTableProvider>
+```

@@ -1,0 +1,332 @@
+# FAQ & Troubleshooting
+
+## Frequently Asked Questions
+
+### How to use with static data?
+
+If you have static data, just pass it to the `records` prop:
+
+```tsx
+const data = [/* your static data */];
+
+<DataTableExtended records={data} />
+```
+
+The component will automatically handle pagination, filtering, and sorting on the client-side.
+
+### How to use with server-side data?
+
+See detailed guide at [Server-Side Integration](./server-side). Summary:
+
+1. Use `useDataTableQueryParams` to get query params
+2. Call API with these params
+3. Update `totalRecords` via `setTotalRecords` from context
+4. Pass `records` and `fetching` to `DataTableExtended`
+
+### Can I use it without Nuqs?
+
+Currently, the library requires Nuqs for URL state management. This is a design decision to:
+- Ensure shareable links
+- Better SSR support
+- Easy integration with server-side
+
+If you don't want to use URL state, you can consider using the original Mantine DataTable or fork this library.
+
+### How to show/hide a specific component?
+
+All components are independent, you just need to conditionally render them:
+
+```tsx
+function MyTable() {
+  const showSearch = true; // condition
+
+  return (
+    <DataTableProvider {...props}>
+      {showSearch && <DataTableSearch />}
+      <DataTableExtended records={records} />
+    </DataTableProvider>
+  );
+}
+```
+
+### How to reset all filters/sorts/search?
+
+Use `resetAll` from `useDataTableQueryParams`:
+
+```tsx
+import { useDataTableQueryParams } from "mantine-datatable-extended";
+
+function ResetButton() {
+  const { resetAll } = useDataTableQueryParams();
+  
+  return <Button onClick={resetAll}>Reset All</Button>;
+}
+```
+
+Or reset individually:
+- `resetFilters()` - Reset only filters
+- `resetSorts()` - Reset only sorts
+- `resetSearch()` - Reset only search
+
+### How to custom styling?
+
+All components use Mantine components internally, you can customize through:
+
+1. **Mantine theme**: Custom global theme
+2. **Component props**: All Mantine components have props to customize styles
+3. **CSS/SCSS**: Use classNames or sx props
+
+```tsx
+<DataTableSearch
+  // Can wrap in Group with custom styles
+  className="my-custom-search"
+/>
+
+// Or customize via Mantine theme
+```
+
+### Can I use it with React 18?
+
+The library requires React >= 19 (according to package.json). If you need React 18 support, you can try but it's not guaranteed.
+
+## Troubleshooting
+
+### Error: "useDataTableContext must be used within a DataTableProvider"
+
+**Cause**: You're using the hook or component outside `DataTableProvider`.
+
+**Solution**: Ensure all components and hooks are inside `DataTableProvider`:
+
+```tsx
+// ❌ Wrong
+function MyComponent() {
+  const context = useDataTableContext(); // Error!
+  return null;
+}
+
+<DataTableProvider {...props}>
+  <MyComponent />
+</DataTableProvider>
+
+// ✅ Correct
+<DataTableProvider {...props}>
+  <MyComponent /> {/* Component uses hooks inside */}
+</DataTableProvider>
+```
+
+### Error: "storeColumnsKey property is required"
+
+**Cause**: You haven't passed `storeColumnsKey` to `DataTableProvider`.
+
+**Solution**: Add `storeColumnsKey`:
+
+```tsx
+<DataTableProvider
+  storeColumnsKey="my-table" // Required!
+  columns={columns}
+  // ...
+/>
+```
+
+### Pagination not showing or showing incorrectly
+
+**Cause**: You haven't set `totalRecords` or set it incorrectly.
+
+**Solution**: Ensure you've set `totalRecords` from context:
+
+```tsx
+function MyTable() {
+  const { setTotalRecords } = useDataTableContext();
+  const { data } = useQuery(/* ... */);
+
+  useEffect(() => {
+    if (data?.totalRecords) {
+      setTotalRecords?.(data.totalRecords);
+    }
+  }, [data?.totalRecords, setTotalRecords]);
+
+  return <DataTableExtended records={data?.items || []} />;
+}
+```
+
+### Filters not working
+
+**Possible causes**:
+1. You haven't marked the column as `filterable`
+2. Haven't specified `filterVariant`
+3. Missing `filterOptions` for required filter variants
+
+**Solution**: Check column configuration:
+
+```tsx
+{
+  accessor: "status",
+  extend: {
+    filterable: true, // ✅ Required
+    filterVariant: "single_select", // ✅ Required
+    filterOptions: { // ✅ Required for single_select
+      data: [
+        { label: "Active", value: "active" },
+      ],
+    },
+  },
+}
+```
+
+### Search not working
+
+**Cause**: You haven't marked the column as `searchable`.
+
+**Solution**:
+
+```tsx
+{
+  accessor: "name",
+  extend: {
+    searchable: true, // ✅ Required
+  },
+}
+```
+
+### URL parameters not updating
+
+**Cause**: You haven't set up `NuqsAdapter` or set it up incorrectly.
+
+**Solution**: Ensure `NuqsAdapter` is wrapped correctly:
+
+```tsx
+// app/layout.tsx
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NuqsAdapter> {/* ✅ Outermost wrapper */}
+          <MantineProvider>
+            {children}
+          </MantineProvider>
+        </NuqsAdapter>
+      </body>
+    </html>
+  );
+}
+```
+
+### Multiple tables conflicting
+
+**Cause**: Tables are using the same URL keys.
+
+**Solution**: Use different `urlKeys` for each table:
+
+```tsx
+<DataTableProvider
+  urlKeys={{
+    page: "users_page", // ✅ Unique keys
+    // ...
+  }}
+>
+  {/* Users table */}
+</DataTableProvider>
+
+<DataTableProvider
+  urlKeys={{
+    page: "products_page", // ✅ Different keys
+    // ...
+  }}
+>
+  {/* Products table */}
+</DataTableProvider>
+```
+
+### TypeScript errors with generic types
+
+**Cause**: You haven't specified the type for DataTableProvider or DataTableExtended.
+
+**Solution**: Use generic type:
+
+```tsx
+type User = {
+  id: string;
+  name: string;
+};
+
+const columns: DataTableExtendedColumnProps<User>[] = [
+  // ...
+];
+
+<DataTableProvider<User>
+  columns={columns}
+  // ...
+>
+  <DataTableExtended<User> records={users} />
+</DataTableProvider>
+```
+
+### Server-side: Loader not working
+
+**Cause**: You're using loader with different props than the provider.
+
+**Solution**: Ensure `urlKeys` and `defaultParams` are the same:
+
+```tsx
+// Server
+const loaderProps = {
+  urlKeys: { page: "p" },
+  defaultParams: { page: 1 },
+};
+const loader = createDataTableLoader(loaderProps);
+
+// Client
+<DataTableProvider {...loaderProps} /* Same props */>
+  {/* ... */}
+</DataTableProvider>
+```
+
+## Performance Tips
+
+### Debounce search and filters
+
+When using with server-side data, debounce to avoid too many API calls:
+
+```tsx
+import { useDebouncedValue } from "@mantine/hooks";
+
+const { search, filters } = useDataTableQueryParams();
+const [[debouncedSearch, debouncedFilters]] = useDebouncedValue(
+  [search, filters],
+  500
+);
+```
+
+### Memoize columns
+
+If columns are computed complexly, memoize them:
+
+```tsx
+const columns = useMemo(() => {
+  return [
+    // ... column definitions
+  ];
+}, [/* dependencies */]);
+```
+
+### Virtual scrolling
+
+For very large lists (>1000 items), consider using virtual scrolling from Mantine DataTable:
+
+```tsx
+<DataTableExtended
+  records={records}
+  height={600}
+  // Mantine DataTable will automatically enable virtual scrolling
+/>
+```
+
+## Need More Help?
+
+If you encounter other issues:
+
+1. Check [API Reference](./api-reference) to see all props and types
+2. See [examples in the demo](/demo) for usage reference
+3. Open an issue on the GitHub repository

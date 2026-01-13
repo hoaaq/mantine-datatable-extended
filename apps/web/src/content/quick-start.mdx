@@ -1,0 +1,292 @@
+# Quick Start
+
+Quick guide to create a fully-featured data table in 5 minutes.
+
+Mantine DataTable Extended depends on several packages:
+
+- `mantine-datatable`: for the data table component
+- `@mantine/dates`, `dayjs`: for date and calendar functionality
+- `nuqs`, `zod`: for query parameters and validation
+
+Make sure you have installed the dependencies beside Mantine DataTable Extended.
+
+import { Steps } from "nextra/components";
+
+<Steps>
+
+### Step 1: Install
+
+```bash
+pnpm add mantine-datatable-extended mantine-datatable @mantine/dates dayjs nuqs zod
+```
+
+### Step 2: Setup Nuqs Adapter
+
+This library uses Nuqs for managing query parameters. You need to wrap your app with Nuqs Adapter. <br />
+Do this in your `app/layout.tsx` or `src/app/layout.tsx` file.
+This adapter should be the outermost wrapper of your app. <br />
+For more information, please refer to the [Nuqs documentation](https://nuqs.dev/docs/adapters).
+
+```tsx
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NuqsAdapter>
+          <MantineProvider>
+            {children}
+          </MantineProvider>
+        </NuqsAdapter>
+      </body>
+    </html>
+  );
+}
+```
+
+### Step 3: Create Data Table
+
+The components in the library need to be wrapped with `DataTableProvider` to be usable.
+The `Datatable` component in original library is replaced by `DataTableExtended` component.
+Here is the most basic usage of this library:
+
+```tsx
+"use client";
+
+import {
+  DataTableExtended,
+  DataTableProvider,
+  DataTableSearch,
+  DataTableFilter,
+  DataTableSortList,
+  DataTableColumnsToggle,
+  DataTablePagination,
+  type DataTableExtendedColumnProps,
+} from "mantine-datatable-extended";
+import { useDataTableColumns } from "mantine-datatable";
+import { Group, Space } from "@mantine/core";
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
+  status: "active" | "inactive";
+  createdAt: Date;
+};
+
+const data: User[] = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john@example.com",
+    role: "admin",
+    status: "active",
+    createdAt: new Date(),
+  },
+  // ... more data
+];
+
+const columns: DataTableExtendedColumnProps<User>[] = [
+  {
+    accessor: "name",
+    title: "Name",
+    toggleable: true,
+    extend: {
+      searchable: true,
+      sortable: true,
+      filterable: true,
+      filterVariant: "text",
+    },
+  },
+  {
+    accessor: "email",
+    title: "Email",
+    toggleable: true,
+    extend: {
+      searchable: true,
+      filterable: true,
+      filterVariant: "text",
+    },
+  },
+  {
+    accessor: "role",
+    title: "Role",
+    toggleable: true,
+    extend: {
+      sortable: true,
+      filterable: true,
+      filterVariant: "single_select",
+      filterOptions: {
+        data: [
+          { label: "Admin", value: "admin" },
+          { label: "User", value: "user" },
+        ],
+      },
+    },
+  },
+  {
+    accessor: "status",
+    title: "Status",
+    toggleable: true,
+    extend: {
+      sortable: true,
+      filterable: true,
+      filterVariant: "single_select",
+      filterOptions: {
+        data: [
+          { label: "Active", value: "active" },
+          { label: "Inactive", value: "inactive" },
+        ],
+      },
+    },
+  },
+  {
+    accessor: "createdAt",
+    title: "Created At",
+    toggleable: true,
+    render: (record) => record.createdAt.toLocaleDateString(),
+    extend: {
+      sortable: true,
+      filterable: true,
+      filterVariant: "date_range",
+    },
+  },
+];
+
+export default function UsersTable() {
+  const originalUseDataTableColumnsResult = useDataTableColumns({
+    key: "users-table",
+    columns,
+  });
+
+  return (
+    <DataTableProvider
+      columns={columns}
+      originalUseDataTableColumnsResult={originalUseDataTableColumnsResult}
+      storeColumnsKey="users-table"
+    >
+      {/* Header with controls */}
+      <Group justify="space-between">
+        <Group>
+          <DataTableSearch />
+          <DataTableFilter />
+        </Group>
+        <Group>
+          <DataTableSortList />
+          <DataTableColumnsToggle />
+        </Group>
+      </Group>
+
+      <Space h="md" />
+
+      {/* Table */}
+      <DataTableExtended records={data} />
+
+      <Space h="md" />
+
+      {/* Pagination */}
+      <DataTablePagination />
+    </DataTableProvider>
+  );
+}
+```
+
+</Steps>
+
+## Result
+
+You now have a fully-featured data table with:
+
+✅ **Search**: Search across multiple columns (name, email)  
+✅ **Filter**: Filter by role, status, and date range  
+✅ **Sort**: Sort by multiple columns simultaneously  
+✅ **Column Toggle**: Show/hide columns  
+✅ **Pagination**: Pagination with rows per page options  
+✅ **URL State**: All state is saved in URL
+
+## Further Customization
+
+### With Server-Side Data
+
+If you need to load data from server:
+
+```tsx
+import { useDataTableQueryParams, useDataTableContext } from "mantine-datatable-extended";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+
+function DataTableWithServerData() {
+  const { page, pageSize, sorts, search, filters } = useDataTableQueryParams();
+  const { setTotalRecords } = useDataTableContext();
+
+  const { data, isFetching } = useSuspenseQuery({
+    queryKey: ["users", page, pageSize, sorts, search, filters],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/users?${new URLSearchParams({
+          page: String(page),
+          pageSize: String(pageSize),
+          sorts: JSON.stringify(sorts),
+          search: JSON.stringify(search),
+          filters: JSON.stringify(filters),
+        })}`
+      );
+      return response.json();
+    },
+  });
+
+  useEffect(() => {
+    setTotalRecords?.(data.totalRecords);
+  }, [data.totalRecords, setTotalRecords]);
+
+  return (
+    <DataTableExtended
+      records={data.items}
+      fetching={isFetching}
+    />
+  );
+}
+```
+
+See [Server-Side Integration](./server-side) for details.
+
+### Multiple Tables
+
+To have multiple tables on the same page:
+
+```tsx
+<DataTableProvider
+  storeColumnsKey="users-table"
+  urlKeys={{
+    page: "users_page",
+    pageSize: "users_pageSize",
+    // ... other keys
+  }}
+  // ...
+>
+  {/* Users table */}
+</DataTableProvider>
+
+<DataTableProvider
+  storeColumnsKey="products-table"
+  urlKeys={{
+    page: "products_page",
+    pageSize: "products_pageSize",
+    // ... other keys
+  }}
+  // ...
+>
+  {/* Products table */}
+</DataTableProvider>
+```
+
+See [Advanced Usage](./advanced) for more.
+
+## Next Steps
+
+- [Components](./components) - Learn details about each component
+- [Column Configuration](./columns-configuration) - Learn how to configure columns and filters
+- [Server-Side Integration](./server-side) - Integrate with Next.js SSR
+- [Advanced Usage](./advanced) - Advanced techniques

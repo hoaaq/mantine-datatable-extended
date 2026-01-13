@@ -1,0 +1,287 @@
+# Server-Side Integration
+
+The library supports integration with server-side rendering (SSR) and server components in Next.js, allowing you to build data tables with hybrid fetching (combining server-side and client-side).
+
+## Overview
+
+The library uses `nuqs` to manage query parameters in the URL, enabling:
+- Server can read query params from URL to prefetch data
+- Shareable links - users can share URLs with filters/search/sort applied
+- SEO-friendly with SSR
+- Smooth client-side navigation with React Query or SWR
+
+## Setup Server Loader
+
+Import `createDataTableLoader` from the `server` package:
+
+```tsx
+import { createDataTableLoader } from "mantine-datatable-extended/server";
+```
+
+Create a loader with the same configuration as `DataTableProvider`:
+
+```tsx
+import { createDataTableLoader } from "mantine-datatable-extended/server";
+import type { DataTableContextProps } from "mantine-datatable-extended";
+
+const loaderProps: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {
+  defaultParams: {
+    page: 1,
+    pageSize: 10,
+    sorts: [{ accessor: "createdAt", direction: "desc" }],
+    search: { accessors: [], value: "" },
+    filters: [],
+  },
+  // urlKeys: { ... } // Optional: if you want to custom URL keys
+};
+
+const loader = createDataTableLoader(loaderProps);
+```
+
+## Next.js App Router Integration
+
+### Server Component (Page)
+
+In the server component, use the loader to read query params and prefetch data:
+
+```tsx
+import { createDataTableLoader } from "mantine-datatable-extended/server";
+import type { SearchParams } from "nuqs";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient } from "@/lib/query-client";
+
+const loader = createDataTableLoader({
+  defaultParams: {
+    sorts: [{ accessor: "createdAt", direction: "desc" }],
+  },
+});
+
+export default async function DataTablePage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const loadedParams = await loader(searchParams);
+  const { page, pageSize, sorts, search, filters } = loadedParams;
+
+  const queryClient = getQueryClient();
+  
+  // Prefetch data on server
+  await queryClient.prefetchQuery({
+    queryKey: ["products", page, pageSize, sorts, search, filters],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/products?${new URLSearchParams({
+          page: String(page),
+          pageSize: String(pageSize),
+          sorts: JSON.stringify(sorts),
+          search: JSON.stringify(search),
+          filters: JSON.stringify(filters),
+        })}`
+      );
+      return response.json();
+    },
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <DataTableContent />
+    </HydrationBoundary>
+  );
+}
+```
+
+### Client Component (Data Table)
+
+In the client component, use the same props as the server loader:
+
+```tsx
+"use client";
+
+import {
+  DataTableProvider,
+  DataTableExtended,
+  useDataTableContext,
+} from "mantine-datatable-extended";
+import { useDataTableQueryParams } from "mantine-datatable-extended";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+
+// Same props as loader
+const providerProps = {
+  defaultParams: {
+    sorts: [{ accessor: "createdAt", direction: "desc" }],
+  },
+  storeColumnsKey: "products",
+};
+
+export function DataTableContent() {
+  return (
+    <DataTableProvider {...providerProps} columns={columns} {...otherProps}>
+      <DataTableWithData />
+    </DataTableProvider>
+  );
+}
+
+function DataTableWithData() {
+  const { page, pageSize, sorts, search, filters } = useDataTableQueryParams();
+  const { setTotalRecords } = useDataTableContext();
+
+  const { data, isFetching } = useSuspenseQuery({
+    queryKey: ["products", page, pageSize, sorts, search, filters],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/products?${new URLSearchParams({
+          page: String(page),
+          pageSize: String(pageSize),
+          sorts: JSON.stringify(sorts),
+          filters: JSON.stringify(filters),
+        })}`
+      );
+      return response.json();
+    },
+  });
+
+  useEffect(() => {
+    setTotalRecords?.(data.totalRecords);
+  }, [data.totalRecords, setTotalRecords]);
+
+  return (
+    <>
+      <DataTableExtended
+        records={data.items}
+        fetching={isFetching}
+      />
+      <DataTablePagination />
+    </>
+  );
+}
+```
+
+## Debouncing Search and Filters
+
+To avoid too many API calls when users are typing, use debouncing:
+
+```tsx
+import { useDebouncedValue } from "@mantine/hooks";
+import { useDataTableQueryParams } from "mantine-datatable-extended";
+
+function DataTableWithData() {
+  const { page, pageSize, sorts, search, filters } = useDataTableQueryParams();
+  
+  // Debounce page and pageSize with short delay (200ms)
+  const [[debouncedPage, debouncedPageSize]] = useDebouncedValue(
+    [page, pageSize],
+    200,
+    { leading: false }
+  );
+
+  // Debounce search and filters with longer delay (500ms)
+  const [[debouncedSorts, debouncedSearch, debouncedFilters]] =
+    useDebouncedValue([sorts, search, filters], 500, {
+      leading: false,
+    });
+
+  const { data } = useSuspenseQuery({
+    queryKey: [
+      "products",
+      debouncedPage,
+      debouncedPageSize,
+      debouncedSorts,
+      debouncedSearch,
+      debouncedFilters,
+    ],
+    queryFn: async () => {
+      // API call with debounced values
+    },
+  });
+}
+```
+
+## Clean Search Conditions
+
+If search has no accessors or empty value, clean it to avoid unnecessary API calls:
+
+```tsx
+type SearchCondition = ReturnType<typeof useDataTableQueryParams>["search"];
+
+const cleanSearch = (search: SearchCondition): SearchCondition => {
+  if (search.accessors.length <= 0 || search.value.length <= 0) {
+    return {
+      accessors: [],
+      value: "",
+    };
+  }
+  return search;
+};
+
+function DataTableWithData() {
+  const { search } = useDataTableQueryParams();
+  const cleanedSearch = cleanSearch(search);
+
+  const { data } = useSuspenseQuery({
+    queryKey: ["products", cleanedSearch],
+    // ...
+  });
+}
+```
+
+## API Route Handler
+
+Example of an API route handler to process query params:
+
+```tsx
+// app/api/products/route.ts
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  
+  const page = parseInt(searchParams.get("page") || "1");
+  const pageSize = parseInt(searchParams.get("pageSize") || "10");
+  const sorts = JSON.parse(searchParams.get("sorts") || "[]");
+  const search = JSON.parse(searchParams.get("search") || '{"accessors":[],"value":""}');
+  const filters = JSON.parse(searchParams.get("filters") || "[]");
+
+  // Process filtering/sorting/searching logic
+  const result = await getProducts({
+    page,
+    pageSize,
+    sorts,
+    search,
+    filters,
+  });
+
+  return NextResponse.json({
+    items: result.items,
+    totalRecords: result.total,
+  });
+}
+```
+
+## Complete Examples
+
+See demo files in the project:
+
+- `apps/web/src/app/demo/page.tsx` - Server component with prefetch
+- `apps/web/src/app/demo/(data-table)/table.tsx` - Client component with data fetching
+- `apps/web/src/app/demo/(data-table)/data.tsx` - Hook with debouncing and clean search
+- `apps/web/src/app/demo/(data-table)/wrapper.tsx` - Column configuration
+
+## Best Practices
+
+1. **Use same props for loader and provider**: Ensure `urlKeys` and `defaultParams` are the same between server and client.
+
+2. **Debounce search and filters**: To avoid too many API calls.
+
+3. **Clean search conditions**: Remove empty searches before calling API.
+
+4. **Prefetch on server**: Use React Query prefetch for faster initial data.
+
+5. **Suspense boundaries**: Wrap client component in Suspense for smooth loading state.
+
+```tsx
+<Suspense fallback={<DataTableSkeleton />}>
+  <DataTableContent />
+</Suspense>
+```

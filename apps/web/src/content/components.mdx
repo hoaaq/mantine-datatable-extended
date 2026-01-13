@@ -1,0 +1,340 @@
+import { Tabs } from "nextra/components";
+
+# Components
+
+The library provides independent components that you can arrange in any layout you want. All these components must be placed inside `DataTableProvider`.
+
+## DataTableExtended
+
+The main component for displaying data tables. This is a replacement for the `DataTable` component from the original `mantine-datatable` library.
+
+### Props
+
+`DataTableExtended` accepts all props from `DataTable` in `mantine-datatable`, except:
+- `columns` - automatically retrieved from context
+- `storeColumnsKey` - automatically retrieved from context
+- `groups` - not supported
+- Pagination and Sort props - use separate components instead
+
+### Example
+
+```tsx
+import {
+  DataTableExtended,
+  DataTableProvider,
+} from "mantine-datatable-extended";
+import { useDataTableColumns } from "mantine-datatable";
+
+function MyTable() {
+  const columns = [
+    { accessor: "name", title: "Name" },
+    { accessor: "email", title: "Email" },
+  ];
+
+  const originalUseDataTableColumnsResult = useDataTableColumns({
+    key: "my-table",
+    columns,
+  });
+
+  return (
+    <DataTableProvider
+      columns={columns}
+      originalUseDataTableColumnsResult={originalUseDataTableColumnsResult}
+      storeColumnsKey="my-table"
+    >
+      <DataTableExtended records={data} />
+    </DataTableProvider>
+  );
+}
+```
+
+## DataTableSearch
+
+Component for searching across columns. Supports selecting multiple columns to search simultaneously.
+
+### Props
+
+```typescript
+type DataTableSearchProps = {
+  i18n?: {
+    search?: string; // Default: "Search"
+  };
+};
+```
+
+### Usage
+
+To use this component, mark columns as `searchable` in `extend`:
+
+```tsx
+const columns = [
+  {
+    accessor: "name",
+    title: "Name",
+    extend: {
+      searchable: true, // Mark this column as searchable
+    },
+  },
+  {
+    accessor: "email",
+    title: "Email",
+    extend: {
+      searchable: true,
+    },
+  },
+];
+```
+
+### Example
+
+```tsx
+import { DataTableSearch } from "mantine-datatable-extended";
+
+function TableHeader() {
+  return (
+    <Group>
+      <DataTableSearch />
+      {/* Other components */}
+    </Group>
+  );
+}
+```
+
+### Custom i18n
+
+```tsx
+<DataTableSearch i18n={{ search: "Search..." }} />
+```
+
+## DataTableFilter
+
+Component for filtering data based on various conditions. Automatically displays filters based on the `filterable` and `filterVariant` configuration of each column.
+
+### Props
+
+```typescript
+type DataTableFilterProps = {
+  i18n?: {
+    resetFilter?: string; // Default: "Reset Filter"
+  };
+};
+```
+
+### Usage
+
+Configure filters in column definition:
+
+```tsx
+const columns = [
+  {
+    accessor: "status",
+    title: "Status",
+    extend: {
+      filterable: true,
+      filterVariant: "single_select",
+      filterOptions: {
+        data: [
+          { label: "Active", value: "active" },
+          { label: "Inactive", value: "inactive" },
+        ],
+      },
+    },
+  },
+];
+```
+
+### Example
+
+```tsx
+import { DataTableFilter } from "mantine-datatable-extended";
+
+function TableHeader() {
+  return (
+    <Group>
+      <DataTableFilter />
+      {/* Other components */}
+    </Group>
+  );
+}
+```
+
+See [Filter Variants](./columns-configuration#filter-variants) to learn about all available filter types.
+
+## DataTableSortList
+
+Component for sorting by multiple columns at once. Supports adding/removing/changing sort order.
+
+### Props
+
+```typescript
+type DataTableSortListProps = {
+  i18n?: {
+    sort?: string; // Default: "Sort"
+    addSort?: string; // Default: "Add Sort"
+    resetSort?: string; // Default: "Reset Sort"
+    asc?: string; // Default: "Asc"
+    desc?: string; // Default: "Desc"
+  };
+};
+```
+
+### Usage
+
+Mark columns as `sortable`:
+
+```tsx
+const columns = [
+  {
+    accessor: "name",
+    title: "Name",
+    extend: {
+      sortable: true, // This column can be sorted
+    },
+  },
+];
+```
+
+### Example
+
+```tsx
+import { DataTableSortList } from "mantine-datatable-extended";
+
+function TableHeader() {
+  return (
+    <Group>
+      <DataTableSortList />
+      {/* Component will display popover with sort list */}
+    </Group>
+  );
+}
+```
+
+## DataTableColumnsToggle
+
+Component to show/hide columns. Useful when you have many columns and want to let users customize the view.
+
+### Props
+
+```typescript
+type DataTableColumnsToggleProps = {
+  i18n?: {
+    columnsToggle?: string; // Default: "Columns Toggle"
+  };
+};
+```
+
+### Usage
+
+Mark columns as `toggleable`:
+
+```tsx
+const columns = [
+  {
+    accessor: "name",
+    title: "Name",
+    toggleable: true, // This column can be toggled
+  },
+];
+```
+
+### Example
+
+```tsx
+import { DataTableColumnsToggle } from "mantine-datatable-extended";
+
+function TableHeader() {
+  return (
+    <Group>
+      <DataTableColumnsToggle />
+      {/* Component displays popover with checkbox list */}
+    </Group>
+  );
+}
+```
+
+**Note**: Column state will be saved to `localStorage` based on `storeColumnsKey` in `DataTableProvider`.
+
+## DataTablePagination
+
+Pagination component that can be placed anywhere on the page (not fixed to footer like the original).
+
+### Props
+
+```typescript
+type DataTablePaginationProps = {
+  recordsPerPageOptions?: number[]; // Default: [10, 20, 30, 40, 50]
+  i18n?: {
+    rowsPerPage?: string; // Default: "Rows per page"
+    pageOfTotalPages?: [string, string]; // Default: ["Page", "of"]
+    startEndRecordOfTotalRecords?: [string, string, string]; 
+    // Default: ["", "-", "/"]
+  };
+};
+```
+
+### Usage
+
+For this component to work correctly, you need to set `totalRecords` through context:
+
+```tsx
+import { useDataTableContext } from "mantine-datatable-extended";
+
+function MyTable() {
+  const { setTotalRecords } = useDataTableContext();
+  
+  // When data is loaded
+  useEffect(() => {
+    setTotalRecords(totalRecords);
+  }, [totalRecords]);
+  
+  return <DataTableExtended records={records} />;
+}
+```
+
+### Example
+
+```tsx
+import { DataTablePagination } from "mantine-datatable-extended";
+
+function TableFooter() {
+  return (
+    <DataTablePagination 
+      recordsPerPageOptions={[10, 25, 50, 100]}
+    />
+  );
+}
+```
+
+### Complete Layout
+
+Example of how to arrange components:
+
+```tsx
+function DataTablePage() {
+  return (
+    <DataTableProvider {...props}>
+      {/* Header with controls */}
+      <Group justify="space-between">
+        <Group>
+          <DataTableSearch />
+          <DataTableFilter />
+        </Group>
+        <Group>
+          <DataTableSortList />
+          <DataTableColumnsToggle />
+        </Group>
+      </Group>
+
+      <Space h="md" />
+
+      {/* Table */}
+      <DataTableExtended records={records} />
+
+      <Space h="md" />
+
+      {/* Footer with pagination */}
+      <DataTablePagination />
+    </DataTableProvider>
+  );
+}
+```

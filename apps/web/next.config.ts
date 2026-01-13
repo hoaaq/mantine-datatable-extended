@@ -7,6 +7,7 @@ const withNextra = nextra({
   search: {
     codeblocks: false,
   },
+  latex: false,
 });
 const nextConfig: NextConfig = {
   typedRoutes: true,

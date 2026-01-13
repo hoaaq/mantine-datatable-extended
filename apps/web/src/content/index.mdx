@@ -1,34 +1,70 @@
-# Introduction
+# Mantine DataTable Extended
 
-Mantine and Mantine Datatable are two extremely excellent libraries, trusted and used by many programmers.
-Especially Mantine Datatable, which simplifies the way we create datatables for web applications.
+An extension library for [Mantine DataTable](https://icflorescu.github.io/mantine-datatable/), providing powerful and easy-to-use features for building data tables in React applications.
 
-However, during use, I also realized that it has some limitations, such as:
+## Why this library?
 
-- The `column toggling` function does not yet have a dedicated component.
-- The `sort` function can only be applied to one column at a time.
-- The `search and filtering` function is not standardized and must be fully customized.
-- The `pagination` function is fixed to the footer of the table. If you use asynchronous data loading from the client, you will see the loader component overlay the pagination bar every time you switch pages. This can sometimes be quite inconvenient for users.
+Mantine and Mantine DataTable are excellent libraries, trusted and used by many developers. However, during use, I noticed some limitations:
 
-So I decided to create the Mantine Datatable Extended library to solve the above problems. And there are also some other useful features:
+- **Column toggling**: No dedicated component for managing column visibility
+- **Multi-column sorting**: Can only sort by one column at a time
+- **Search and Filter**: Not standardized, requiring full customization
+- **Pagination**: Fixed to footer, causing issues with async data loading
 
-- Tips for creating a clean and easy-to-maintain Datatable
-- Use `Nuqs` to store the query state of the datatable in the URL, convenient for server calls or sharing links.
-- Examples of client-server combinations. Example using `Tanstack Query` combined with NextJS Streaming to create a hybrid fetching solution for datatables.
+## Key Features
 
-This library was strongly inspired by [tablecn.com](https://tablecn.com).
+### 🎯 Standardized Components
 
-You can find a full demo of this library at [demo page](/demo).
+- **DataTableSearch**: Search with multi-column selection
+- **DataTableFilter**: Filter data with various filter types (text, number, date, select, range...)
+- **DataTableSortList**: Sort by multiple columns simultaneously
+- **DataTableColumnsToggle**: Show/hide columns
+- **DataTablePagination**: Flexible pagination that can be placed anywhere
 
+### 🔗 URL State Management
+
+- Uses [Nuqs](https://nuqs.47ng.com/) to store state in URL
+- Shareable links - share URLs with filters/search/sort applied
+- SEO-friendly with SSR support
+- Easy integration with server-side rendering
+
+### 🚀 Server-Side Integration
+
+- Next.js App Router support
+- Server-side data prefetching
+- Hybrid fetching with React Query
+- Type-safe with TypeScript
+
+### 🎨 Developer Experience
+
+- Full TypeScript with type inference
+- Consistent and easy-to-use API
+- Customizable i18n for all text
+- Flexible layout - arrange components as needed
+
+## Demo
+
+Check out the full demo at [demo page](/demo) to experience all features.
 
 import { Callout } from 'nextra/components'
  
 <Callout type="warning">
-  Before you begin, please note that this is an opinionated library.
-  This means it is built with many personal opinions, to reduce customization time and achieve immediate results.
-  So use it if you really need it.
+  **Important Note**: This is an opinionated library built with many personal opinions to reduce customization time and achieve immediate results. Use it if you really need these features.
 </Callout>
-<Callout>However, you can still use it alongside the original Mantine Datatable library without any conflicts.</Callout>
 
-Let's go to the [installation](./installation) section to get started.
+<Callout>
+  You can still use this library alongside the original Mantine DataTable without any conflicts.
+</Callout>
 
+## Getting Started
+
+See [Installation](./installation) to install and start using the library.
+
+## Documentation
+
+- [Installation](./installation) - Installation and basic setup guide
+- [Components](./components) - Detailed component documentation
+- [Column Configuration](./columns-configuration) - Column configuration and filter variants
+- [Server-Side Integration](./server-side) - Next.js SSR integration
+- [Advanced Usage](./advanced) - Advanced techniques
+- [API Reference](./api-reference) - Complete API reference
