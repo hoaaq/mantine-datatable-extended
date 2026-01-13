@@ -26,8 +26,53 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Mantine DataTable Extended",
-  description: "Mantine DataTable Extended",
+  title: {
+    default: "Mantine DataTable Extended",
+    template: "%s | Mantine DataTable Extended",
+  },
+  description:
+    "Supercharge your data tables with powerful search, filtering, sorting, and URL state management. Built on top of Mantine DataTable with opinionated, production-ready components.",
+  keywords: [
+    "mantine",
+    "datatable",
+    "react",
+    "typescript",
+    "data-table",
+    "table-component",
+    "react-table",
+    "nextjs",
+    "server-side-rendering",
+    "url-state-management",
+  ],
+  authors: [{ name: "Au Quoc Hoa", url: "https://hoaaq.dev" }],
+  creator: "Au Quoc Hoa",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://mantine-datatable-extended.vercel.app",
+    siteName: "Mantine DataTable Extended",
+    title: "Mantine DataTable Extended",
+    description:
+      "Supercharge your data tables with powerful search, filtering, sorting, and URL state management.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mantine DataTable Extended",
+    description:
+      "Supercharge your data tables with powerful search, filtering, sorting, and URL state management.",
+    creator: "@hoaaq",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

@@ -37,7 +37,6 @@ export function AppHeader() {
             component={Link}
             href={{ pathname: "/demo" }}
             variant="subtle"
-            visibleFrom="sm"
           >
             Full Demo
           </Button>

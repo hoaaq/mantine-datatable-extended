@@ -61,7 +61,7 @@ export default async function Home({
   });
 
   return (
-    <Container size={1600}>
+    <Container py="xl" size={1440}>
       <QueryTimeout />
       <Space h="xl" />
       <DataTableWrapper {...loaderProps} storeColumnsKey="todo">

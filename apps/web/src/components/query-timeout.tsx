@@ -1,6 +1,6 @@
 "use client";
 
-import { Group, NumberInput } from "@mantine/core";
+import { Group, NumberInput, Stack, Text } from "@mantine/core";
 import { parseAsInteger, useQueryState } from "nuqs";
 
 export function QueryTimeout() {
@@ -13,17 +13,23 @@ export function QueryTimeout() {
     parseAsInteger.withDefault(600)
   );
   return (
-    <Group>
-      <NumberInput
-        label="Server Query Timeout"
-        onChange={(value) => setTimeout(Number(value))}
-        value={timeout}
-      />
-      <NumberInput
-        label="Client Query Timeout"
-        onChange={(value) => setClientTimeout(Number(value))}
-        value={clientTimeout}
-      />
-    </Group>
+    <Stack gap="xs">
+      <Group>
+        <NumberInput
+          label="Server Query Timeout"
+          onChange={(value) => setTimeout(Number(value))}
+          value={timeout}
+        />
+        <NumberInput
+          label="Client Query Timeout"
+          onChange={(value) => setClientTimeout(Number(value))}
+          value={clientTimeout}
+        />
+      </Group>
+      <Text c="dimmed" fs="italic" size="sm">
+        These timeouts are used to control the query timeout for hybrid fetching
+        demonstration.
+      </Text>
+    </Stack>
   );
 }
