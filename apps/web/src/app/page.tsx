@@ -57,8 +57,9 @@ const features = [
   },
   {
     icon: IconCode,
-    title: "Server-Side Ready",
-    description: "Built-in Next.js App Router support with SSR capabilities",
+    title: "Hybrid fetching Ready",
+    description:
+      "Leverage Next.js App Router Streaming and Tanstack Query for hybrid fetching",
     color: "pink",
   },
 ];
@@ -249,8 +250,8 @@ export default function Home() {
                       ✓
                     </Text>
                     <Text fw={400} size="md" style={{ lineHeight: 1.7 }}>
-                      <strong>Server-Side Support</strong> - Next.js App Router
-                      integration with SSR
+                      <strong>Hybrid Fetching Ready</strong> - Next.js App
+                      Router streaming and Tanstack Query for hybrid fetching
                     </Text>
                   </Group>
                 </Grid.Col>
