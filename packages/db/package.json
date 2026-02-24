@@ -17,8 +17,8 @@
     "db:seed": "tsx --env-file ../../apps/web/.env src/seed.ts"
   },
   "devDependencies": {
-    "@faker-js/faker": "^10.1.0",
     "@repo/config": "workspace:*",
+    "@repo/shared": "workspace:*",
     "@types/pg": "^8.15.6",
     "drizzle-kit": "^0.31.8",
     "tsx": "^4.21.0",
