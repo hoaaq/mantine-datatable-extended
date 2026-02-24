@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@mantine/core";
+import { ETodoStatus } from "@repo/shared/enums/todo.enum";
 import {
   type DataTableContextProps,
   type DataTableExtendedColumnProps,
@@ -31,12 +32,14 @@ export function DataTableWrapper({
     status: Task["status"]
   ): { color: string; label: string } => {
     switch (status) {
-      case "completed":
+      case ETodoStatus.COMPLETED:
         return { color: "green", label: "Completed" };
-      case "in_progress":
+      case ETodoStatus.IN_PROGRESS:
         return { color: "blue", label: "In Progress" };
-      default:
+      case ETodoStatus.PENDING:
         return { color: "yellow", label: "Pending" };
+      default:
+        return { color: "gray", label: "Unknown" };
     }
   };
 
@@ -127,9 +130,9 @@ export function DataTableWrapper({
         filterVariant: "single_select",
         filterOptions: {
           data: [
-            { label: "Pending", value: "pending" },
-            { label: "Completed", value: "completed" },
-            { label: "In Progress", value: "in_progress" },
+            { label: "Pending", value: ETodoStatus.PENDING },
+            { label: "Completed", value: ETodoStatus.COMPLETED },
+            { label: "In Progress", value: ETodoStatus.IN_PROGRESS },
           ],
         },
       },
