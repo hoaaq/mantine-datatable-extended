@@ -1,5 +1,7 @@
 "use client";
 
+import "./style.css";
+
 export {
   DataTableColumnsToggle,
   DataTableExtended,

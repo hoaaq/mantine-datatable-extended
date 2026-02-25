@@ -23,4 +23,9 @@
   }
 }
 
-@layer components, mantine, mantine-datatable, nextra, overwrite;
+@layer components,
+  mantine,
+  mantine-datatable,
+  mantine-datatable-extended,
+  nextra,
+  overwrite;

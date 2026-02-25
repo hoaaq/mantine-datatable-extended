@@ -12,6 +12,7 @@ const withNextra = nextra({
 const nextConfig: NextConfig = {
   typedRoutes: true,
   reactCompiler: true,
+  transpilePackages: ["@repo/ui"],
   experimental: {
     optimizePackageImports: [
       "@mantine/core",

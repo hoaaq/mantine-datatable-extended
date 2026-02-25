@@ -1,0 +1,29 @@
+.mantine-dte-checkbox-root {
+  &:hover {
+    background-color: var(--mantine-color-gray-1);
+  }
+}
+
+[data-mantine-color-scheme="dark"] .mantine-dte-checkbox-root:hover {
+  background-color: var(--mantine-color-dark-8);
+}
+.mantine-dte-checkbox-body {
+  display: flex;
+  align-items: center;
+  padding-left: var(--mantine-spacing-sm);
+  padding-right: var(--mantine-spacing-lg);
+}
+.mantine-dte-checkbox-label-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.mantine-dte-checkbox-label {
+  font-size: var(--mantine-font-size-xs);
+  padding-top: var(--mantine-spacing-xs);
+  padding-bottom: var(--mantine-spacing-xs);
+  cursor: pointer;
+}
+.mantine-dte-checkbox-input {
+  cursor: pointer;
+}

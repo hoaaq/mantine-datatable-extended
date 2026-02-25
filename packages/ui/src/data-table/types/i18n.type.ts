@@ -3,6 +3,10 @@ export type i18nDataTableViewOptions = {
    * The label for the columns toggle button.
    */
   columnsToggle: string;
+  /**
+   * The placeholder for the columns search input.
+   */
+  columnsToggleSearchPlaceholder: string;
 };
 
 export type i18nDataTableSortOptions = {

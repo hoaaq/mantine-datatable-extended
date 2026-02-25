@@ -39,8 +39,11 @@ export default defineConfig({
     options.drop = ["console", "debugger"]; // Remove console/debugger in production
   },
   onSuccess: () => {
+    const cwd = process.cwd();
+    const distDir = join(cwd, "dist");
+
     // Manually ensure "use client" is at the top of index.mjs
-    const indexPath = join(process.cwd(), "dist", "index.mjs");
+    const indexPath = join(distDir, "index.mjs");
     try {
       const content = readFileSync(indexPath, "utf-8");
       if (!content.startsWith(`"use client";`)) {
@@ -49,6 +52,13 @@ export default defineConfig({
     } catch (error) {
       console.warn("Could not add use client directive:", error);
     }
+
+    // Create layered CSS for cascade layer support
+    writeFileSync(
+      join(distDir, "styles.layer.css"),
+      '@import "./index.css" layer(mantine-datatable-extended);\n'
+    );
+
     return Promise.resolve();
   },
 });

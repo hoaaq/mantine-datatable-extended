@@ -33,6 +33,14 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.mjs",
       "require": "./dist/server.cjs"
+    },
+    "./styles.css": {
+      "development": "./src/style.css",
+      "default": "./dist/index.css"
+    },
+    "./styles.layer.css": {
+      "development": "./src/styles.layer.css",
+      "default": "./dist/styles.layer.css"
     }
   },
   "files": [
