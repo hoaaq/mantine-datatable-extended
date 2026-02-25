@@ -1,0 +1,26 @@
+import { Callout } from 'nextra/components'
+
+# Directory Structure
+
+To use this library effectively, we recommend the following directory structure:
+
+```
+src/
+├── data-table-page
+│   ├── page.tsx   // Page component
+│   ├── (data-table) // Data table folder
+│   │   ├── table.tsx   // Table components
+│   │   ├── data.tsx    // Data fetching hook
+│   │   └── wrapper.tsx // Context provider and column definition
+│   └── ...
+```
+
+- `page.tsx` is the entry point for the page containing the data table. This page prefetches query data and provides a suspense fallback for hybrid fetching.
+- `(data-table)` is the folder containing the data table child components:
+    - `table.tsx` contains the header, body, and footer components of the data table.
+    - `data.tsx` contains the hook for fetching data from the API.
+    - `wrapper.tsx` contains the context provider and column definitions for the data table.
+
+See this [demo](/demo/basic) for a practical implementation of this structure. [Source](https://github.com/hoaaq/mantine-datatable-extended/tree/master/apps/web/src/app/demo/basic)
+
+<Callout type="warning">Note that this is only a suggested structure, you can use whatever directory structure best fits your needs.</Callout>

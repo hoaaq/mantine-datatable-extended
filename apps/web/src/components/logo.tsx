@@ -24,7 +24,7 @@ export default function Logo() {
       }
       offset={6}
     >
-      <ActionIcon component={Link} href="/" size={36} variant="subtle">
+      <ActionIcon component={Link} href="/" size={36} variant="transparent">
         <IconTable
           color={`light-dark(${theme.colors.gray[7]}, ${theme.colors.gray[4]})`}
           size={22}

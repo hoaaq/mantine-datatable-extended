@@ -19,6 +19,8 @@ import { client } from "@/lib/treaty";
 import { DataTable } from "./(data-table)/table";
 import { DataTableWrapper } from "./(data-table)/wrapper";
 
+const KEY = "full-demo";
+
 const loaderProps: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {
   defaultParams: {
     sorts: [{ accessor: "createdAt", direction: "desc" }],
@@ -41,7 +43,7 @@ export default async function Home({
 
   const queryClient = getQueryClient();
   queryClient.prefetchQuery({
-    queryKey: ["tasks", page, pageSize, sorts, search, filters],
+    queryKey: [KEY, page, pageSize, sorts, search, filters],
     queryFn: async () => {
       const { data: res } = await client.api.todo.task.get({
         query: {
@@ -64,7 +66,7 @@ export default async function Home({
     <Container py="xl" size={1440}>
       <QueryTimeout />
       <Space h="xl" />
-      <DataTableWrapper {...loaderProps} storeColumnsKey="todo">
+      <DataTableWrapper {...loaderProps} storeColumnsKey={KEY}>
         <DataTableHeader />
         <Space h="md" />
         <HydrationBoundary state={dehydrate(queryClient)}>

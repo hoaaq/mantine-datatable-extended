@@ -5,15 +5,26 @@ import {
   Button,
   Container,
   Group,
+  Menu,
   useMantineTheme,
 } from "@mantine/core";
-import { IconBrandGithub } from "@tabler/icons-react";
+import { IconBrandGithub, IconChevronDown } from "@tabler/icons-react";
 import { Link } from "nextra-theme-docs";
 import Logo from "../logo";
 import ThemeSwitcher from "../theme-control/theme-switcher";
 
 export function AppHeader() {
   const theme = useMantineTheme();
+  const demos = [
+    {
+      label: "Full Demo",
+      href: "/demo/full",
+    },
+    {
+      label: "Basic Demo",
+      href: "/demo/basic",
+    },
+  ];
   return (
     <Group
       h="60px"
@@ -33,13 +44,27 @@ export function AppHeader() {
       >
         <Group gap="xs">
           <Logo />
-          <Button
-            component={Link}
-            href={{ pathname: "/demo" }}
-            variant="subtle"
-          >
-            Full Demo
-          </Button>
+          <Menu trigger="click-hover">
+            <Menu.Target>
+              <Button
+                rightSection={<IconChevronDown size={16} />}
+                variant="subtle"
+              >
+                Demos
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {demos.map((demo) => (
+                <Menu.Item
+                  component={Link}
+                  href={{ pathname: demo.href }}
+                  key={demo.href}
+                >
+                  {demo.label}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
           <Button
             component={Link}
             href={{ pathname: "/docs" }}

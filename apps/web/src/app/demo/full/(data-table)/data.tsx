@@ -4,6 +4,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { client } from "@/lib/treaty";
 
+const KEY = "full-demo";
+
 type SearchCondition = ReturnType<typeof useDataTableQueryParams>["search"];
 
 const cleanSearch = (search: SearchCondition): SearchCondition => {
@@ -35,7 +37,7 @@ export function useData() {
 
   const { data, isFetching } = useSuspenseQuery({
     queryKey: [
-      "tasks",
+      KEY,
       debouncedPage,
       debouncedPageSize,
       debouncedSorts,

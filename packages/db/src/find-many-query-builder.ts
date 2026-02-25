@@ -1,12 +1,13 @@
 import {
   and,
+  arrayOverlaps,
   asc,
   between,
   type Column,
   desc,
   eq,
   ilike,
-  inArray,
+  type inArray,
   or,
 } from "drizzle-orm";
 import type { PgSelect, PgTable } from "drizzle-orm/pg-core";
@@ -183,7 +184,7 @@ export class QueryBuilder<T extends PgTable, TQuery extends PgSelect> {
             filter.value as string
           );
         case filterVariant.MULTI_SELECT:
-          return inArray(
+          return arrayOverlaps(
             this.table[filter.accessor as keyof T] as Column,
             filter.value as string[]
           );

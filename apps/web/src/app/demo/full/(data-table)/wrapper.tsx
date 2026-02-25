@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge } from "@mantine/core";
+import { Badge, Group, HoverCard } from "@mantine/core";
 import { ETodoStatus } from "@repo/shared/enums/todo.enum";
 import {
   type DataTableContextProps,
@@ -43,6 +43,49 @@ export function DataTableWrapper({
     }
   };
 
+  const TagComponent = ({ record }: { record: Task }) => {
+    if (record.tags?.length === 0) {
+      return null;
+    }
+    const firstTag = record.tags?.[0];
+    const anotherTags = record.tags?.slice(1);
+    return (
+      <Group gap="xs" wrap="nowrap">
+        <Badge
+          color="gray"
+          key={`${record.id}-tag-${firstTag}`}
+          size="sm"
+          w="max-content"
+        >
+          {firstTag}
+        </Badge>
+        {anotherTags && anotherTags.length > 0 && (
+          <HoverCard>
+            <HoverCard.Target>
+              <Badge color="gray" size="sm" w="max-content">
+                +{anotherTags.length}
+              </Badge>
+            </HoverCard.Target>
+            <HoverCard.Dropdown>
+              <Group gap="xs" wrap="nowrap">
+                {anotherTags.map((tag) => (
+                  <Badge
+                    color="gray"
+                    key={`${record.id}-tag-${tag}`}
+                    size="sm"
+                    w="max-content"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              </Group>
+            </HoverCard.Dropdown>
+          </HoverCard>
+        )}
+      </Group>
+    );
+  };
+
   const columns: DataTableExtendedColumnProps<Task>[] = [
     {
       accessor: "code",
@@ -56,6 +99,30 @@ export function DataTableWrapper({
         sortable: true,
         filterable: true,
         filterVariant: "text",
+      },
+    },
+    {
+      accessor: "tags",
+      title: "Tags",
+      draggable: true,
+      toggleable: true,
+      width: "0%",
+      textAlign: "left",
+      render: (record) => {
+        return <TagComponent record={record} />;
+      },
+      extend: {
+        searchable: true,
+        sortable: true,
+        filterable: true,
+        filterVariant: "multi_select",
+        filterOptions: {
+          data: [
+            { label: "Frontend", value: "frontend" },
+            { label: "Backend", value: "backend" },
+            { label: "Mobile", value: "mobile" },
+          ],
+        },
       },
     },
     {
