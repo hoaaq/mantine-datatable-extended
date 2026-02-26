@@ -15,21 +15,9 @@ import { IconSearch } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { useDataTableQueryParams } from "../hooks";
 import { useDataTableContext } from "../provider";
-import type { i18nDataTableSearchOptions } from "../types";
 
-type TDataTableSearchProps = {
-  i18n?: i18nDataTableSearchOptions;
-};
-
-const defaultI18n: i18nDataTableSearchOptions = {
-  search: "Search",
-  searchAccessorsSearchPlaceholder: "Search columns…",
-};
-
-function DataTableSearchAccessorsToggle({
-  i18n = defaultI18n,
-}: TDataTableSearchProps) {
-  const { columns } = useDataTableContext();
+function DataTableSearchAccessorsToggle() {
+  const { columns, i18n } = useDataTableContext();
   const { search, setSearch } = useDataTableQueryParams();
   const countSearches = search.accessors.length;
   const [filter, setFilter] = useState("");
@@ -89,7 +77,7 @@ function DataTableSearchAccessorsToggle({
             setFilter(e.target.value)
           }
           p="4"
-          placeholder={i18n.searchAccessorsSearchPlaceholder}
+          placeholder={i18n.search.searchAccessorsSearchPlaceholder}
           styles={{
             input: {
               border: "none",
@@ -128,8 +116,9 @@ function DataTableSearchAccessorsToggle({
   );
 }
 
-export function DataTableSearch({ i18n = defaultI18n }: TDataTableSearchProps) {
+export function DataTableSearch() {
   const { search, setSearch } = useDataTableQueryParams();
+  const { i18n } = useDataTableContext();
 
   const onSearchValueChange = (value: string) => {
     setSearch({ ...search, value });
@@ -137,10 +126,10 @@ export function DataTableSearch({ i18n = defaultI18n }: TDataTableSearchProps) {
 
   return (
     <Group gap="xs">
-      <DataTableSearchAccessorsToggle i18n={i18n} />
+      <DataTableSearchAccessorsToggle />
       <TextInput
         onChange={(e) => onSearchValueChange(e.target.value)}
-        placeholder={i18n.search}
+        placeholder={i18n.search.search}
         rightSection={
           search.value.length > 0 && (
             <CloseButton

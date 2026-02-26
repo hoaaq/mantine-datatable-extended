@@ -1,7 +1,11 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState } from "react";
-import type { DataTableContextProps } from "../types";
+import type { DataTableContextProps, DataTableProviderProps } from "../types";
+import {
+  type DataTableI18n,
+  DEFAULT_DATA_TABLE_I18N,
+} from "../types/i18n.type";
 
 const DataTableContext = createContext<
   DataTableContextProps<Record<string, unknown>> | undefined
@@ -21,10 +25,6 @@ export function useDataTableContext<
   return context as DataTableContextProps<T>;
 }
 
-type DataTableProviderProps<T = Record<string, unknown>> = {
-  children: React.ReactNode;
-} & DataTableContextProps<T>;
-
 export function DataTableProvider<T = Record<string, unknown>>({
   children,
   urlKeys,
@@ -32,6 +32,7 @@ export function DataTableProvider<T = Record<string, unknown>>({
   storeColumnsKey,
   columns,
   originalUseDataTableColumnsResult,
+  i18n: i18nInput,
 }: DataTableProviderProps<T>) {
   if (!storeColumnsKey) {
     throw new Error("storeColumnsKey property is required");
@@ -53,6 +54,20 @@ export function DataTableProvider<T = Record<string, unknown>>({
     [totalRecords, recordsPerPageOptions]
   );
 
+  const i18n: DataTableI18n = useMemo(
+    () => ({
+      view: { ...DEFAULT_DATA_TABLE_I18N.view, ...i18nInput?.view },
+      sort: { ...DEFAULT_DATA_TABLE_I18N.sort, ...i18nInput?.sort },
+      search: { ...DEFAULT_DATA_TABLE_I18N.search, ...i18nInput?.search },
+      filter: { ...DEFAULT_DATA_TABLE_I18N.filter, ...i18nInput?.filter },
+      pagination: {
+        ...DEFAULT_DATA_TABLE_I18N.pagination,
+        ...i18nInput?.pagination,
+      },
+    }),
+    [i18nInput]
+  );
+
   const value = useMemo(
     () =>
       ({
@@ -64,6 +79,7 @@ export function DataTableProvider<T = Record<string, unknown>>({
         paginationProps,
         setTotalRecords,
         setRecordsPerPageOptions,
+        i18n,
       }) as DataTableContextProps<Record<string, unknown>>,
     [
       urlKeys,
@@ -72,6 +88,7 @@ export function DataTableProvider<T = Record<string, unknown>>({
       columns,
       originalUseDataTableColumnsResult,
       paginationProps,
+      i18n,
     ]
   );
 

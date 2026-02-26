@@ -17,4 +17,7 @@ export { DataTableProvider, useDataTableContext } from "./data-table/provider";
 export type {
   DataTableContextProps,
   DataTableExtendedColumnProps,
+  DataTableI18n,
+  DataTableI18nInput,
+  DataTableProviderProps,
 } from "./data-table/types";

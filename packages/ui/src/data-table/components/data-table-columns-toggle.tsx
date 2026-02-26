@@ -11,21 +11,9 @@ import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
 import type { DataTableColumnToggle } from "mantine-datatable";
 import { useMemo, useState } from "react";
 import { useDataTableContext } from "../provider";
-import type { i18nDataTableViewOptions } from "../types";
 
-type TDataTableColumnsToggleProps = {
-  i18n?: i18nDataTableViewOptions;
-};
-
-const defaultI18n: i18nDataTableViewOptions = {
-  columnsToggle: "Columns Toggle",
-  columnsToggleSearchPlaceholder: "Search columns…",
-};
-
-export function DataTableColumnsToggle({
-  i18n = defaultI18n,
-}: TDataTableColumnsToggleProps) {
-  const { originalUseDataTableColumnsResult } = useDataTableContext();
+export function DataTableColumnsToggle() {
+  const { originalUseDataTableColumnsResult, i18n } = useDataTableContext();
   const { effectiveColumns, columnsToggle, setColumnsToggle } =
     originalUseDataTableColumnsResult;
   const [search, setSearch] = useState("");
@@ -64,7 +52,7 @@ export function DataTableColumnsToggle({
           leftSection={<IconAdjustmentsHorizontal size={16} />}
           variant="default"
         >
-          {i18n.columnsToggle}
+          {i18n.view.columnsToggle}
         </Button>
       </Popover.Target>
       <Popover.Dropdown p="0">
@@ -75,7 +63,7 @@ export function DataTableColumnsToggle({
             setSearch(e.target.value)
           }
           p="4"
-          placeholder={i18n.columnsToggleSearchPlaceholder}
+          placeholder={i18n.view.columnsToggleSearchPlaceholder}
           styles={{
             input: {
               border: "none",

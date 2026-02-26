@@ -266,36 +266,39 @@ function ConditionalDataTable() {
 
 ## Custom i18n
 
-Customize display text for all components:
+Pass `i18n` to `DataTableProvider` to customize display text. Grouped by component - only override the keys you need:
 
 ```tsx
 function InternationalizedTable() {
   return (
-    <DataTableProvider {...props}>
-      <Group>
-        <DataTableSearch i18n={{ search: "Search..." }} />
-        <DataTableFilter i18n={{ resetFilter: "Clear Filters" }} />
-      </Group>
-
-      <DataTableSortList
-        i18n={{
+    <DataTableProvider
+      {...props}
+      i18n={{
+        search: { search: "Search..." },
+        filter: { resetFilter: "Clear Filters" },
+        sort: {
           sort: "Sort",
           addSort: "Add Sort",
           resetSort: "Reset",
           asc: "Ascending",
           desc: "Descending",
-        }}
-      />
-
-      <DataTableColumnsToggle i18n={{ columnsToggle: "Columns" }} />
-
-      <DataTablePagination
-        i18n={{
+        },
+        view: { columnsToggle: "Columns" },
+        pagination: {
           rowsPerPage: "Rows per page",
           pageOfTotalPages: ["Page", "of"],
           startEndRecordOfTotalRecords: ["Showing", "-", "of"],
-        }}
-      />
+        },
+      }}
+    >
+      <Group>
+        <DataTableSearch />
+        <DataTableFilter />
+      </Group>
+
+      <DataTableSortList />
+      <DataTableColumnsToggle />
+      <DataTablePagination />
     </DataTableProvider>
   );
 }

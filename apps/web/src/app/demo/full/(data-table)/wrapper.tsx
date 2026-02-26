@@ -3,9 +3,9 @@
 import { Badge, Group, HoverCard } from "@mantine/core";
 import { ETodoStatus } from "@repo/shared/enums/todo.enum";
 import {
-  type DataTableContextProps,
   type DataTableExtendedColumnProps,
   DataTableProvider,
+  type DataTableProviderProps,
 } from "@repo/ui";
 import { useDataTableColumns } from "mantine-datatable";
 import { useDateFormatter } from "@/hooks/date-format";
@@ -19,7 +19,7 @@ export type Task = NonNullable<
 type DataTableWrapperProps = {
   children: React.ReactNode;
 } & Omit<
-  DataTableContextProps<Task>,
+  DataTableProviderProps<Task>,
   "columns" | "originalUseDataTableColumnsResult"
 >;
 

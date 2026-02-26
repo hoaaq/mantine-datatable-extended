@@ -1,4 +1,4 @@
-export type i18nDataTableViewOptions = {
+type i18nDataTableViewOptions = {
   /**
    * The label for the columns toggle button.
    */
@@ -9,7 +9,7 @@ export type i18nDataTableViewOptions = {
   columnsToggleSearchPlaceholder: string;
 };
 
-export type i18nDataTableSortOptions = {
+type i18nDataTableSortOptions = {
   /**
    * The label for the sort button.
    */
@@ -32,7 +32,7 @@ export type i18nDataTableSortOptions = {
   desc: string;
 };
 
-export type i18nDataTableSearchOptions = {
+type i18nDataTableSearchOptions = {
   /**
    * The label for the search input placeholder.
    */
@@ -43,14 +43,14 @@ export type i18nDataTableSearchOptions = {
   searchAccessorsSearchPlaceholder: string;
 };
 
-export type i18nDataTableFilterOptions = {
+type i18nDataTableFilterOptions = {
   /**
    * The label for the reset filter button.
    */
   resetFilter: string;
 };
 
-export type i18nDataTablePaginationOptions = {
+type i18nDataTablePaginationOptions = {
   /**
    * The label for the rows per page.
    */
@@ -68,4 +68,57 @@ export type i18nDataTablePaginationOptions = {
    * The third string is "of total".
    */
   startEndRecordOfTotalRecords: [string, string, string];
+};
+
+/**
+ * Unified i18n type for all DataTable components.
+ * Grouped by component - full type stored in context (after merging with defaults).
+ */
+export type DataTableI18n = {
+  view: i18nDataTableViewOptions;
+  sort: i18nDataTableSortOptions;
+  search: i18nDataTableSearchOptions;
+  filter: i18nDataTableFilterOptions;
+  pagination: i18nDataTablePaginationOptions;
+};
+
+/**
+ * Input type for i18n prop in DataTableProvider.
+ * Each group is optional - only override the keys you need.
+ */
+export type DataTableI18nInput = {
+  view?: Partial<i18nDataTableViewOptions>;
+  sort?: Partial<i18nDataTableSortOptions>;
+  search?: Partial<i18nDataTableSearchOptions>;
+  filter?: Partial<i18nDataTableFilterOptions>;
+  pagination?: Partial<i18nDataTablePaginationOptions>;
+};
+
+/**
+ * Default i18n values for DataTable components.
+ */
+export const DEFAULT_DATA_TABLE_I18N: DataTableI18n = {
+  view: {
+    columnsToggle: "Columns Toggle",
+    columnsToggleSearchPlaceholder: "Search columns…",
+  },
+  sort: {
+    sort: "Sort",
+    addSort: "Add Sort",
+    resetSort: "Reset Sort",
+    asc: "Asc",
+    desc: "Desc",
+  },
+  search: {
+    search: "Search",
+    searchAccessorsSearchPlaceholder: "Search columns…",
+  },
+  filter: {
+    resetFilter: "Reset Filters",
+  },
+  pagination: {
+    rowsPerPage: "Rows per page",
+    pageOfTotalPages: ["Page", "of"],
+    startEndRecordOfTotalRecords: ["", "-", "/"],
+  },
 };

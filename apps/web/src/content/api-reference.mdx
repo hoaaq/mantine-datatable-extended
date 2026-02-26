@@ -153,6 +153,7 @@ type DataTableProviderProps<T = Record<string, unknown>> = {
   originalUseDataTableColumnsResult: ReturnType<
     typeof useDataTableColumns<T>
   >; // Required
+  i18n?: DataTableI18nInput; // Optional, merged with defaults
 };
 ```
 
@@ -172,61 +173,25 @@ Accepts all props from `DataTable` in `mantine-datatable`, except:
 
 Search component with multi-column selection capability.
 
-**Props:**
-
-```typescript
-type DataTableSearchProps = {
-  i18n?: {
-    search?: string; // Default: "Search"
-  };
-};
-```
+**Props:** None. i18n from `DataTableProvider`.
 
 ### DataTableFilter
 
 Filter component that automatically displays filters based on column configuration.
 
-**Props:**
-
-```typescript
-type DataTableFilterProps = {
-  i18n?: {
-    resetFilter?: string; // Default: "Reset Filter"
-  };
-};
-```
+**Props:** None. i18n from `DataTableProvider`.
 
 ### DataTableSortList
 
 Component for managing multi-column sorting.
 
-**Props:**
-
-```typescript
-type DataTableSortListProps = {
-  i18n?: {
-    sort?: string; // Default: "Sort"
-    addSort?: string; // Default: "Add Sort"
-    resetSort?: string; // Default: "Reset Sort"
-    asc?: string; // Default: "Asc"
-    desc?: string; // Default: "Desc"
-  };
-};
-```
+**Props:** None. i18n from `DataTableProvider`.
 
 ### DataTableColumnsToggle
 
 Component to show/hide columns.
 
-**Props:**
-
-```typescript
-type DataTableColumnsToggleProps = {
-  i18n?: {
-    columnsToggle?: string; // Default: "Columns Toggle"
-  };
-};
-```
+**Props:** None. i18n from `DataTableProvider`.
 
 ### DataTablePagination
 
@@ -237,14 +202,10 @@ Pagination component that can be placed anywhere.
 ```typescript
 type DataTablePaginationProps = {
   recordsPerPageOptions?: number[]; // Default: [10, 20, 30, 40, 50]
-  i18n?: {
-    rowsPerPage?: string; // Default: "Rows per page"
-    pageOfTotalPages?: [string, string]; // Default: ["Page", "of"]
-    startEndRecordOfTotalRecords?: [string, string, string]; 
-    // Default: ["", "-", "/"]
-  };
 };
 ```
+
+i18n from `DataTableProvider`.
 
 ## Hooks
 
@@ -262,6 +223,7 @@ function useDataTableContext<T = Record<string, unknown>>():
 ```typescript
 type DataTableContextProps<T> = {
   urlKeys?: UrlKeysType;
+  i18n: DataTableI18n; // Merged i18n (always present)
   defaultParams?: DefaultParamsType;
   storeColumnsKey: string;
   columns: DataTableExtendedColumnProps<T>[];

@@ -5,6 +5,7 @@ import type {
   TSearchCondition,
   TSortCondition,
 } from "./data-table-query-param.type";
+import type { DataTableI18n, DataTableI18nInput } from "./i18n.type";
 
 export type UrlKeysType = {
   /**
@@ -100,4 +101,21 @@ export type DataTableContextProps<T = Record<string, unknown>> = {
    * The function to set the pagination records per page options.
    */
   setRecordsPerPageOptions?: (recordsPerPageOptions: number[]) => void;
+  /**
+   * Internationalization strings for all DataTable components.
+   * In context: merged result (always present).
+   * In provider props: optional input, merged with defaults.
+   */
+  i18n: DataTableI18n;
+};
+
+/**
+ * Props for DataTableProvider. Extends context props but i18n is optional input.
+ */
+export type DataTableProviderProps<T = Record<string, unknown>> = Omit<
+  DataTableContextProps<T>,
+  "i18n"
+> & {
+  children: import("react").ReactNode;
+  i18n?: DataTableI18nInput;
 };

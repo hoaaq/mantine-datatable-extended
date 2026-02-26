@@ -2,25 +2,16 @@ import { Group, NativeSelect, Pagination, Space, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useDataTableQueryParams } from "../hooks";
 import { useDataTableContext } from "../provider";
-import type { i18nDataTablePaginationOptions } from "../types/i18n.type";
 
 type TDataTablePaginationProps = {
   recordsPerPageOptions?: number[];
-  i18n?: i18nDataTablePaginationOptions;
-};
-
-const defaultI18n: i18nDataTablePaginationOptions = {
-  rowsPerPage: "Rows per page",
-  pageOfTotalPages: ["Page", "of"],
-  startEndRecordOfTotalRecords: ["", "-", "/"],
 };
 
 export function DataTablePagination({
   recordsPerPageOptions = [10, 20, 30, 40, 50],
-  i18n = defaultI18n,
 }: TDataTablePaginationProps) {
   const { page, pageSize, setPage, setPageSize } = useDataTableQueryParams();
-  const { paginationProps } = useDataTableContext();
+  const { paginationProps, i18n } = useDataTableContext();
   const { totalRecords } = paginationProps || {};
 
   const [totalPages, setTotalPages] = useState(0);
@@ -50,13 +41,13 @@ export function DataTablePagination({
       <Group align="center" justify="space-between">
         <Group>
           <Text size="sm">
-            {i18n.startEndRecordOfTotalRecords[0]} {startRecord}{" "}
-            {i18n.startEndRecordOfTotalRecords[1]} {endRecord}{" "}
-            {i18n.startEndRecordOfTotalRecords[2]} {totalRecords}
+            {i18n.pagination.startEndRecordOfTotalRecords[0]} {startRecord}{" "}
+            {i18n.pagination.startEndRecordOfTotalRecords[1]} {endRecord}{" "}
+            {i18n.pagination.startEndRecordOfTotalRecords[2]} {totalRecords}
           </Text>
         </Group>
         <Group>
-          <Text size="sm">{i18n.rowsPerPage}</Text>
+          <Text size="sm">{i18n.pagination.rowsPerPage}</Text>
           <NativeSelect
             data={recordsPerPageOptions.map((option) => ({
               label: option.toString(),
@@ -69,8 +60,8 @@ export function DataTablePagination({
           />
           <Space w="md" />
           <Text size="sm">
-            {i18n.pageOfTotalPages[0]} {page} {i18n.pageOfTotalPages[1]}{" "}
-            {totalPages}
+            {i18n.pagination.pageOfTotalPages[0]} {page}{" "}
+            {i18n.pagination.pageOfTotalPages[1]} {totalPages}
           </Text>
           <Pagination
             onChange={(value) => setPage(value)}

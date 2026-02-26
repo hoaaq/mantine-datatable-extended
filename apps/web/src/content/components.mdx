@@ -54,13 +54,7 @@ Component for searching across columns. Supports selecting multiple columns to s
 
 ### Props
 
-```typescript
-type DataTableSearchProps = {
-  i18n?: {
-    search?: string; // Default: "Search"
-  };
-};
-```
+No props. i18n is configured via `DataTableProvider`.
 
 ### Usage
 
@@ -100,25 +94,13 @@ function TableHeader() {
 }
 ```
 
-### Custom i18n
-
-```tsx
-<DataTableSearch i18n={{ search: "Search..." }} />
-```
-
 ## DataTableFilter
 
 Component for filtering data based on various conditions. Automatically displays filters based on the `filterable` and `filterVariant` configuration of each column.
 
 ### Props
 
-```typescript
-type DataTableFilterProps = {
-  i18n?: {
-    resetFilter?: string; // Default: "Reset Filter"
-  };
-};
-```
+No props. i18n is configured via `DataTableProvider`.
 
 ### Usage
 
@@ -166,17 +148,7 @@ Component for sorting by multiple columns at once. Supports adding/removing/chan
 
 ### Props
 
-```typescript
-type DataTableSortListProps = {
-  i18n?: {
-    sort?: string; // Default: "Sort"
-    addSort?: string; // Default: "Add Sort"
-    resetSort?: string; // Default: "Reset Sort"
-    asc?: string; // Default: "Asc"
-    desc?: string; // Default: "Desc"
-  };
-};
-```
+No props. i18n is configured via `DataTableProvider`.
 
 ### Usage
 
@@ -215,13 +187,7 @@ Component to show/hide columns. Useful when you have many columns and want to le
 
 ### Props
 
-```typescript
-type DataTableColumnsToggleProps = {
-  i18n?: {
-    columnsToggle?: string; // Default: "Columns Toggle"
-  };
-};
-```
+No props. i18n is configured via `DataTableProvider`.
 
 ### Usage
 
@@ -263,14 +229,10 @@ Pagination component that can be placed anywhere on the page (not fixed to foote
 ```typescript
 type DataTablePaginationProps = {
   recordsPerPageOptions?: number[]; // Default: [10, 20, 30, 40, 50]
-  i18n?: {
-    rowsPerPage?: string; // Default: "Rows per page"
-    pageOfTotalPages?: [string, string]; // Default: ["Page", "of"]
-    startEndRecordOfTotalRecords?: [string, string, string]; 
-    // Default: ["", "-", "/"]
-  };
 };
 ```
+
+i18n is configured via `DataTableProvider`.
 
 ### Usage
 
@@ -337,4 +299,23 @@ function DataTablePage() {
     </DataTableProvider>
   );
 }
+```
+
+## Custom i18n
+
+Pass `i18n` to `DataTableProvider` to customize text. Grouped by component - only override the keys you need:
+
+```tsx
+<DataTableProvider
+  {...props}
+  i18n={{
+    search: { search: "Search..." },
+    filter: { resetFilter: "Reset Filters" },
+    sort: { sort: "Sort", addSort: "Add Sort" },
+    view: { columnsToggle: "Columns" },
+    pagination: { rowsPerPage: "Rows per page", pageOfTotalPages: ["Page", "of"] },
+  }}
+>
+  {/* components */}
+</DataTableProvider>
 ```

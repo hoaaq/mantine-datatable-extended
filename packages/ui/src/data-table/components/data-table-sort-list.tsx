@@ -20,25 +20,12 @@ import {
 import type React from "react";
 import { useDataTableQueryParams } from "../hooks";
 import { useDataTableContext } from "../provider";
-import { ESortDirection, type i18nDataTableSortOptions } from "../types";
-
-type TDataTableSortListProps = {
-  i18n?: i18nDataTableSortOptions;
-};
-
-const defaultI18n: i18nDataTableSortOptions = {
-  sort: "Sort",
-  addSort: "Add Sort",
-  resetSort: "Reset Sort",
-  asc: "Asc",
-  desc: "Desc",
-};
+import { ESortDirection } from "../types";
 
 type SortableSortRowProps = {
   sort: { accessor: string; direction: ESortDirection };
   index: number;
   sortableColumns: { accessor: string; title?: React.ReactNode }[];
-  i18n: i18nDataTableSortOptions;
   onAccessorChange: (prevAccessor: string, newAccessor: string | null) => void;
   onDirectionChange: (accessor: string, direction: string | null) => void;
   onRemoveSort: (accessor: string) => void;
@@ -48,11 +35,11 @@ function SortableSortRow({
   sort,
   index,
   sortableColumns,
-  i18n,
   onAccessorChange,
   onDirectionChange,
   onRemoveSort,
 }: SortableSortRowProps) {
+  const { i18n } = useDataTableContext();
   const { ref, handleRef } = useSortable({
     id: sort.accessor,
     index,
@@ -76,7 +63,7 @@ function SortableSortRow({
         checkIconPosition="right"
         comboboxProps={{ withinPortal: false }}
         data={Object.values(ESortDirection).map((direction) => ({
-          label: i18n[direction] ?? "",
+          label: i18n.sort[direction] ?? "",
           value: direction,
         }))}
         onChange={(value) => onDirectionChange(sort.accessor, value)}
@@ -104,11 +91,9 @@ function SortableSortRow({
   );
 }
 
-export function DataTableSortList({
-  i18n = defaultI18n,
-}: TDataTableSortListProps) {
+export function DataTableSortList() {
   const { sorts, setSorts, resetSorts } = useDataTableQueryParams();
-  const { columns } = useDataTableContext();
+  const { columns, i18n } = useDataTableContext();
 
   const sortableColumns = columns.filter((column) => column.extend?.sortable);
   const remainingColumns = sortableColumns.filter(
@@ -204,7 +189,7 @@ export function DataTableSortList({
           }
           variant="default"
         >
-          {i18n.sort}
+          {i18n.sort.sort}
         </Button>
       </Popover.Target>
       <Popover.Dropdown p="sm">
@@ -212,7 +197,6 @@ export function DataTableSortList({
           <Stack gap="xs">
             {sorts.map((sort, index) => (
               <SortableSortRow
-                i18n={i18n}
                 index={index}
                 key={sort.accessor}
                 onAccessorChange={onAccessorChange}
@@ -234,7 +218,7 @@ export function DataTableSortList({
             size="xs"
             variant="filled"
           >
-            {i18n.addSort}
+            {i18n.sort.addSort}
           </Button>
           <Button
             leftSection={<IconRefresh size={16} />}
@@ -242,7 +226,7 @@ export function DataTableSortList({
             size="xs"
             variant="default"
           >
-            {i18n.resetSort}
+            {i18n.sort.resetSort}
           </Button>
         </Group>
       </Popover.Dropdown>

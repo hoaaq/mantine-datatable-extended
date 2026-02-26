@@ -2,7 +2,6 @@ import { Button, Group } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useDataTableQueryParams } from "../hooks";
 import { useDataTableContext } from "../provider";
-import type { i18nDataTableFilterOptions } from "../types";
 import { EFilterVariant } from "../types";
 import { DataTableFilterDate } from "./filters/date";
 import { DataTableFilterDateRange } from "./filters/date-range";
@@ -12,17 +11,9 @@ import { DataTableFilterNumberRange } from "./filters/number-range";
 import { DataTableFilterSingleSelect } from "./filters/single-select";
 import { DataTableFilterText } from "./filters/text";
 
-type TDataTableFilterProps = {
-  i18n?: i18nDataTableFilterOptions;
-};
-
-const defaultI18n: i18nDataTableFilterOptions = {
-  resetFilter: "Reset Filters",
-};
-
-export function DataTableFilter({ i18n = defaultI18n }: TDataTableFilterProps) {
+export function DataTableFilter() {
   const { filters, resetFilters } = useDataTableQueryParams();
-  const { columns } = useDataTableContext();
+  const { columns, i18n } = useDataTableContext();
 
   const onReset = () => {
     resetFilters();
@@ -103,7 +94,7 @@ export function DataTableFilter({ i18n = defaultI18n }: TDataTableFilterProps) {
           onClick={onReset}
           variant="outline"
         >
-          {i18n.resetFilter}
+          {i18n.filter.resetFilter}
         </Button>
       )}
     </Group>
