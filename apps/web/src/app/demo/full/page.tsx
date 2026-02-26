@@ -61,22 +61,33 @@ export default async function Home({
       };
     },
   });
+  queryClient.prefetchQuery({
+    queryKey: [KEY, "tags-facet"],
+    queryFn: async () => {
+      const { data: res } = await client.api.todo
+        .facet({ column: "tags" })
+        .get();
+      return {
+        items: res?.data.items || [],
+      };
+    },
+  });
 
   return (
     <Container py="xl" size={1440}>
       <QueryTimeout />
       <Space h="xl" />
-      <DataTableWrapper {...loaderProps} storeColumnsKey={KEY}>
-        <DataTableHeader />
-        <Space h="md" />
-        <HydrationBoundary state={dehydrate(queryClient)}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <DataTableWrapper {...loaderProps} storeColumnsKey={KEY}>
+          <DataTableHeader />
+          <Space h="md" />
           <Suspense fallback={<DataTableSkeleton />}>
             <DataTable />
           </Suspense>
-        </HydrationBoundary>
-        <Space h="md" />
-        <DataTableFooter />
-      </DataTableWrapper>
+          <Space h="md" />
+          <DataTableFooter />
+        </DataTableWrapper>
+      </HydrationBoundary>
     </Container>
   );
 }

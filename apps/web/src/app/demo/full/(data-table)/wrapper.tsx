@@ -10,6 +10,7 @@ import {
 import { useDataTableColumns } from "mantine-datatable";
 import { useDateFormatter } from "@/hooks/date-format";
 import type { client } from "@/lib/treaty";
+import { useFacets } from "./data";
 
 export type Task = NonNullable<
   Awaited<ReturnType<(typeof client)["api"]["todo"]["task"]["get"]>>["data"]
@@ -86,6 +87,8 @@ export function DataTableWrapper({
     );
   };
 
+  const { tagsFacet, isFetching: isFetchingTagsFacet } = useFacets();
+
   const columns: DataTableExtendedColumnProps<Task>[] = [
     {
       accessor: "code",
@@ -117,11 +120,12 @@ export function DataTableWrapper({
         filterable: true,
         filterVariant: "multi_select",
         filterOptions: {
-          data: [
-            { label: "Frontend", value: "frontend" },
-            { label: "Backend", value: "backend" },
-            { label: "Mobile", value: "mobile" },
-          ],
+          data: isFetchingTagsFacet
+            ? []
+            : tagsFacet.map((tag) => ({
+                label: `${tag.value} (${tag.count})`,
+                value: tag.value,
+              })),
         },
       },
     },

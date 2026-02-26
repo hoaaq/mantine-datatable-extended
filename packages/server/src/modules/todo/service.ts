@@ -1,6 +1,6 @@
 import { db, table } from "@repo/db";
 import { createQueryBuilder } from "@repo/db/find-many-query-builder";
-import { count } from "drizzle-orm";
+import { count, sql } from "drizzle-orm";
 import type { StaticQueryParamsType, taskModel } from "./model";
 
 export abstract class TodoService {
@@ -34,6 +34,24 @@ export abstract class TodoService {
     return {
       items: tasks,
       totalRecords: total[0]?.count || 0,
+    };
+  }
+
+  static async getFacetTags(): Promise<{
+    items: (typeof taskModel.facet.static)[];
+  }> {
+    const tags = await db.execute<{ value: string; count: string }>(sql`
+      SELECT value::text as value, COUNT(*)::text as count
+      FROM ${table.task}, unnest(COALESCE(${table.task.tags}, ARRAY[]::text[])) as value
+      WHERE value != ''
+      GROUP BY value
+      ORDER BY count DESC
+    `);
+    return {
+      items: tags.rows.map((tag) => ({
+        value: String(tag.value ?? ""),
+        count: Number(tag.count ?? 0),
+      })),
     };
   }
 }

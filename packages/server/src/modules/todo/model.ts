@@ -14,6 +14,10 @@ export const taskModel = {
     incrementId: t.Number(),
     code: t.String(),
   }),
+  facet: t.Object({
+    value: t.String(),
+    count: t.Number(),
+  }),
 } as const;
 
 // https://github.com/elysiajs/elysia/issues/1286

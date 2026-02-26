@@ -68,3 +68,14 @@ export function useData() {
     isFetching,
   };
 }
+
+export function useFacets() {
+  const { data, isFetching } = useSuspenseQuery({
+    queryKey: [KEY, "tags-facet"],
+    queryFn: async () => {
+      const { data: res } = await client.api.todo.facet.tags.get();
+      return { items: res?.data.items || [] };
+    },
+  });
+  return { tagsFacet: data?.items || [], isFetching };
+}

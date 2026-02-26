@@ -32,7 +32,27 @@ const getManyTasks = new Elysia({ name: "get-many-tasks" }).get(
   }
 );
 
+const getFacetByTableColumn = new Elysia({
+  name: "get-facet-by-table-column",
+}).get(
+  "/facet/tags",
+  async () => {
+    const { items } = await TodoService.getFacetTags();
+    return { data: { items } };
+  },
+  {
+    response: t.Object({
+      data: t.Object({
+        items: t.Array(taskModel.facet),
+      }),
+    }),
+    tags: ["Todo"],
+  }
+);
+
 export const TodoController = new Elysia({
   name: "todo-controller",
   prefix: "/todo",
-}).use(getManyTasks);
+})
+  .use(getManyTasks)
+  .use(getFacetByTableColumn);
