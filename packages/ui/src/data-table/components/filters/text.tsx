@@ -1,5 +1,5 @@
 import { Button, Indicator, Popover, TextInput } from "@mantine/core";
-import { IconX } from "@tabler/icons-react";
+import { IconFilter, IconX } from "@tabler/icons-react";
 import { useDataTableQueryParams } from "../../hooks";
 import type { DataTableExtendedColumnProps, EFilterVariant } from "../../types";
 
@@ -57,10 +57,14 @@ export function DataTableFilterText<T = Record<string, unknown>>({
           </Button.Group>
         </Indicator>
       </Popover.Target>
-      <Popover.Dropdown>
+      <Popover.Dropdown p="0">
         <TextInput
+          autoFocus
+          leftSection={<IconFilter size={16} />}
           onChange={(event) => onFilterChange(event.target.value)}
+          p="4"
           value={thisAccessorFilter?.value ?? ""}
+          variant="unstyled"
         />
       </Popover.Dropdown>
     </Popover>

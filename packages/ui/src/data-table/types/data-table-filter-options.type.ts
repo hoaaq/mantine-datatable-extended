@@ -21,4 +21,5 @@ export type FilterNumberRangeOptions = {
   max: number;
   step?: number;
   minRange?: number;
+  suffix?: string;
 };

@@ -1,9 +1,12 @@
 import {
   Button,
+  Group,
   Indicator,
+  NumberInput,
   Popover,
   RangeSlider,
   type RangeSliderValue,
+  Stack,
 } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useDataTableQueryParams } from "../../hooks";
@@ -27,6 +30,7 @@ export function DataTableFilterNumberRange<T = Record<string, unknown>>({
     max,
     step = 1,
     minRange = 1,
+    suffix,
   } = column.extend?.filterOptions as FilterNumberRangeOptions;
 
   const { filters, setFilters } = useDataTableQueryParams();
@@ -56,8 +60,30 @@ export function DataTableFilterNumberRange<T = Record<string, unknown>>({
     }
   };
 
+  const currentValue: [number, number] =
+    thisAccessorFilter?.value[0] && thisAccessorFilter?.value[1]
+      ? [
+          Number.parseInt(thisAccessorFilter.value[0], 10),
+          Number.parseInt(thisAccessorFilter.value[1], 10),
+        ]
+      : [min, max];
+
   const onFilterChange = ([fromValue, toValue]: RangeSliderValue) => {
     setFilterValues([fromValue, toValue]);
+  };
+
+  const onFromInputChange = (value: string | number) => {
+    const numValue =
+      typeof value === "string" ? Number.parseInt(value, 10) || min : value;
+    const clampedFrom = Math.min(Math.max(numValue, min), currentValue[1]);
+    setFilterValues([clampedFrom, currentValue[1]]);
+  };
+
+  const onToInputChange = (value: string | number) => {
+    const numValue =
+      typeof value === "string" ? Number.parseInt(value, 10) || max : value;
+    const clampedTo = Math.max(Math.min(numValue, max), currentValue[0]);
+    setFilterValues([currentValue[0], clampedTo]);
   };
 
   const onResetFilter = () => {
@@ -78,22 +104,36 @@ export function DataTableFilterNumberRange<T = Record<string, unknown>>({
           </Button.Group>
         </Indicator>
       </Popover.Target>
-      <Popover.Dropdown>
-        <RangeSlider
-          max={max}
-          min={min}
-          minRange={minRange}
-          onChange={onFilterChange}
-          step={step}
-          value={
-            thisAccessorFilter?.value[0] && thisAccessorFilter?.value[1]
-              ? [
-                  Number.parseInt(thisAccessorFilter.value[0], 10),
-                  Number.parseInt(thisAccessorFilter.value[1], 10),
-                ]
-              : [min, max]
-          }
-        />
+      <Popover.Dropdown p="xs">
+        <Stack gap="md">
+          <Group grow>
+            <NumberInput
+              max={currentValue[1]}
+              min={min}
+              onChange={onFromInputChange}
+              step={step}
+              suffix={suffix}
+              value={currentValue[0]}
+            />
+            <NumberInput
+              max={max}
+              min={currentValue[0]}
+              onChange={onToInputChange}
+              step={step}
+              suffix={suffix}
+              value={currentValue[1]}
+            />
+          </Group>
+          <RangeSlider
+            label={null}
+            max={max}
+            min={min}
+            minRange={minRange}
+            onChange={onFilterChange}
+            step={step}
+            value={currentValue}
+          />
+        </Stack>
       </Popover.Dropdown>
     </Popover>
   );
