@@ -138,53 +138,6 @@ export function DataTableWrapper({
       },
     },
     {
-      accessor: "priority",
-      title: "Priority",
-      draggable: true,
-      toggleable: true,
-      width: "0%",
-      textAlign: "center",
-      extend: {
-        sortable: true,
-        filterable: true,
-        filterVariant: "number",
-      },
-    },
-    {
-      accessor: "estimatedHours",
-      title: "Estimated Hours",
-      draggable: true,
-      toggleable: true,
-      width: "0%",
-      textAlign: "center",
-      extend: {
-        sortable: true,
-        filterable: true,
-        filterVariant: "number_range",
-        filterOptions: {
-          min: 1,
-          max: 24,
-          step: 1,
-          minRange: 1,
-        },
-      },
-    },
-    {
-      accessor: "dueDate",
-      title: "Due Date",
-      render: (record) =>
-        record.dueDate ? dateFormatter(record.dueDate, "dd/MM/yyyy") : "-",
-      draggable: true,
-      toggleable: true,
-      width: "0%",
-      textAlign: "center",
-      extend: {
-        sortable: true,
-        filterable: true,
-        filterVariant: "date_range",
-      },
-    },
-    {
       accessor: "status",
       title: "Status",
       draggable: true,
@@ -206,24 +159,73 @@ export function DataTableWrapper({
       render: (record) => {
         const { color, label } = getStatusBadge(record.status);
         return (
-          <Badge color={color} size="sm">
+          <Badge color={color} size="sm" w="max-content">
             {label}
           </Badge>
         );
       },
     },
     {
-      accessor: "createdAt",
-      title: "Created At",
-      render: (record) => dateFormatter(record.createdAt, "dd/MM/yyyy"),
+      accessor: "priority",
+      title: "Priority",
       draggable: true,
       toggleable: true,
       width: "0%",
-      textAlign: "center",
+      textAlign: "right",
+      extend: {
+        sortable: true,
+        filterable: true,
+        filterVariant: "number",
+      },
+    },
+    {
+      accessor: "estimatedHours",
+      title: "Estimated Hours",
+      draggable: true,
+      toggleable: true,
+      width: "0%",
+      textAlign: "right",
+      extend: {
+        sortable: true,
+        filterable: true,
+        filterVariant: "number_range",
+        filterOptions: {
+          min: 1,
+          max: 24,
+          step: 1,
+          minRange: 1,
+        },
+      },
+    },
+    {
+      accessor: "createdAt",
+      title: "Created At",
+      render: (record) => dateFormatter(record.createdAt, "PPP"),
+      draggable: true,
+      toggleable: true,
+      width: "0%",
+      textAlign: "right",
+      noWrap: true,
       extend: {
         sortable: true,
         filterable: true,
         filterVariant: "date",
+      },
+    },
+    {
+      accessor: "dueDate",
+      title: "Due Date",
+      render: (record) =>
+        record.dueDate ? dateFormatter(record.dueDate, "PPP") : "-",
+      draggable: true,
+      toggleable: true,
+      width: "0%",
+      textAlign: "right",
+      noWrap: true,
+      extend: {
+        sortable: true,
+        filterable: true,
+        filterVariant: "date_range",
       },
     },
   ];

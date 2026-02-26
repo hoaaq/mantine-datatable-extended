@@ -7,7 +7,7 @@ import {
   Stack,
   TextInput,
 } from "@mantine/core";
-import { IconColumns, IconSearch } from "@tabler/icons-react";
+import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
 import type { DataTableColumnToggle } from "mantine-datatable";
 import { useMemo, useState } from "react";
 import { useDataTableContext } from "../provider";
@@ -60,7 +60,10 @@ export function DataTableColumnsToggle({
   return (
     <Popover shadow="md" width="max-content" withArrow>
       <Popover.Target>
-        <Button leftSection={<IconColumns />} variant="default">
+        <Button
+          leftSection={<IconAdjustmentsHorizontal size={16} />}
+          variant="default"
+        >
           {i18n.columnsToggle}
         </Button>
       </Popover.Target>
