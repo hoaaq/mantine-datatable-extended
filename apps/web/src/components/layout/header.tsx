@@ -8,7 +8,11 @@ import {
   Menu,
   useMantineTheme,
 } from "@mantine/core";
-import { IconBrandGithub, IconChevronDown } from "@tabler/icons-react";
+import {
+  IconBrandGithub,
+  IconBrandNpm,
+  IconChevronDown,
+} from "@tabler/icons-react";
 import { Link } from "nextra-theme-docs";
 import Logo from "../logo";
 import ThemeSwitcher from "../theme-control/theme-switcher";
@@ -78,10 +82,17 @@ export function AppHeader() {
             color="gray"
             component={Link}
             href="https://github.com/hoaaq/mantine-datatable-extended"
-            target="_blank"
             variant="subtle"
           >
             <IconBrandGithub size={18} />
+          </ActionIcon>
+          <ActionIcon
+            color="gray"
+            component={Link}
+            href="https://www.npmjs.com/package/mantine-datatable-extended"
+            variant="subtle"
+          >
+            <IconBrandNpm size={18} />
           </ActionIcon>
           <ThemeSwitcher />
         </Group>

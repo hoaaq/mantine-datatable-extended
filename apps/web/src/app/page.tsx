@@ -110,7 +110,7 @@ export default function Home() {
               <Group gap="md" justify="center" wrap="wrap">
                 <Button
                   component={Link}
-                  href={{ pathname: "/demo" }}
+                  href={{ pathname: "/demo/full" }}
                   radius="md"
                   size="lg"
                   variant="filled"

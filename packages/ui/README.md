@@ -50,6 +50,7 @@ pnpm add mantine-datatable-extended mantine-datatable @mantine/dates dayjs nuqs 
 
 **Peer Dependencies:**
 
+- `@dnd-kit/react` >= 0.3
 - `@mantine/core` >= 8.3
 - `@mantine/dates` >= 8.3
 - `@mantine/hooks` >= 8.3

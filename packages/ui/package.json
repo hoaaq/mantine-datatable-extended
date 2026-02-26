@@ -1,7 +1,7 @@
 {
   "name": "@repo/ui",
   "type": "module",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "An extension library for Mantine DataTable, providing powerful and easy-to-use features for building data tables in React applications.",
   "tags": [
     "mantine",
