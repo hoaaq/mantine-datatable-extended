@@ -27,3 +27,6 @@
 .mantine-dte-checkbox-input {
   cursor: pointer;
 }
+.mantine-dte-checkbox-icon {
+  scale: 0.8;
+}

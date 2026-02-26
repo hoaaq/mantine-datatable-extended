@@ -1,5 +1,15 @@
-import { Button, Checkbox, Indicator, Popover, Stack } from "@mantine/core";
-import { IconX } from "@tabler/icons-react";
+import {
+  Button,
+  Checkbox,
+  Divider,
+  Indicator,
+  Popover,
+  ScrollArea,
+  Stack,
+  TextInput,
+} from "@mantine/core";
+import { IconSearch, IconX } from "@tabler/icons-react";
+import { useMemo, useState } from "react";
 import { useDataTableQueryParams } from "../../hooks";
 import type {
   DataTableExtendedColumnProps,
@@ -19,6 +29,18 @@ export function DataTableFilterSingleSelect<T = Record<string, unknown>>({
   const filterOptions = column.extend
     ?.filterOptions as FilterSingleSelectOptions;
   const filterOptionsData = filterOptions.data;
+
+  const [search, setSearch] = useState("");
+
+  const filteredOptions = useMemo(() => {
+    if (!search.trim()) {
+      return filterOptionsData;
+    }
+    const query = search.toLowerCase().trim();
+    return filterOptionsData.filter((data) =>
+      data.label.toLowerCase().includes(query)
+    );
+  }, [filterOptionsData, search]);
 
   const { filters, setFilters } = useDataTableQueryParams();
   const thisAccessorFilter = filters.find(
@@ -60,27 +82,52 @@ export function DataTableFilterSingleSelect<T = Record<string, unknown>>({
           </Button.Group>
         </Indicator>
       </Popover.Target>
-      <Popover.Dropdown>
-        <Stack>
-          {filterOptionsData.map((data) => (
-            <Checkbox
-              checked={isChecked(data.value)}
-              key={`${accessor}-${data.value}`}
-              label={data.label}
-              labelPosition="left"
-              onChange={() => onFilterChange(data.value)}
-              radius="xl"
-              styles={{
-                labelWrapper: {
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "100%",
-                },
-              }}
-              variant="outline"
-            />
-          ))}
-        </Stack>
+      <Popover.Dropdown p="0">
+        <TextInput
+          autoFocus
+          leftSection={<IconSearch size={16} />}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearch(e.target.value)
+          }
+          p="4"
+          styles={{
+            input: {
+              border: "none",
+            },
+          }}
+          value={search}
+        />
+        <Divider />
+        <ScrollArea.Autosize mah={180} type="auto">
+          <Stack gap="0">
+            {filteredOptions.map((data) => (
+              <Checkbox
+                checked={isChecked(data.value)}
+                classNames={{
+                  root: "mantine-dte-checkbox-root",
+                  body: "mantine-dte-checkbox-body",
+                  labelWrapper: "mantine-dte-checkbox-label-wrapper",
+                  label: "mantine-dte-checkbox-label",
+                  input: "mantine-dte-checkbox-input",
+                  icon: "mantine-dte-checkbox-icon",
+                }}
+                key={`${accessor}-${data.value}`}
+                label={data.label}
+                labelPosition="left"
+                onChange={() => onFilterChange(data.value)}
+                radius="xl"
+                size="xs"
+                styles={{
+                  labelWrapper: {
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  },
+                }}
+              />
+            ))}
+          </Stack>
+        </ScrollArea.Autosize>
       </Popover.Dropdown>
     </Popover>
   );

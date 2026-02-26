@@ -95,6 +95,7 @@ export function DataTableColumnsToggle({
                   labelWrapper: "mantine-dte-checkbox-label-wrapper",
                   label: "mantine-dte-checkbox-label",
                   input: "mantine-dte-checkbox-input",
+                  icon: "mantine-dte-checkbox-icon",
                 }}
                 key={column.accessor}
                 label={
