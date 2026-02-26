@@ -1,17 +1,17 @@
 import { Group, NativeSelect, Pagination, Space, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useDataTableQueryParams } from "../hooks";
-import { useDataTableContext } from "../provider";
+import { useDteQueryParams } from "../hooks";
+import { useDteContext } from "../provider";
 
-type TDataTablePaginationProps = {
+type TDtePaginationProps = {
   recordsPerPageOptions?: number[];
 };
 
-export function DataTablePagination({
+export function DtePagination({
   recordsPerPageOptions = [10, 20, 30, 40, 50],
-}: TDataTablePaginationProps) {
-  const { page, pageSize, setPage, setPageSize } = useDataTableQueryParams();
-  const { paginationProps, i18n } = useDataTableContext();
+}: TDtePaginationProps) {
+  const { page, pageSize, setPage, setPageSize } = useDteQueryParams();
+  const { paginationProps, i18n } = useDteContext();
   const { totalRecords } = paginationProps || {};
 
   const [totalPages, setTotalPages] = useState(0);

@@ -4,9 +4,9 @@ import {
   type DataTableProps,
   type DataTableSortProps,
 } from "mantine-datatable";
-import { useDataTableContext } from "../provider";
+import { useDteContext } from "../provider";
 
-type TDataTableExtendedProps<T = Record<string, unknown>> = Omit<
+type TDteExtendedProps<T = Record<string, unknown>> = Omit<
   DataTableProps<T>,
   | "storeColumnsKey"
   | "groups"
@@ -15,11 +15,11 @@ type TDataTableExtendedProps<T = Record<string, unknown>> = Omit<
   | keyof DataTableSortProps
 >;
 
-export function DataTableExtended<T = Record<string, unknown>>(
-  props: TDataTableExtendedProps<T>
+export function DteExtended<T = Record<string, unknown>>(
+  props: TDteExtendedProps<T>
 ) {
   const { storeColumnsKey, originalUseDataTableColumnsResult } =
-    useDataTableContext<T>();
+    useDteContext<T>();
   const { effectiveColumns } = originalUseDataTableColumnsResult;
 
   const extendedProps = {

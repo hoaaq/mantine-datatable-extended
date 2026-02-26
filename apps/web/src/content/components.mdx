@@ -2,15 +2,15 @@ import { Tabs } from "nextra/components";
 
 # Components
 
-The library provides independent components that you can arrange in any layout you want. All these components must be placed inside `DataTableProvider`.
+The library provides independent components that you can arrange in any layout you want. All these components must be placed inside `DteProvider`.
 
-## DataTableExtended
+## DteExtended
 
 The main component for displaying data tables. This is a replacement for the `DataTable` component from the original `mantine-datatable` library.
 
 ### Props
 
-`DataTableExtended` accepts all props from `DataTable` in `mantine-datatable`, except:
+`DteExtended` accepts all props from `DataTable` in `mantine-datatable`, except:
 - `columns` - automatically retrieved from context
 - `storeColumnsKey` - automatically retrieved from context
 - `groups` - not supported
@@ -20,8 +20,8 @@ The main component for displaying data tables. This is a replacement for the `Da
 
 ```tsx
 import {
-  DataTableExtended,
-  DataTableProvider,
+  DteExtended,
+  DteProvider,
 } from "mantine-datatable-extended";
 import { useDataTableColumns } from "mantine-datatable";
 
@@ -37,24 +37,24 @@ function MyTable() {
   });
 
   return (
-    <DataTableProvider
+    <DteProvider
       columns={columns}
       originalUseDataTableColumnsResult={originalUseDataTableColumnsResult}
       storeColumnsKey="my-table"
     >
-      <DataTableExtended records={data} />
-    </DataTableProvider>
+      <DteExtended records={data} />
+    </DteProvider>
   );
 }
 ```
 
-## DataTableSearch
+## DteSearch
 
 Component for searching across columns. Supports selecting multiple columns to search simultaneously.
 
 ### Props
 
-No props. i18n is configured via `DataTableProvider`.
+No props. i18n is configured via `DteProvider`.
 
 ### Usage
 
@@ -82,25 +82,25 @@ const columns = [
 ### Example
 
 ```tsx
-import { DataTableSearch } from "mantine-datatable-extended";
+import { DteSearch } from "mantine-datatable-extended";
 
 function TableHeader() {
   return (
     <Group>
-      <DataTableSearch />
+      <DteSearch />
       {/* Other components */}
     </Group>
   );
 }
 ```
 
-## DataTableFilter
+## DteFilter
 
 Component for filtering data based on various conditions. Automatically displays filters based on the `filterable` and `filterVariant` configuration of each column.
 
 ### Props
 
-No props. i18n is configured via `DataTableProvider`.
+No props. i18n is configured via `DteProvider`.
 
 ### Usage
 
@@ -128,12 +128,12 @@ const columns = [
 ### Example
 
 ```tsx
-import { DataTableFilter } from "mantine-datatable-extended";
+import { DteFilter } from "mantine-datatable-extended";
 
 function TableHeader() {
   return (
     <Group>
-      <DataTableFilter />
+      <DteFilter />
       {/* Other components */}
     </Group>
   );
@@ -142,13 +142,13 @@ function TableHeader() {
 
 See [Filter Variants](./columns-configuration#filter-variants) to learn about all available filter types.
 
-## DataTableSortList
+## DteSortList
 
 Component for sorting by multiple columns at once. Supports adding/removing/changing sort order.
 
 ### Props
 
-No props. i18n is configured via `DataTableProvider`.
+No props. i18n is configured via `DteProvider`.
 
 ### Usage
 
@@ -169,25 +169,25 @@ const columns = [
 ### Example
 
 ```tsx
-import { DataTableSortList } from "mantine-datatable-extended";
+import { DteSortList } from "mantine-datatable-extended";
 
 function TableHeader() {
   return (
     <Group>
-      <DataTableSortList />
+      <DteSortList />
       {/* Component will display popover with sort list */}
     </Group>
   );
 }
 ```
 
-## DataTableColumnsToggle
+## DteColumnsToggle
 
 Component to show/hide columns. Useful when you have many columns and want to let users customize the view.
 
 ### Props
 
-No props. i18n is configured via `DataTableProvider`.
+No props. i18n is configured via `DteProvider`.
 
 ### Usage
 
@@ -206,61 +206,61 @@ const columns = [
 ### Example
 
 ```tsx
-import { DataTableColumnsToggle } from "mantine-datatable-extended";
+import { DteColumnsToggle } from "mantine-datatable-extended";
 
 function TableHeader() {
   return (
     <Group>
-      <DataTableColumnsToggle />
+      <DteColumnsToggle />
       {/* Component displays popover with checkbox list */}
     </Group>
   );
 }
 ```
 
-**Note**: Column state will be saved to `localStorage` based on `storeColumnsKey` in `DataTableProvider`.
+**Note**: Column state will be saved to `localStorage` based on `storeColumnsKey` in `DteProvider`.
 
-## DataTablePagination
+## DtePagination
 
 Pagination component that can be placed anywhere on the page (not fixed to footer like the original).
 
 ### Props
 
 ```typescript
-type DataTablePaginationProps = {
+type TDtePaginationProps = {
   recordsPerPageOptions?: number[]; // Default: [10, 20, 30, 40, 50]
 };
 ```
 
-i18n is configured via `DataTableProvider`.
+i18n is configured via `DteProvider`.
 
 ### Usage
 
 For this component to work correctly, you need to set `totalRecords` through context:
 
 ```tsx
-import { useDataTableContext } from "mantine-datatable-extended";
+import { useDteContext } from "mantine-datatable-extended";
 
 function MyTable() {
-  const { setTotalRecords } = useDataTableContext();
+  const { setTotalRecords } = useDteContext();
   
   // When data is loaded
   useEffect(() => {
     setTotalRecords(totalRecords);
   }, [totalRecords]);
   
-  return <DataTableExtended records={records} />;
+  return <DteExtended records={records} />;
 }
 ```
 
 ### Example
 
 ```tsx
-import { DataTablePagination } from "mantine-datatable-extended";
+import { DtePagination } from "mantine-datatable-extended";
 
 function TableFooter() {
   return (
-    <DataTablePagination 
+    <DtePagination 
       recordsPerPageOptions={[10, 25, 50, 100]}
     />
   );
@@ -274,39 +274,39 @@ Example of how to arrange components:
 ```tsx
 function DataTablePage() {
   return (
-    <DataTableProvider {...props}>
+    <DteProvider {...props}>
       {/* Header with controls */}
       <Group justify="space-between">
         <Group>
-          <DataTableSearch />
-          <DataTableFilter />
+          <DteSearch />
+          <DteFilter />
         </Group>
         <Group>
-          <DataTableSortList />
-          <DataTableColumnsToggle />
+          <DteSortList />
+          <DteColumnsToggle />
         </Group>
       </Group>
 
       <Space h="md" />
 
       {/* Table */}
-      <DataTableExtended records={records} />
+      <DteExtended records={records} />
 
       <Space h="md" />
 
       {/* Footer with pagination */}
-      <DataTablePagination />
-    </DataTableProvider>
+      <DtePagination />
+    </DteProvider>
   );
 }
 ```
 
 ## Custom i18n
 
-Pass `i18n` to `DataTableProvider` to customize text. Grouped by component - only override the keys you need:
+Pass `i18n` to `DteProvider` to customize text. Grouped by component - only override the keys you need:
 
 ```tsx
-<DataTableProvider
+<DteProvider
   {...props}
   i18n={{
     search: { search: "Search..." },
@@ -317,5 +317,5 @@ Pass `i18n` to `DataTableProvider` to customize text. Grouped by component - onl
   }}
 >
   {/* components */}
-</DataTableProvider>
+</DteProvider>
 ```

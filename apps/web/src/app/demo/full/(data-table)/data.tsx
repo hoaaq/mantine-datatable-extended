@@ -1,12 +1,12 @@
 import { useDebouncedValue } from "@mantine/hooks";
-import { useDataTableQueryParams } from "@repo/ui";
+import { useDteQueryParams } from "@repo/ui";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { client } from "@/lib/treaty";
 
 const KEY = "full-demo";
 
-type SearchCondition = ReturnType<typeof useDataTableQueryParams>["search"];
+type SearchCondition = ReturnType<typeof useDteQueryParams>["search"];
 
 const cleanSearch = (search: SearchCondition): SearchCondition => {
   if (search.accessors.length <= 0 || search.value.length <= 0) {
@@ -19,7 +19,7 @@ const cleanSearch = (search: SearchCondition): SearchCondition => {
 };
 
 export function useData() {
-  const { page, pageSize, sorts, search, filters } = useDataTableQueryParams();
+  const { page, pageSize, sorts, search, filters } = useDteQueryParams();
   const [[debouncedPage, debouncedPageSize]] = useDebouncedValue(
     [page, pageSize],
     200,

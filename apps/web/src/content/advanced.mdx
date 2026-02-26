@@ -7,13 +7,13 @@ When you have multiple data tables on the same page, you need to use `urlKeys` t
 ### Example
 
 ```tsx
-import { DataTableProvider } from "mantine-datatable-extended";
+import { DteProvider } from "mantine-datatable-extended";
 
 function PageWithMultipleTables() {
   return (
     <Stack>
       {/* Table 1 */}
-      <DataTableProvider
+      <DteProvider
         storeColumnsKey="users-table"
         urlKeys={{
           page: "users_page",
@@ -25,12 +25,12 @@ function PageWithMultipleTables() {
         columns={userColumns}
         originalUseDataTableColumnsResult={userColumnsResult}
       >
-        <DataTableExtended records={users} />
-        <DataTablePagination />
-      </DataTableProvider>
+        <DteExtended records={users} />
+        <DtePagination />
+      </DteProvider>
 
       {/* Table 2 */}
-      <DataTableProvider
+      <DteProvider
         storeColumnsKey="products-table"
         urlKeys={{
           page: "products_page",
@@ -42,9 +42,9 @@ function PageWithMultipleTables() {
         columns={productColumns}
         originalUseDataTableColumnsResult={productColumnsResult}
       >
-        <DataTableExtended records={products} />
-        <DataTablePagination />
-      </DataTableProvider>
+        <DteExtended records={products} />
+        <DtePagination />
+      </DteProvider>
     </Stack>
   );
 }
@@ -55,7 +55,7 @@ function PageWithMultipleTables() {
 When using server-side, you also need to create a separate loader for each table:
 
 ```tsx
-const usersLoader = createDataTableLoader({
+const usersLoader = createDteLoader({
   urlKeys: {
     page: "users_page",
     pageSize: "users_pageSize",
@@ -65,7 +65,7 @@ const usersLoader = createDataTableLoader({
   },
 });
 
-const productsLoader = createDataTableLoader({
+const productsLoader = createDteLoader({
   urlKeys: {
     page: "products_page",
     pageSize: "products_pageSize",
@@ -89,7 +89,7 @@ export default async function Page({ searchParams }: Props) {
 You can customize the names of query parameters in the URL:
 
 ```tsx
-<DataTableProvider
+<DteProvider
   urlKeys={{
     page: "p",
     pageSize: "ps",
@@ -108,7 +108,7 @@ Note: When customizing URL keys, you must use the same keys for both the server 
 Set default values for parameters:
 
 ```tsx
-<DataTableProvider
+<DteProvider
   defaultParams={{
     page: 1,
     pageSize: 20,
@@ -134,10 +134,10 @@ Set default values for parameters:
 
 ## Programmatic Control
 
-Use the `useDataTableQueryParams` hook to control parameters programmatically:
+Use the `useDteQueryParams` hook to control parameters programmatically:
 
 ```tsx
-import { useDataTableQueryParams } from "mantine-datatable-extended";
+import { useDteQueryParams } from "mantine-datatable-extended";
 
 function MyComponent() {
   const {
@@ -157,7 +157,7 @@ function MyComponent() {
     resetSearch,
     resetFilters,
     resetAll,
-  } = useDataTableQueryParams();
+  } = useDteQueryParams();
 
   const handleReset = () => {
     resetAll(); // Reset all to default
@@ -190,10 +190,10 @@ function MyComponent() {
 
 ## Accessing Context
 
-Use `useDataTableContext` to access context and utilities:
+Use `useDteContext` to access context and utilities:
 
 ```tsx
-import { useDataTableContext } from "mantine-datatable-extended";
+import { useDteContext } from "mantine-datatable-extended";
 
 function MyComponent() {
   const {
@@ -202,7 +202,7 @@ function MyComponent() {
     setRecordsPerPageOptions,
     paginationProps,
     storeColumnsKey,
-  } = useDataTableContext();
+  } = useDteContext();
 
   // Use columns to render custom UI
   const searchableColumns = columns.filter(
@@ -227,13 +227,13 @@ Change the records per page options:
 
 ```tsx
 function MyTable() {
-  const { setRecordsPerPageOptions } = useDataTableContext();
+  const { setRecordsPerPageOptions } = useDteContext();
 
   useEffect(() => {
     setRecordsPerPageOptions([5, 10, 25, 50, 100, 200]);
   }, []);
 
-  return <DataTablePagination recordsPerPageOptions={[5, 10, 25, 50, 100]} />;
+  return <DtePagination recordsPerPageOptions={[5, 10, 25, 50, 100]} />;
 }
 ```
 
@@ -243,8 +243,8 @@ Render components based on conditions:
 
 ```tsx
 function ConditionalDataTable() {
-  const { filters } = useDataTableQueryParams();
-  const { columns } = useDataTableContext();
+  const { filters } = useDteQueryParams();
+  const { columns } = useDteContext();
 
   const hasFilterableColumns = columns.some(
     (col) => col.extend?.filterable
@@ -252,8 +252,8 @@ function ConditionalDataTable() {
 
   return (
     <>
-      {hasFilterableColumns && <DataTableFilter />}
-      <DataTableExtended records={records} />
+      {hasFilterableColumns && <DteFilter />}
+      <DteExtended records={records} />
       {filters.length > 0 && (
         <Text size="sm" c="dimmed">
           {filters.length} filter(s) applied
@@ -266,12 +266,12 @@ function ConditionalDataTable() {
 
 ## Custom i18n
 
-Pass `i18n` to `DataTableProvider` to customize display text. Grouped by component - only override the keys you need:
+Pass `i18n` to `DteProvider` to customize display text. Grouped by component - only override the keys you need:
 
 ```tsx
 function InternationalizedTable() {
   return (
-    <DataTableProvider
+    <DteProvider
       {...props}
       i18n={{
         search: { search: "Search..." },
@@ -292,14 +292,14 @@ function InternationalizedTable() {
       }}
     >
       <Group>
-        <DataTableSearch />
-        <DataTableFilter />
+        <DteSearch />
+        <DteFilter />
       </Group>
 
-      <DataTableSortList />
-      <DataTableColumnsToggle />
-      <DataTablePagination />
-    </DataTableProvider>
+      <DteSortList />
+      <DteColumnsToggle />
+      <DtePagination />
+    </DteProvider>
   );
 }
 ```
@@ -309,10 +309,10 @@ function InternationalizedTable() {
 Combine with forms to export/import filters:
 
 ```tsx
-import { useDataTableQueryParams } from "mantine-datatable-extended";
+import { useDteQueryParams } from "mantine-datatable-extended";
 
 function ExportFiltersButton() {
-  const { filters, sorts, search } = useDataTableQueryParams();
+  const { filters, sorts, search } = useDteQueryParams();
 
   const handleExport = () => {
     const config = {
@@ -334,7 +334,7 @@ function ExportFiltersButton() {
 }
 
 function ImportFiltersButton() {
-  const { setFilters, setSorts, setSearch } = useDataTableQueryParams();
+  const { setFilters, setSorts, setSearch } = useDteQueryParams();
 
   const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -370,7 +370,7 @@ type User = {
   role: "admin" | "user" | "guest";
 };
 
-const columns: DataTableExtendedColumnProps<User>[] = [
+const columns: TDteExtendedColumnProps<User>[] = [
   {
     accessor: "name", // Type-safe
     title: "Name",
@@ -395,11 +395,11 @@ const columns: DataTableExtendedColumnProps<User>[] = [
   },
 ];
 
-// Type-safe in DataTableProvider
-<DataTableProvider<User>
+// Type-safe in DteProvider
+<DteProvider<User>
   columns={columns}
   // ...
 >
-  <DataTableExtended<User> records={users} />
-</DataTableProvider>
+  <DteExtended<User> records={users} />
+</DteProvider>
 ```

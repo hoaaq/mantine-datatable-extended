@@ -10,24 +10,24 @@ import {
 } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
-import { useDataTableQueryParams } from "../../hooks";
+import { useDteQueryParams } from "../../hooks";
 import type {
-  DataTableExtendedColumnProps,
   EFilterVariant,
-  FilterMultiSelectOptions,
+  TDteColumnProps,
+  TFilterMultiSelectOptions,
 } from "../../types";
 
-type TDataTableFilterMultiSelectProps<T = Record<string, unknown>> = {
-  column: DataTableExtendedColumnProps<T>;
+type TDteFilterMultiSelectProps<T = Record<string, unknown>> = {
+  column: TDteColumnProps<T>;
 };
 
-export function DataTableFilterMultiSelect<T = Record<string, unknown>>({
+export function DteFilterMultiSelect<T = Record<string, unknown>>({
   column,
-}: TDataTableFilterMultiSelectProps<T>) {
+}: TDteFilterMultiSelectProps<T>) {
   const accessor = column.accessor as string;
   const variant = column.extend?.filterVariant as EFilterVariant;
   const filterOptions = column.extend
-    ?.filterOptions as FilterMultiSelectOptions;
+    ?.filterOptions as TFilterMultiSelectOptions;
   const filterOptionsData = filterOptions.data;
 
   const [search, setSearch] = useState("");
@@ -37,12 +37,12 @@ export function DataTableFilterMultiSelect<T = Record<string, unknown>>({
       return filterOptionsData;
     }
     const query = search.toLowerCase().trim();
-    return filterOptionsData.filter((data) =>
+    return filterOptionsData.filter((data: { value: string; label: string }) =>
       data.label.toLowerCase().includes(query)
     );
   }, [filterOptionsData, search]);
 
-  const { filters, setFilters } = useDataTableQueryParams();
+  const { filters, setFilters } = useDteQueryParams();
   const thisAccessorFilter = filters.find(
     (filter) => filter.accessor === accessor
   );
@@ -121,7 +121,7 @@ export function DataTableFilterMultiSelect<T = Record<string, unknown>>({
         <Divider />
         <ScrollArea.Autosize mah={180} type="auto">
           <Stack gap="0">
-            {filteredOptions.map((data) => (
+            {filteredOptions.map((data: { value: string; label: string }) => (
               <Checkbox
                 checked={isChecked(data.value)}
                 classNames={{

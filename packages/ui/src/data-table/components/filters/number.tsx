@@ -1,19 +1,19 @@
 import { Button, Indicator, NumberInput, Popover } from "@mantine/core";
 import { IconFilter, IconX } from "@tabler/icons-react";
-import { useDataTableQueryParams } from "../../hooks";
-import type { DataTableExtendedColumnProps, EFilterVariant } from "../../types";
+import { useDteQueryParams } from "../../hooks";
+import type { EFilterVariant, TDteColumnProps } from "../../types";
 
-type TDataTableFilterNumberProps<T = Record<string, unknown>> = {
-  column: DataTableExtendedColumnProps<T>;
+type TDteFilterNumberProps<T = Record<string, unknown>> = {
+  column: TDteColumnProps<T>;
 };
 
-export function DataTableFilterNumber<T = Record<string, unknown>>({
+export function DteFilterNumber<T = Record<string, unknown>>({
   column,
-}: TDataTableFilterNumberProps<T>) {
+}: TDteFilterNumberProps<T>) {
   const accessor = column.accessor as string;
   const variant = column.extend?.filterVariant as EFilterVariant;
 
-  const { filters, setFilters } = useDataTableQueryParams();
+  const { filters, setFilters } = useDteQueryParams();
   const thisAccessorFilter = filters.find(
     (filter) => filter.accessor === accessor
   );

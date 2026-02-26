@@ -1,3 +1,6 @@
+/**
+ * Sort direction values for DataTable columns.
+ */
 export const ESortDirection = {
   ASC: "asc",
   DESC: "desc",
@@ -5,6 +8,9 @@ export const ESortDirection = {
 export type ESortDirection =
   (typeof ESortDirection)[keyof typeof ESortDirection];
 
+/**
+ * Filter variant types for DataTable columns.
+ */
 export const EFilterVariant = {
   TEXT: "text",
   NUMBER: "number",

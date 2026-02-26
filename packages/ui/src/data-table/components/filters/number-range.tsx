@@ -9,20 +9,20 @@ import {
   Stack,
 } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
-import { useDataTableQueryParams } from "../../hooks";
+import { useDteQueryParams } from "../../hooks";
 import type {
-  DataTableExtendedColumnProps,
   EFilterVariant,
-  FilterNumberRangeOptions,
+  TDteColumnProps,
+  TFilterNumberRangeOptions,
 } from "../../types";
 
-type TDataTableFilterNumberRangeProps<T = Record<string, unknown>> = {
-  column: DataTableExtendedColumnProps<T>;
+type TDteFilterNumberRangeProps<T = Record<string, unknown>> = {
+  column: TDteColumnProps<T>;
 };
 
-export function DataTableFilterNumberRange<T = Record<string, unknown>>({
+export function DteFilterNumberRange<T = Record<string, unknown>>({
   column,
-}: TDataTableFilterNumberRangeProps<T>) {
+}: TDteFilterNumberRangeProps<T>) {
   const accessor = column.accessor as string;
   const variant = column.extend?.filterVariant as EFilterVariant;
   const {
@@ -31,9 +31,9 @@ export function DataTableFilterNumberRange<T = Record<string, unknown>>({
     step = 1,
     minRange = 1,
     suffix,
-  } = column.extend?.filterOptions as FilterNumberRangeOptions;
+  } = column.extend?.filterOptions as TFilterNumberRangeOptions;
 
-  const { filters, setFilters } = useDataTableQueryParams();
+  const { filters, setFilters } = useDteQueryParams();
   const thisAccessorFilter = filters.find(
     (filter) => filter.accessor === accessor
   );

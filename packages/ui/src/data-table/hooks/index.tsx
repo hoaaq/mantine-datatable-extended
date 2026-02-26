@@ -1,29 +1,29 @@
 import { parseAsInteger, parseAsJson, useQueryState } from "nuqs";
 import z from "zod";
-import { useDataTableContext } from "../provider";
-import type { DefaultParamsType, UrlKeysType } from "../types";
+import { useDteContext } from "../provider";
+import type { TDefaultParams, TUrlKeys } from "../types";
 import {
   filterSchema,
   searchSchema,
   sortSchema,
 } from "../types/data-table-query-param.type";
 
-export function useDataTableQueryParams() {
-  let keys: UrlKeysType = {
+export function useDteQueryParams() {
+  let keys: TUrlKeys = {
     page: "page",
     pageSize: "pageSize",
     sorts: "sorts",
     search: "search",
     filters: "filters",
   };
-  let params: Required<DefaultParamsType> = {
+  let params: Required<TDefaultParams> = {
     page: 1,
     pageSize: 10,
     sorts: [],
     search: { accessors: [], value: "" },
     filters: [],
   };
-  const { urlKeys, defaultParams } = useDataTableContext();
+  const { urlKeys, defaultParams } = useDteContext();
   if (urlKeys) {
     keys = urlKeys;
   }

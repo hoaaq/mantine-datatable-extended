@@ -1,6 +1,6 @@
 # Column Configuration
 
-Columns in `DataTableExtended` use the `DataTableExtendedColumnProps` type - an extension of the column type from `mantine-datatable` with an additional `extend` property to configure extended features.
+Columns in `DteExtended` use the `TDteColumnProps` type - an extension of the column type from `mantine-datatable` with an additional `extend` property to configure extended features.
 
 ## Extend Property
 
@@ -12,7 +12,7 @@ The `extend` property allows you to configure:
 - `filterOptions`: Filter options (depends on `filterVariant`)
 
 ```tsx
-type DataTableExtendedColumnProps<T> = {
+type TDteColumnProps<T> = {
   // ... props from mantine-datatable
   extend?: {
     searchable?: boolean;
@@ -40,7 +40,7 @@ const columns = [
 ];
 ```
 
-When a column is marked as `searchable`, it will appear in the `DataTableSearch` popover for users to select and search within that column.
+When a column is marked as `searchable`, it will appear in the `DteSearch` popover for users to select and search within that column.
 
 ## Sortable Columns
 
@@ -58,7 +58,7 @@ const columns = [
 ];
 ```
 
-`sortable` columns will appear in `DataTableSortList` and can be sorted by multiple columns simultaneously.
+`sortable` columns will appear in `DteSortList` and can be sorted by multiple columns simultaneously.
 
 ## Filter Variants
 
@@ -198,7 +198,7 @@ Filter by date range. No `filterOptions` needed.
 ## Complete Example
 
 ```tsx
-import type { DataTableExtendedColumnProps } from "mantine-datatable-extended";
+import type { TDteColumnProps } from "mantine-datatable-extended";
 
 type Product = {
   id: string;
@@ -211,7 +211,7 @@ type Product = {
   updatedAt: Date;
 };
 
-const columns: DataTableExtendedColumnProps<Product>[] = [
+const columns: TDteColumnProps<Product>[] = [
   {
     accessor: "name",
     title: "Product Name",

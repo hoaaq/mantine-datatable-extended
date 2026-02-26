@@ -1,4 +1,4 @@
-type i18nDataTableViewOptions = {
+type TDteViewOptions = {
   /**
    * The label for the columns toggle button.
    */
@@ -9,7 +9,7 @@ type i18nDataTableViewOptions = {
   columnsToggleSearchPlaceholder: string;
 };
 
-type i18nDataTableSortOptions = {
+type TDteSortOptions = {
   /**
    * The label for the sort button.
    */
@@ -32,7 +32,7 @@ type i18nDataTableSortOptions = {
   desc: string;
 };
 
-type i18nDataTableSearchOptions = {
+type TDteSearchOptions = {
   /**
    * The label for the search input placeholder.
    */
@@ -43,14 +43,14 @@ type i18nDataTableSearchOptions = {
   searchAccessorsSearchPlaceholder: string;
 };
 
-type i18nDataTableFilterOptions = {
+type TDteFilterOptions = {
   /**
    * The label for the reset filter button.
    */
   resetFilter: string;
 };
 
-type i18nDataTablePaginationOptions = {
+type TDtePaginationOptions = {
   /**
    * The label for the rows per page.
    */
@@ -74,30 +74,30 @@ type i18nDataTablePaginationOptions = {
  * Unified i18n type for all DataTable components.
  * Grouped by component - full type stored in context (after merging with defaults).
  */
-export type DataTableI18n = {
-  view: i18nDataTableViewOptions;
-  sort: i18nDataTableSortOptions;
-  search: i18nDataTableSearchOptions;
-  filter: i18nDataTableFilterOptions;
-  pagination: i18nDataTablePaginationOptions;
+export type TDteI18n = {
+  view: TDteViewOptions;
+  sort: TDteSortOptions;
+  search: TDteSearchOptions;
+  filter: TDteFilterOptions;
+  pagination: TDtePaginationOptions;
 };
 
 /**
- * Input type for i18n prop in DataTableProvider.
+ * Input type for i18n prop in DteProvider.
  * Each group is optional - only override the keys you need.
  */
-export type DataTableI18nInput = {
-  view?: Partial<i18nDataTableViewOptions>;
-  sort?: Partial<i18nDataTableSortOptions>;
-  search?: Partial<i18nDataTableSearchOptions>;
-  filter?: Partial<i18nDataTableFilterOptions>;
-  pagination?: Partial<i18nDataTablePaginationOptions>;
+export type TDteI18nInput = {
+  view?: Partial<TDteViewOptions>;
+  sort?: Partial<TDteSortOptions>;
+  search?: Partial<TDteSearchOptions>;
+  filter?: Partial<TDteFilterOptions>;
+  pagination?: Partial<TDtePaginationOptions>;
 };
 
 /**
  * Default i18n values for DataTable components.
  */
-export const DEFAULT_DATA_TABLE_I18N: DataTableI18n = {
+export const DEFAULT_DTE_I18N: TDteI18n = {
   view: {
     columnsToggle: "Columns Toggle",
     columnsToggleSearchPlaceholder: "Search columns…",

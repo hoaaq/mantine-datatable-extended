@@ -15,11 +15,11 @@ Mantine and Mantine DataTable are excellent libraries, trusted and used by many 
 
 ### 🎯 Standardized Components
 
-- **DataTableSearch**: Search with multi-column selection
-- **DataTableFilter**: Filter data with various filter types (text, number, date, select, range...)
-- **DataTableSortList**: Sort by multiple columns simultaneously
-- **DataTableColumnsToggle**: Show/hide columns
-- **DataTablePagination**: Flexible pagination that can be placed anywhere
+- **DteSearch**: Search with multi-column selection
+- **DteFilter**: Filter data with various filter types (text, number, date, select, range...)
+- **DteSortList**: Sort by multiple columns simultaneously
+- **DteColumnsToggle**: Show/hide columns
+- **DtePagination**: Flexible pagination that can be placed anywhere
 
 ### 🔗 URL State Management
 
@@ -90,19 +90,19 @@ export default function RootLayout({ children }) {
 "use client";
 
 import {
-  DataTableExtended,
-  DataTableProvider,
-  DataTableSearch,
-  DataTableFilter,
-  DataTableSortList,
-  DataTableColumnsToggle,
-  DataTablePagination,
-  type DataTableExtendedColumnProps,
+  DteExtended,
+  DteProvider,
+  DteSearch,
+  DteFilter,
+  DteSortList,
+  DteColumnsToggle,
+  DtePagination,
+  type TDteColumnProps,
 } from "mantine-datatable-extended";
 import { useDataTableColumns } from "mantine-datatable";
 import { Group, Space } from "@mantine/core";
 
-const columns: DataTableExtendedColumnProps[] = [
+const columns: TDteColumnProps[] = [
   {
     accessor: "name",
     title: "Name",
@@ -123,27 +123,27 @@ export default function MyTable() {
   });
 
   return (
-    <DataTableProvider
+    <DteProvider
       columns={columns}
       originalUseDataTableColumnsResult={originalUseDataTableColumnsResult}
       storeColumnsKey="my-table"
     >
       <Group justify="space-between">
         <Group>
-          <DataTableSearch />
-          <DataTableFilter />
+          <DteSearch />
+          <DteFilter />
         </Group>
         <Group>
-          <DataTableSortList />
-          <DataTableColumnsToggle />
+          <DteSortList />
+          <DteColumnsToggle />
         </Group>
       </Group>
 
       <Space h="md" />
-      <DataTableExtended records={data} />
+      <DteExtended records={data} />
       <Space h="md" />
-      <DataTablePagination />
-    </DataTableProvider>
+      <DtePagination />
+    </DteProvider>
   );
 }
 ```

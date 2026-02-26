@@ -1,31 +1,26 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState } from "react";
-import type { DataTableContextProps, DataTableProviderProps } from "../types";
-import {
-  type DataTableI18n,
-  DEFAULT_DATA_TABLE_I18N,
-} from "../types/i18n.type";
+import type { TDteContextProps, TDteI18n, TDteProviderProps } from "../types";
+import { DEFAULT_DTE_I18N } from "../types/i18n.type";
 
-const DataTableContext = createContext<
-  DataTableContextProps<Record<string, unknown>> | undefined
+const DteContext = createContext<
+  TDteContextProps<Record<string, unknown>> | undefined
 >(undefined);
 
-export function useDataTableContext<
+export function useDteContext<
   T = Record<string, unknown>,
->(): DataTableContextProps<T> {
-  const context = useContext(DataTableContext);
+>(): TDteContextProps<T> {
+  const context = useContext(DteContext);
 
   if (!context) {
-    throw new Error(
-      "useDataTableContext must be used within a DataTableProvider"
-    );
+    throw new Error("useDteContext must be used within a DteProvider");
   }
 
-  return context as DataTableContextProps<T>;
+  return context as TDteContextProps<T>;
 }
 
-export function DataTableProvider<T = Record<string, unknown>>({
+export function DteProvider<T = Record<string, unknown>>({
   children,
   urlKeys,
   defaultParams,
@@ -33,7 +28,7 @@ export function DataTableProvider<T = Record<string, unknown>>({
   columns,
   originalUseDataTableColumnsResult,
   i18n: i18nInput,
-}: DataTableProviderProps<T>) {
+}: TDteProviderProps<T>) {
   if (!storeColumnsKey) {
     throw new Error("storeColumnsKey property is required");
   }
@@ -54,14 +49,14 @@ export function DataTableProvider<T = Record<string, unknown>>({
     [totalRecords, recordsPerPageOptions]
   );
 
-  const i18n: DataTableI18n = useMemo(
+  const i18n: TDteI18n = useMemo(
     () => ({
-      view: { ...DEFAULT_DATA_TABLE_I18N.view, ...i18nInput?.view },
-      sort: { ...DEFAULT_DATA_TABLE_I18N.sort, ...i18nInput?.sort },
-      search: { ...DEFAULT_DATA_TABLE_I18N.search, ...i18nInput?.search },
-      filter: { ...DEFAULT_DATA_TABLE_I18N.filter, ...i18nInput?.filter },
+      view: { ...DEFAULT_DTE_I18N.view, ...i18nInput?.view },
+      sort: { ...DEFAULT_DTE_I18N.sort, ...i18nInput?.sort },
+      search: { ...DEFAULT_DTE_I18N.search, ...i18nInput?.search },
+      filter: { ...DEFAULT_DTE_I18N.filter, ...i18nInput?.filter },
       pagination: {
-        ...DEFAULT_DATA_TABLE_I18N.pagination,
+        ...DEFAULT_DTE_I18N.pagination,
         ...i18nInput?.pagination,
       },
     }),
@@ -80,7 +75,7 @@ export function DataTableProvider<T = Record<string, unknown>>({
         setTotalRecords,
         setRecordsPerPageOptions,
         i18n,
-      }) as DataTableContextProps<Record<string, unknown>>,
+      }) as TDteContextProps<Record<string, unknown>>,
     [
       urlKeys,
       defaultParams,
@@ -93,12 +88,12 @@ export function DataTableProvider<T = Record<string, unknown>>({
   );
 
   return (
-    <DataTableContext.Provider
+    <DteContext.Provider
       value={{
         ...value,
       }}
     >
       {children}
-    </DataTableContext.Provider>
+    </DteContext.Provider>
   );
 }

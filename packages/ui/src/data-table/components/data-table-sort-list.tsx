@@ -18,11 +18,11 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import type React from "react";
-import { useDataTableQueryParams } from "../hooks";
-import { useDataTableContext } from "../provider";
+import { useDteQueryParams } from "../hooks";
+import { useDteContext } from "../provider";
 import { ESortDirection } from "../types";
 
-type SortableSortRowProps = {
+type TSortableSortRowProps = {
   sort: { accessor: string; direction: ESortDirection };
   index: number;
   sortableColumns: { accessor: string; title?: React.ReactNode }[];
@@ -38,8 +38,8 @@ function SortableSortRow({
   onAccessorChange,
   onDirectionChange,
   onRemoveSort,
-}: SortableSortRowProps) {
-  const { i18n } = useDataTableContext();
+}: TSortableSortRowProps) {
+  const { i18n } = useDteContext();
   const { ref, handleRef } = useSortable({
     id: sort.accessor,
     index,
@@ -91,9 +91,9 @@ function SortableSortRow({
   );
 }
 
-export function DataTableSortList() {
-  const { sorts, setSorts, resetSorts } = useDataTableQueryParams();
-  const { columns, i18n } = useDataTableContext();
+export function DteSortList() {
+  const { sorts, setSorts, resetSorts } = useDteQueryParams();
+  const { columns, i18n } = useDteContext();
 
   const sortableColumns = columns.filter((column) => column.extend?.sortable);
   const remainingColumns = sortableColumns.filter(

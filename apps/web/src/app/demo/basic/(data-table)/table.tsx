@@ -1,19 +1,19 @@
 "use client";
 
-import { DataTableExtended, useDataTableContext } from "@repo/ui";
+import { DteExtended, useDteContext } from "@repo/ui";
 import { useEffect } from "react";
 import { useData } from "./data";
 
 export function DataTableBody() {
   const { records, totalRecords, isFetching } = useData();
-  const { setTotalRecords } = useDataTableContext();
+  const { setTotalRecords } = useDteContext();
 
   useEffect(() => {
     setTotalRecords?.(totalRecords);
   }, [totalRecords, setTotalRecords]);
 
   return (
-    <DataTableExtended
+    <DteExtended
       fetching={isFetching}
       height={500}
       records={records}

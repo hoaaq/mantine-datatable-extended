@@ -1,0 +1,60 @@
+---
+description: Code conventions for @repo/ui package
+globs: packages/ui/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# @repo/ui Code Conventions
+
+## File Naming
+
+- Components: `kebab-case.tsx` (e.g. `data-table-extended.tsx`)
+- Types: `*.type.ts` (e.g. `data-table-column-extended.type.ts`)
+- Enums: `*.enum.ts` (e.g. `data-table-query-param.enum.ts`)
+
+## Type Naming
+
+- **Types**: prefix `T` (e.g. `TDteColumnProps`, `TUrlKeys`)
+- **Component prop types**: prefix `T` + suffix `Props` (e.g. `TDteFilterTextProps`)
+- **Options**: `T{Feature}{Purpose}Options` (e.g. `TFilterSingleSelectOptions`)
+- **Enum-like**: prefix `E` (e.g. `ESortDirection`, `EFilterVariant`)
+- **Constants**: `DEFAULT_{NAME}` (e.g. `DEFAULT_DTE_I18N`)
+
+```typescript
+// BAD
+type DataTableViewOptions = { ... }
+type UrlKeysType = { ... }
+
+// GOOD
+type TDteViewOptions = { ... }
+type TUrlKeys = { ... }
+```
+
+## Import Order
+
+1. External (React, Mantine, libs)
+2. Internal - `import type` for types first, then components/hooks
+
+```typescript
+// BAD
+import { useDteContext } from "../provider";
+import type { TDteColumnProps } from "../types";
+
+// GOOD
+import type { TDteColumnProps } from "../types";
+import { useDteContext } from "../provider";
+```
+
+## Components
+
+- Use function components (not arrow functions)
+- Generic default: `Record<string, unknown>`
+- Props type: colocate or import
+
+## JSDoc
+
+Add JSDoc for all public exports (types, constants, components).
+
+## CSS
+
+Prefix classes with `mantine-dte-` (mantine-datatable-extended).

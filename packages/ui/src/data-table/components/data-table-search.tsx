@@ -13,12 +13,12 @@ import {
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
-import { useDataTableQueryParams } from "../hooks";
-import { useDataTableContext } from "../provider";
+import { useDteQueryParams } from "../hooks";
+import { useDteContext } from "../provider";
 
-function DataTableSearchAccessorsToggle() {
-  const { columns, i18n } = useDataTableContext();
-  const { search, setSearch } = useDataTableQueryParams();
+function DteSearchAccessorsToggle() {
+  const { columns, i18n } = useDteContext();
+  const { search, setSearch } = useDteQueryParams();
   const countSearches = search.accessors.length;
   const [filter, setFilter] = useState("");
 
@@ -116,9 +116,9 @@ function DataTableSearchAccessorsToggle() {
   );
 }
 
-export function DataTableSearch() {
-  const { search, setSearch } = useDataTableQueryParams();
-  const { i18n } = useDataTableContext();
+export function DteSearch() {
+  const { search, setSearch } = useDteQueryParams();
+  const { i18n } = useDteContext();
 
   const onSearchValueChange = (value: string) => {
     setSearch({ ...search, value });
@@ -126,7 +126,7 @@ export function DataTableSearch() {
 
   return (
     <Group gap="xs">
-      <DataTableSearchAccessorsToggle />
+      <DteSearchAccessorsToggle />
       <TextInput
         onChange={(e) => onSearchValueChange(e.target.value)}
         placeholder={i18n.search.search}

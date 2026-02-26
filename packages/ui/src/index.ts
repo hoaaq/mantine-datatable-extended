@@ -3,21 +3,19 @@
 import "./style.css";
 
 export {
-  DataTableColumnsToggle,
-  DataTableExtended,
-  DataTableFilter,
-  DataTablePagination,
-  DataTableSearch,
-  DataTableSortList,
+  DteColumnsToggle,
+  DteExtended,
+  DteFilter,
+  DtePagination,
+  DteSearch,
+  DteSortList,
 } from "./data-table/components";
 
-export { useDataTableQueryParams } from "./data-table/hooks";
-export { DataTableProvider, useDataTableContext } from "./data-table/provider";
+export { useDteQueryParams } from "./data-table/hooks";
+export { DteProvider, useDteContext } from "./data-table/provider";
 
 export type {
-  DataTableContextProps,
-  DataTableExtendedColumnProps,
-  DataTableI18n,
-  DataTableI18nInput,
-  DataTableProviderProps,
+  TDteColumnProps,
+  TDteI18nInput,
+  TDteProviderProps,
 } from "./data-table/types";

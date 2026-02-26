@@ -1,12 +1,12 @@
 import type { DataTableColumn } from "mantine-datatable";
 import type {
-  FilterMultiSelectOptions,
-  FilterNumberRangeOptions,
-  FilterSingleSelectOptions,
+  TFilterMultiSelectOptions,
+  TFilterNumberRangeOptions,
+  TFilterSingleSelectOptions,
 } from "./data-table-filter-options.type";
 
 // Base extend type with discriminated union
-type BaseExtend = {
+type TBaseExtend = {
   /**
    * Whether the column is searchable.
    */
@@ -22,7 +22,7 @@ type BaseExtend = {
 };
 
 // Discriminated union for filterable columns
-type FilterableExtend = BaseExtend &
+type TFilterableExtend = TBaseExtend &
   (
     | {
         filterVariant?: "text" | "number" | "date" | "date_range";
@@ -30,19 +30,23 @@ type FilterableExtend = BaseExtend &
       }
     | {
         filterVariant: "number_range";
-        filterOptions: FilterNumberRangeOptions;
+        filterOptions: TFilterNumberRangeOptions;
       }
     | {
         filterVariant: "single_select";
-        filterOptions: FilterSingleSelectOptions;
+        filterOptions: TFilterSingleSelectOptions;
       }
     | {
         filterVariant: "multi_select";
-        filterOptions: FilterMultiSelectOptions;
+        filterOptions: TFilterMultiSelectOptions;
       }
   );
 
-export type DataTableExtendedColumnProps<T = Record<string, unknown>> = Omit<
+/**
+ * Extended column props for DataTable with search, sort, and filter support.
+ * Extends mantine-datatable's DataTableColumn with an optional `extend` property.
+ */
+export type TDteColumnProps<T = Record<string, unknown>> = Omit<
   DataTableColumn<T>,
   | "sortable"
   | "sortKey"
@@ -56,7 +60,7 @@ export type DataTableExtendedColumnProps<T = Record<string, unknown>> = Omit<
   /**
    * The extended properties of the column.
    */
-  extend?: FilterableExtend;
+  extend?: TFilterableExtend;
 } & ( // Omit and then add these properties because TS wrongly compiles discriminated union types from mantine-datatable
     | {
         /**

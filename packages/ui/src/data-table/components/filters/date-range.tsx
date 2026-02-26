@@ -3,20 +3,20 @@ import { DatePicker } from "@mantine/dates";
 import { IconX } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { useDataTableQueryParams } from "../../hooks";
-import type { DataTableExtendedColumnProps, EFilterVariant } from "../../types";
+import { useDteQueryParams } from "../../hooks";
+import type { EFilterVariant, TDteColumnProps } from "../../types";
 
-type TDataTableFilterDateRangeProps<T = Record<string, unknown>> = {
-  column: DataTableExtendedColumnProps<T>;
+type TDteFilterDateRangeProps<T = Record<string, unknown>> = {
+  column: TDteColumnProps<T>;
 };
 
-export function DataTableFilterDateRange<T = Record<string, unknown>>({
+export function DteFilterDateRange<T = Record<string, unknown>>({
   column,
-}: TDataTableFilterDateRangeProps<T>) {
+}: TDteFilterDateRangeProps<T>) {
   const accessor = column.accessor as string;
   const variant = column.extend?.filterVariant as EFilterVariant;
 
-  const { filters, setFilters } = useDataTableQueryParams();
+  const { filters, setFilters } = useDteQueryParams();
   const thisAccessorFilter = filters.find(
     (filter) => filter.accessor === accessor
   );

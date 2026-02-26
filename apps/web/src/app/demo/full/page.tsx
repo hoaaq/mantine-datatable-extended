@@ -1,13 +1,12 @@
 import { Container, Group, Space } from "@mantine/core";
 import {
-  DataTableColumnsToggle,
-  type DataTableContextProps,
-  DataTableFilter,
-  DataTablePagination,
-  DataTableSearch,
-  DataTableSortList,
+  DteColumnsToggle,
+  DteFilter,
+  DtePagination,
+  DteSearch,
+  DteSortList,
 } from "@repo/ui";
-import { createDataTableLoader } from "@repo/ui/server";
+import { createDteLoader, type TCreateDteLoaderProps } from "@repo/ui/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { SearchParams } from "nuqs";
 import { createLoader, parseAsInteger } from "nuqs/server";
@@ -21,12 +20,12 @@ import { DataTableWrapper } from "./(data-table)/wrapper";
 
 const KEY = "full-demo";
 
-const loaderProps: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {
+const loaderProps: Partial<TCreateDteLoaderProps> = {
   defaultParams: {
     sorts: [{ accessor: "createdAt", direction: "desc" }],
   },
 };
-const loader = createDataTableLoader(loaderProps);
+const loader = createDteLoader(loaderProps);
 
 export default async function Home({
   searchParams,
@@ -92,17 +91,17 @@ export function DataTableHeader() {
   return (
     <Group justify="space-between">
       <Group>
-        <DataTableSearch />
-        <DataTableFilter />
+        <DteSearch />
+        <DteFilter />
       </Group>
       <Group justify="end">
-        <DataTableSortList />
-        <DataTableColumnsToggle />
+        <DteSortList />
+        <DteColumnsToggle />
       </Group>
     </Group>
   );
 }
 
 export function DataTableFooter() {
-  return <DataTablePagination />;
+  return <DtePagination />;
 }

@@ -47,22 +47,22 @@ export default function RootLayout({ children }) {
 
 ### Step 3: Create Data Table
 
-The components in the library need to be wrapped with `DataTableProvider` to be usable.
-The `Datatable` component in original library is replaced by `DataTableExtended` component.
+The components in the library need to be wrapped with `DteProvider` to be usable.
+The `Datatable` component in original library is replaced by `DteExtended` component.
 Here is the most basic usage of this library:
 
 ```tsx
 "use client";
 
 import {
-  DataTableExtended,
-  DataTableProvider,
-  DataTableSearch,
-  DataTableFilter,
-  DataTableSortList,
-  DataTableColumnsToggle,
-  DataTablePagination,
-  type DataTableExtendedColumnProps,
+  DteExtended,
+  DteProvider,
+  DteSearch,
+  DteFilter,
+  DteSortList,
+  DteColumnsToggle,
+  DtePagination,
+  type TDteExtendedColumnProps,
 } from "mantine-datatable-extended";
 import { useDataTableColumns } from "mantine-datatable";
 import { Group, Space } from "@mantine/core";
@@ -88,7 +88,7 @@ const data: User[] = [
   // ... more data
 ];
 
-const columns: DataTableExtendedColumnProps<User>[] = [
+const columns: TDteExtendedColumnProps<User>[] = [
   {
     accessor: "name",
     title: "Name",
@@ -162,7 +162,7 @@ export default function UsersTable() {
   });
 
   return (
-    <DataTableProvider
+    <DteProvider
       columns={columns}
       originalUseDataTableColumnsResult={originalUseDataTableColumnsResult}
       storeColumnsKey="users-table"
@@ -170,25 +170,25 @@ export default function UsersTable() {
       {/* Header with controls */}
       <Group justify="space-between">
         <Group>
-          <DataTableSearch />
-          <DataTableFilter />
+          <DteSearch />
+          <DteFilter />
         </Group>
         <Group>
-          <DataTableSortList />
-          <DataTableColumnsToggle />
+          <DteSortList />
+          <DteColumnsToggle />
         </Group>
       </Group>
 
       <Space h="md" />
 
       {/* Table */}
-      <DataTableExtended records={data} />
+      <DteExtended records={data} />
 
       <Space h="md" />
 
       {/* Pagination */}
-      <DataTablePagination />
-    </DataTableProvider>
+      <DtePagination />
+    </DteProvider>
   );
 }
 ```
@@ -213,13 +213,13 @@ You now have a fully-featured data table with:
 If you need to load data from server:
 
 ```tsx
-import { useDataTableQueryParams, useDataTableContext } from "mantine-datatable-extended";
+import { useDteQueryParams, useDteContext } from "mantine-datatable-extended";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 function DataTableWithServerData() {
-  const { page, pageSize, sorts, search, filters } = useDataTableQueryParams();
-  const { setTotalRecords } = useDataTableContext();
+  const { page, pageSize, sorts, search, filters } = useDteQueryParams();
+  const { setTotalRecords } = useDteContext();
 
   const { data, isFetching } = useSuspenseQuery({
     queryKey: ["users", page, pageSize, sorts, search, filters],
@@ -242,7 +242,7 @@ function DataTableWithServerData() {
   }, [data.totalRecords, setTotalRecords]);
 
   return (
-    <DataTableExtended
+    <DteExtended
       records={data.items}
       fetching={isFetching}
     />
@@ -257,7 +257,7 @@ See [Server-Side Integration](./server-side) for details.
 To have multiple tables on the same page:
 
 ```tsx
-<DataTableProvider
+<DteProvider
   storeColumnsKey="users-table"
   urlKeys={{
     page: "users_page",
@@ -267,9 +267,9 @@ To have multiple tables on the same page:
   // ...
 >
   {/* Users table */}
-</DataTableProvider>
+</DteProvider>
 
-<DataTableProvider
+<DteProvider
   storeColumnsKey="products-table"
   urlKeys={{
     page: "products_page",
@@ -279,7 +279,7 @@ To have multiple tables on the same page:
   // ...
 >
   {/* Products table */}
-</DataTableProvider>
+</DteProvider>
 ```
 
 See [Advanced Usage](./advanced) for more.

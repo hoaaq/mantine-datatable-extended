@@ -3,9 +3,9 @@
 import { Badge, Group, HoverCard } from "@mantine/core";
 import { ETodoStatus } from "@repo/shared/enums/todo.enum";
 import {
-  type DataTableExtendedColumnProps,
-  DataTableProvider,
-  type DataTableProviderProps,
+  DteProvider,
+  type TDteColumnProps,
+  type TDteProviderProps,
 } from "@repo/ui";
 import { useDataTableColumns } from "mantine-datatable";
 import { useDateFormatter } from "@/hooks/date-format";
@@ -19,7 +19,7 @@ export type Task = NonNullable<
 type DataTableWrapperProps = {
   children: React.ReactNode;
 } & Omit<
-  DataTableProviderProps<Task>,
+  TDteProviderProps<Task>,
   "columns" | "originalUseDataTableColumnsResult"
 >;
 
@@ -89,7 +89,7 @@ export function DataTableWrapper({
 
   const { tagsFacet, isFetching: isFetchingTagsFacet } = useFacets();
 
-  const columns: DataTableExtendedColumnProps<Task>[] = [
+  const columns: TDteColumnProps<Task>[] = [
     {
       accessor: "code",
       title: "Code",
@@ -240,12 +240,12 @@ export function DataTableWrapper({
   });
 
   return (
-    <DataTableProvider
+    <DteProvider
       {...props}
       columns={columns}
       originalUseDataTableColumnsResult={originalUseDataTableColumnsResult}
     >
       {children}
-    </DataTableProvider>
+    </DteProvider>
   );
 }

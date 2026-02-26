@@ -1,19 +1,19 @@
 import { Button, Group } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
-import { useDataTableQueryParams } from "../hooks";
-import { useDataTableContext } from "../provider";
+import { useDteQueryParams } from "../hooks";
+import { useDteContext } from "../provider";
 import { EFilterVariant } from "../types";
-import { DataTableFilterDate } from "./filters/date";
-import { DataTableFilterDateRange } from "./filters/date-range";
-import { DataTableFilterMultiSelect } from "./filters/multi-select";
-import { DataTableFilterNumber } from "./filters/number";
-import { DataTableFilterNumberRange } from "./filters/number-range";
-import { DataTableFilterSingleSelect } from "./filters/single-select";
-import { DataTableFilterText } from "./filters/text";
+import { DteFilterDate } from "./filters/date";
+import { DteFilterDateRange } from "./filters/date-range";
+import { DteFilterMultiSelect } from "./filters/multi-select";
+import { DteFilterNumber } from "./filters/number";
+import { DteFilterNumberRange } from "./filters/number-range";
+import { DteFilterSingleSelect } from "./filters/single-select";
+import { DteFilterText } from "./filters/text";
 
-export function DataTableFilter() {
-  const { filters, resetFilters } = useDataTableQueryParams();
-  const { columns, i18n } = useDataTableContext();
+export function DteFilter() {
+  const { filters, resetFilters } = useDteQueryParams();
+  const { columns, i18n } = useDteContext();
 
   const onReset = () => {
     resetFilters();
@@ -29,15 +29,12 @@ export function DataTableFilter() {
         switch (column.extend?.filterVariant) {
           case EFilterVariant.TEXT: {
             return (
-              <DataTableFilterText
-                column={column}
-                key={column.accessor as string}
-              />
+              <DteFilterText column={column} key={column.accessor as string} />
             );
           }
           case EFilterVariant.NUMBER: {
             return (
-              <DataTableFilterNumber
+              <DteFilterNumber
                 column={column}
                 key={column.accessor as string}
               />
@@ -45,7 +42,7 @@ export function DataTableFilter() {
           }
           case EFilterVariant.SINGLE_SELECT: {
             return (
-              <DataTableFilterSingleSelect
+              <DteFilterSingleSelect
                 column={column}
                 key={column.accessor as string}
               />
@@ -53,7 +50,7 @@ export function DataTableFilter() {
           }
           case EFilterVariant.MULTI_SELECT: {
             return (
-              <DataTableFilterMultiSelect
+              <DteFilterMultiSelect
                 column={column}
                 key={column.accessor as string}
               />
@@ -61,15 +58,12 @@ export function DataTableFilter() {
           }
           case EFilterVariant.DATE: {
             return (
-              <DataTableFilterDate
-                column={column}
-                key={column.accessor as string}
-              />
+              <DteFilterDate column={column} key={column.accessor as string} />
             );
           }
           case EFilterVariant.DATE_RANGE: {
             return (
-              <DataTableFilterDateRange
+              <DteFilterDateRange
                 column={column}
                 key={column.accessor as string}
               />
@@ -77,7 +71,7 @@ export function DataTableFilter() {
           }
           case EFilterVariant.NUMBER_RANGE: {
             return (
-              <DataTableFilterNumberRange
+              <DteFilterNumberRange
                 column={column}
                 key={column.accessor as string}
               />

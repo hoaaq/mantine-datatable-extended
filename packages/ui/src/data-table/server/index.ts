@@ -1,25 +1,28 @@
 import { createLoader, parseAsInteger, parseAsJson } from "nuqs/server";
 import { z } from "zod";
 import {
-  type DataTableContextProps,
-  type DefaultParamsType,
   filterSchema,
   searchSchema,
   sortSchema,
-  type UrlKeysType,
+  type TDefaultParams,
+  type TDteContextProps,
+  type TUrlKeys,
 } from "../types";
 
-export const createDataTableLoader = (
-  props: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {}
-) => {
-  let keys: UrlKeysType = {
+export type TCreateDteLoaderProps = Pick<
+  TDteContextProps,
+  "urlKeys" | "defaultParams"
+>;
+
+export function createDteLoader(props: TCreateDteLoaderProps = {}) {
+  let keys: TUrlKeys = {
     page: "page",
     pageSize: "pageSize",
     sorts: "sorts",
     search: "search",
     filters: "filters",
   };
-  let params: Required<DefaultParamsType> = {
+  let params: Required<TDefaultParams> = {
     page: 1,
     pageSize: 10,
     sorts: [],
@@ -45,4 +48,4 @@ export const createDataTableLoader = (
     ),
   };
   return createLoader(searchParams);
-};
+}

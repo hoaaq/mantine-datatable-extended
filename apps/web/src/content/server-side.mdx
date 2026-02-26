@@ -12,19 +12,19 @@ The library uses `nuqs` to manage query parameters in the URL, enabling:
 
 ## Setup Server Loader
 
-Import `createDataTableLoader` from the `server` package:
+Import `createDteLoader` from the `server` package:
 
 ```tsx
-import { createDataTableLoader } from "mantine-datatable-extended/server";
+import { createDteLoader } from "mantine-datatable-extended/server";
 ```
 
-Create a loader with the same configuration as `DataTableProvider`:
+Create a loader with the same configuration as `DteProvider`:
 
 ```tsx
-import { createDataTableLoader } from "mantine-datatable-extended/server";
-import type { DataTableContextProps } from "mantine-datatable-extended";
+import { createDteLoader } from "mantine-datatable-extended/server";
+import type { TCreateDteLoaderProps } from "mantine-datatable-extended/server";
 
-const loaderProps: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {
+const loaderProps: TCreateDteLoaderProps = {
   defaultParams: {
     page: 1,
     pageSize: 10,
@@ -35,7 +35,7 @@ const loaderProps: Pick<DataTableContextProps, "urlKeys" | "defaultParams"> = {
   // urlKeys: { ... } // Optional: if you want to custom URL keys
 };
 
-const loader = createDataTableLoader(loaderProps);
+const loader = createDteLoader(loaderProps);
 ```
 
 ## Next.js App Router Integration
@@ -45,12 +45,12 @@ const loader = createDataTableLoader(loaderProps);
 In the server component, use the loader to read query params and prefetch data:
 
 ```tsx
-import { createDataTableLoader } from "mantine-datatable-extended/server";
+import { createDteLoader } from "mantine-datatable-extended/server";
 import type { SearchParams } from "nuqs";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client";
 
-const loader = createDataTableLoader({
+const loader = createDteLoader({
   defaultParams: {
     sorts: [{ accessor: "createdAt", direction: "desc" }],
   },
@@ -99,11 +99,11 @@ In the client component, use the same props as the server loader:
 "use client";
 
 import {
-  DataTableProvider,
-  DataTableExtended,
-  useDataTableContext,
+  DteProvider,
+  DteExtended,
+  useDteContext,
 } from "mantine-datatable-extended";
-import { useDataTableQueryParams } from "mantine-datatable-extended";
+import { useDteQueryParams } from "mantine-datatable-extended";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
@@ -117,15 +117,15 @@ const providerProps = {
 
 export function DataTableContent() {
   return (
-    <DataTableProvider {...providerProps} columns={columns} {...otherProps}>
+    <DteProvider {...providerProps} columns={columns} {...otherProps}>
       <DataTableWithData />
-    </DataTableProvider>
+    </DteProvider>
   );
 }
 
 function DataTableWithData() {
-  const { page, pageSize, sorts, search, filters } = useDataTableQueryParams();
-  const { setTotalRecords } = useDataTableContext();
+  const { page, pageSize, sorts, search, filters } = useDteQueryParams();
+  const { setTotalRecords } = useDteContext();
 
   const { data, isFetching } = useSuspenseQuery({
     queryKey: ["products", page, pageSize, sorts, search, filters],
@@ -148,11 +148,11 @@ function DataTableWithData() {
 
   return (
     <>
-      <DataTableExtended
+      <DteExtended
         records={data.items}
         fetching={isFetching}
       />
-      <DataTablePagination />
+      <DtePagination />
     </>
   );
 }
@@ -164,10 +164,10 @@ To avoid too many API calls when users are typing, use debouncing:
 
 ```tsx
 import { useDebouncedValue } from "@mantine/hooks";
-import { useDataTableQueryParams } from "mantine-datatable-extended";
+import { useDteQueryParams } from "mantine-datatable-extended";
 
 function DataTableWithData() {
-  const { page, pageSize, sorts, search, filters } = useDataTableQueryParams();
+  const { page, pageSize, sorts, search, filters } = useDteQueryParams();
   
   // Debounce page and pageSize with short delay (200ms)
   const [[debouncedPage, debouncedPageSize]] = useDebouncedValue(
@@ -203,7 +203,7 @@ function DataTableWithData() {
 If search has no accessors or empty value, clean it to avoid unnecessary API calls:
 
 ```tsx
-type SearchCondition = ReturnType<typeof useDataTableQueryParams>["search"];
+type SearchCondition = ReturnType<typeof useDteQueryParams>["search"];
 
 const cleanSearch = (search: SearchCondition): SearchCondition => {
   if (search.accessors.length <= 0 || search.value.length <= 0) {
@@ -216,7 +216,7 @@ const cleanSearch = (search: SearchCondition): SearchCondition => {
 };
 
 function DataTableWithData() {
-  const { search } = useDataTableQueryParams();
+  const { search } = useDteQueryParams();
   const cleanedSearch = cleanSearch(search);
 
   const { data } = useSuspenseQuery({

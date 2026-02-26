@@ -10,10 +10,10 @@ import {
 import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
 import type { DataTableColumnToggle } from "mantine-datatable";
 import { useMemo, useState } from "react";
-import { useDataTableContext } from "../provider";
+import { useDteContext } from "../provider";
 
-export function DataTableColumnsToggle() {
-  const { originalUseDataTableColumnsResult, i18n } = useDataTableContext();
+export function DteColumnsToggle() {
+  const { originalUseDataTableColumnsResult, i18n } = useDteContext();
   const { effectiveColumns, columnsToggle, setColumnsToggle } =
     originalUseDataTableColumnsResult;
   const [search, setSearch] = useState("");

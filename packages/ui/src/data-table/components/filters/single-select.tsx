@@ -10,24 +10,24 @@ import {
 } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
-import { useDataTableQueryParams } from "../../hooks";
+import { useDteQueryParams } from "../../hooks";
 import type {
-  DataTableExtendedColumnProps,
   EFilterVariant,
-  FilterSingleSelectOptions,
+  TDteColumnProps,
+  TFilterSingleSelectOptions,
 } from "../../types";
 
-type TDataTableFilterSingleSelectProps<T = Record<string, unknown>> = {
-  column: DataTableExtendedColumnProps<T>;
+type TDteFilterSingleSelectProps<T = Record<string, unknown>> = {
+  column: TDteColumnProps<T>;
 };
 
-export function DataTableFilterSingleSelect<T = Record<string, unknown>>({
+export function DteFilterSingleSelect<T = Record<string, unknown>>({
   column,
-}: TDataTableFilterSingleSelectProps<T>) {
+}: TDteFilterSingleSelectProps<T>) {
   const accessor = column.accessor as string;
   const variant = column.extend?.filterVariant as EFilterVariant;
   const filterOptions = column.extend
-    ?.filterOptions as FilterSingleSelectOptions;
+    ?.filterOptions as TFilterSingleSelectOptions;
   const filterOptionsData = filterOptions.data;
 
   const [search, setSearch] = useState("");
@@ -37,12 +37,12 @@ export function DataTableFilterSingleSelect<T = Record<string, unknown>>({
       return filterOptionsData;
     }
     const query = search.toLowerCase().trim();
-    return filterOptionsData.filter((data) =>
+    return filterOptionsData.filter((data: { value: string; label: string }) =>
       data.label.toLowerCase().includes(query)
     );
   }, [filterOptionsData, search]);
 
-  const { filters, setFilters } = useDataTableQueryParams();
+  const { filters, setFilters } = useDteQueryParams();
   const thisAccessorFilter = filters.find(
     (filter) => filter.accessor === accessor
   );
@@ -100,7 +100,7 @@ export function DataTableFilterSingleSelect<T = Record<string, unknown>>({
         <Divider />
         <ScrollArea.Autosize mah={180} type="auto">
           <Stack gap="0">
-            {filteredOptions.map((data) => (
+            {filteredOptions.map((data: { value: string; label: string }) => (
               <Checkbox
                 checked={isChecked(data.value)}
                 classNames={{

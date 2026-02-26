@@ -1,13 +1,16 @@
 import type { useDataTableColumns } from "mantine-datatable";
-import type { DataTableExtendedColumnProps } from "./data-table-column-extend.type";
+import type { TDteColumnProps } from "./data-table-column-extended.type";
 import type {
   TFilterCondition,
   TSearchCondition,
   TSortCondition,
 } from "./data-table-query-param.type";
-import type { DataTableI18n, DataTableI18nInput } from "./i18n.type";
+import type { TDteI18n, TDteI18nInput } from "./i18n.type";
 
-export type UrlKeysType = {
+/**
+ * URL query parameter keys for DataTable state (page, pageSize, sorts, search, filters).
+ */
+export type TUrlKeys = {
   /**
    * The key of the page parameter.
    */
@@ -30,7 +33,10 @@ export type UrlKeysType = {
   filters: string;
 };
 
-export type DefaultParamsType = {
+/**
+ * Default values for DataTable query parameters.
+ */
+export type TDefaultParams = {
   /**
    * The default page number.
    */
@@ -53,7 +59,10 @@ export type DefaultParamsType = {
   filters?: TFilterCondition[];
 };
 
-export type PaginationPropsType = {
+/**
+ * Pagination configuration passed to DataTable context.
+ */
+type TPaginationProps = {
   /**
    * The total records.
    */
@@ -64,16 +73,19 @@ export type PaginationPropsType = {
   recordsPerPageOptions: number[];
 };
 
-export type DataTableContextProps<T = Record<string, unknown>> = {
+/**
+ * Context value type for DteProvider.
+ */
+export type TDteContextProps<T = Record<string, unknown>> = {
   /**
    * The keys of the URL parameters.
    * Useful for multiple data tables on the same page.
    */
-  urlKeys?: UrlKeysType;
+  urlKeys?: TUrlKeys;
   /**
    * The default parameters of the data table.
    */
-  defaultParams?: DefaultParamsType;
+  defaultParams?: TDefaultParams;
   /**
    * The key of the column store.
    * This is used to store the columns of the data table in localStorage for draggable and toggleable columns.
@@ -84,7 +96,7 @@ export type DataTableContextProps<T = Record<string, unknown>> = {
    * The columns of the data table.
    * This is use original column properties from mantine-datatable with "extend" property.
    */
-  columns: DataTableExtendedColumnProps<T>[];
+  columns: TDteColumnProps<T>[];
   /**
    * The result of the useDataTableColumns hook from mantine-datatable.
    */
@@ -92,7 +104,7 @@ export type DataTableContextProps<T = Record<string, unknown>> = {
   /**
    * The pagination props.
    */
-  paginationProps?: PaginationPropsType;
+  paginationProps?: TPaginationProps;
   /**
    * The function to set the pagination total records.
    */
@@ -106,16 +118,16 @@ export type DataTableContextProps<T = Record<string, unknown>> = {
    * In context: merged result (always present).
    * In provider props: optional input, merged with defaults.
    */
-  i18n: DataTableI18n;
+  i18n: TDteI18n;
 };
 
 /**
- * Props for DataTableProvider. Extends context props but i18n is optional input.
+ * Props for DteProvider. Extends context props but i18n is optional input.
  */
-export type DataTableProviderProps<T = Record<string, unknown>> = Omit<
-  DataTableContextProps<T>,
+export type TDteProviderProps<T = Record<string, unknown>> = Omit<
+  TDteContextProps<T>,
   "i18n"
 > & {
   children: import("react").ReactNode;
-  i18n?: DataTableI18nInput;
+  i18n?: TDteI18nInput;
 };

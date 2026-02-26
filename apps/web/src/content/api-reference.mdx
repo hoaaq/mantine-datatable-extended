@@ -2,12 +2,12 @@
 
 ## Types
 
-### DataTableExtendedColumnProps
+### TDteColumnProps
 
 Extended column props with an additional `extend` property:
 
 ```typescript
-type DataTableExtendedColumnProps<T = Record<string, unknown>> = 
+type TDteColumnProps<T = Record<string, unknown>> = 
   Omit<
     DataTableColumn<T>,
     | "sortable"
@@ -19,19 +19,19 @@ type DataTableExtendedColumnProps<T = Record<string, unknown>> =
     | "ellipsis"
     | "noWrap"
   > & {
-    extend?: FilterableExtend;
+    extend?: TFilterableExtend;
   } & (
     | { ellipsis?: boolean; noWrap?: never }
     | { ellipsis?: never; noWrap?: boolean }
   );
 ```
 
-### FilterableExtend
+### TFilterableExtend
 
 Type for the `extend` property:
 
 ```typescript
-type FilterableExtend = {
+type TFilterableExtend = {
   searchable?: boolean;
   sortable?: boolean;
   filterable?: boolean;
@@ -44,16 +44,16 @@ type FilterableExtend = {
     | "single_select"
     | "multi_select";
   filterOptions?: 
-    | FilterNumberRangeOptions
-    | FilterSingleSelectOptions
-    | FilterMultiSelectOptions;
+    | TFilterNumberRangeOptions
+    | TFilterSingleSelectOptions
+    | TFilterMultiSelectOptions;
 };
 ```
 
-### FilterNumberRangeOptions
+### TFilterNumberRangeOptions
 
 ```typescript
-type FilterNumberRangeOptions = {
+type TFilterNumberRangeOptions = {
   min: number;
   max: number;
   step?: number;
@@ -61,10 +61,10 @@ type FilterNumberRangeOptions = {
 };
 ```
 
-### FilterSingleSelectOptions / FilterMultiSelectOptions
+### TFilterSingleSelectOptions / TFilterMultiSelectOptions
 
 ```typescript
-type FilterSingleSelectOptions = {
+type TFilterSingleSelectOptions = {
   data: {
     value: string;
     label: string;
@@ -73,13 +73,13 @@ type FilterSingleSelectOptions = {
   }[];
 };
 
-type FilterMultiSelectOptions = FilterSingleSelectOptions; // Same type
+type TFilterMultiSelectOptions = TFilterSingleSelectOptions; // Same type
 ```
 
-### UrlKeysType
+### TUrlKeys
 
 ```typescript
-type UrlKeysType = {
+type TUrlKeys = {
   page: string;
   pageSize: string;
   sorts: string;
@@ -88,10 +88,10 @@ type UrlKeysType = {
 };
 ```
 
-### DefaultParamsType
+### TDefaultParams
 
 ```typescript
-type DefaultParamsType = {
+type TDefaultParams = {
   page?: number;
   pageSize?: number;
   sorts?: TSortCondition[];
@@ -137,27 +137,27 @@ type TFilterCondition = {
 
 ## Components
 
-### DataTableProvider
+### DteProvider
 
 Provider component that supplies context to all child components.
 
 **Props:**
 
 ```typescript
-type DataTableProviderProps<T = Record<string, unknown>> = {
+type TDteProviderProps<T = Record<string, unknown>> = {
   children: React.ReactNode;
-  urlKeys?: UrlKeysType;
-  defaultParams?: DefaultParamsType;
+  urlKeys?: TUrlKeys;
+  defaultParams?: TDefaultParams;
   storeColumnsKey: string; // Required
-  columns: DataTableExtendedColumnProps<T>[]; // Required
+  columns: TDteColumnProps<T>[]; // Required
   originalUseDataTableColumnsResult: ReturnType<
     typeof useDataTableColumns<T>
   >; // Required
-  i18n?: DataTableI18nInput; // Optional, merged with defaults
+  i18n?: TDteI18nInput; // Optional, merged with defaults
 };
 ```
 
-### DataTableExtended
+### DteExtended
 
 Main component for displaying data tables.
 
@@ -169,79 +169,79 @@ Accepts all props from `DataTable` in `mantine-datatable`, except:
 - `groups`
 - Pagination and Sort props
 
-### DataTableSearch
+### DteSearch
 
 Search component with multi-column selection capability.
 
-**Props:** None. i18n from `DataTableProvider`.
+**Props:** None. i18n from `DteProvider`.
 
-### DataTableFilter
+### DteFilter
 
 Filter component that automatically displays filters based on column configuration.
 
-**Props:** None. i18n from `DataTableProvider`.
+**Props:** None. i18n from `DteProvider`.
 
-### DataTableSortList
+### DteSortList
 
 Component for managing multi-column sorting.
 
-**Props:** None. i18n from `DataTableProvider`.
+**Props:** None. i18n from `DteProvider`.
 
-### DataTableColumnsToggle
+### DteColumnsToggle
 
 Component to show/hide columns.
 
-**Props:** None. i18n from `DataTableProvider`.
+**Props:** None. i18n from `DteProvider`.
 
-### DataTablePagination
+### DtePagination
 
 Pagination component that can be placed anywhere.
 
 **Props:**
 
 ```typescript
-type DataTablePaginationProps = {
+type TDtePaginationProps = {
   recordsPerPageOptions?: number[]; // Default: [10, 20, 30, 40, 50]
 };
 ```
 
-i18n from `DataTableProvider`.
+i18n from `DteProvider`.
 
 ## Hooks
 
-### useDataTableContext
+### useDteContext
 
-Hook to access DataTable context.
+Hook to access Dte context.
 
 ```typescript
-function useDataTableContext<T = Record<string, unknown>>(): 
-  DataTableContextProps<T>;
+function useDteContext<T = Record<string, unknown>>(): 
+  TDteContextProps<T>;
 ```
 
 **Returns:**
 
 ```typescript
-type DataTableContextProps<T> = {
-  urlKeys?: UrlKeysType;
-  i18n: DataTableI18n; // Merged i18n (always present)
-  defaultParams?: DefaultParamsType;
+type TDteContextProps<T> = {
+  urlKeys?: TUrlKeys;
+  i18n: TDteI18n; // Merged i18n (always present)
+  defaultParams?: TDefaultParams;
   storeColumnsKey: string;
-  columns: DataTableExtendedColumnProps<T>[];
+  columns: TDteColumnProps<T>[];
   originalUseDataTableColumnsResult: ReturnType<
     typeof useDataTableColumns<T>
   >;
-  paginationProps?: PaginationPropsType;
+  paginationProps?: TPaginationProps;
   setTotalRecords?: (totalRecords: number) => void;
   setRecordsPerPageOptions?: (recordsPerPageOptions: number[]) => void;
 };
 ```
 
-### useDataTableQueryParams
+### useDteQueryParams
 
 Hook to read and update query parameters.
 
 ```typescript
-function useDataTableQueryParams(): {
+function useDteQueryParams(): {
   page: number;
   setPage: (page: number) => void;
   pageSize: number;
@@ -263,13 +263,13 @@ function useDataTableQueryParams(): {
 
 ## Server Utilities
 
-### createDataTableLoader
+### createDteLoader
 
 Create a loader function to read query params on the server.
 
 ```typescript
-function createDataTableLoader(
-  props?: Pick<DataTableContextProps, "urlKeys" | "defaultParams">
+function createDteLoader(
+  props?: Pick<TDteContextProps, "urlKeys" | "defaultParams">
 ): (searchParams: Promise<SearchParams>) => Promise<{
   page: number;
   pageSize: number;
@@ -282,9 +282,9 @@ function createDataTableLoader(
 **Usage:**
 
 ```typescript
-import { createDataTableLoader } from "mantine-datatable-extended/server";
+import { createDteLoader } from "mantine-datatable-extended/server";
 
-const loader = createDataTableLoader({
+const loader = createDteLoader({
   defaultParams: {
     page: 1,
     pageSize: 10,
@@ -335,45 +335,38 @@ The library will throw errors in the following cases:
 
 ```typescript
 // ❌ Error: storeColumnsKey property is required
-<DataTableProvider columns={columns} {...otherProps}>
+<DteProvider columns={columns} {...otherProps}>
   {/* Missing storeColumnsKey */}
-</DataTableProvider>
+</DteProvider>
 ```
 
 ### Missing columns
 
 ```typescript
 // ❌ Error: columns property is required
-<DataTableProvider storeColumnsKey="table" {...otherProps}>
+<DteProvider storeColumnsKey="table" {...otherProps}>
   {/* Missing columns */}
-</DataTableProvider>
+</DteProvider>
 ```
 
-### useDataTableContext outside Provider
+### useDteContext outside Provider
 
 ```typescript
-// ❌ Error: useDataTableContext must be used within a DataTableProvider
+// ❌ Error: useDteContext must be used within a DteProvider
 function Component() {
-  const context = useDataTableContext(); // Will throw
+  const context = useDteContext(); // Will throw
   return null;
 }
 ```
 
 ## Type Exports
 
-All types are exported from the main package:
+Public types exported from the main package:
 
 ```typescript
 import type {
-  DataTableExtendedColumnProps,
-  DataTableContextProps,
-  UrlKeysType,
-  DefaultParamsType,
-  TSortCondition,
-  TSearchCondition,
-  TFilterCondition,
-  FilterNumberRangeOptions,
-  FilterSingleSelectOptions,
-  FilterMultiSelectOptions,
+  TDteColumnProps,
+  TDteI18nInput,
+  TDteProviderProps,
 } from "mantine-datatable-extended";
 ```
