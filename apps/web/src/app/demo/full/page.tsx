@@ -64,12 +64,8 @@ export default async function Home({
   queryClient.prefetchQuery({
     queryKey: [KEY, "tags-facet"],
     queryFn: async () => {
-      const { data: res } = await client.api.todo
-        .facet({ column: "tags" })
-        .get();
-      return {
-        items: res?.data.items || [],
-      };
+      const { data: res } = await client.api.todo.facet.tags.get();
+      return { items: res?.data.items || [] };
     },
   });
 
