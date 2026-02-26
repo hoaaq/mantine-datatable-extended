@@ -37,6 +37,10 @@ export type i18nDataTableSearchOptions = {
    * The label for the search input placeholder.
    */
   search: string;
+  /**
+   * The placeholder for the search accessors filter input.
+   */
+  searchAccessorsSearchPlaceholder: string;
 };
 
 export type i18nDataTableFilterOptions = {

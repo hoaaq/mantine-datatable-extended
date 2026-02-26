@@ -3,25 +3,52 @@ import {
   Badge,
   Checkbox,
   CloseButton,
+  Divider,
   Group,
   Indicator,
   Popover,
+  ScrollArea,
   Stack,
   TextInput,
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
+import { useMemo, useState } from "react";
 import { useDataTableQueryParams } from "../hooks";
 import { useDataTableContext } from "../provider";
 import type { i18nDataTableSearchOptions } from "../types";
 
-function DataTableSearchAccessorsToggle() {
+type TDataTableSearchProps = {
+  i18n?: i18nDataTableSearchOptions;
+};
+
+const defaultI18n: i18nDataTableSearchOptions = {
+  search: "Search",
+  searchAccessorsSearchPlaceholder: "Search columns…",
+};
+
+function DataTableSearchAccessorsToggle({
+  i18n = defaultI18n,
+}: TDataTableSearchProps) {
   const { columns } = useDataTableContext();
   const { search, setSearch } = useDataTableQueryParams();
   const countSearches = search.accessors.length;
+  const [filter, setFilter] = useState("");
 
-  const searchableColumns = columns.filter(
-    (column) => column.extend?.searchable
+  const searchableColumns = useMemo(
+    () => columns.filter((column) => column.extend?.searchable),
+    [columns]
   );
+
+  const filteredColumns = useMemo(() => {
+    if (!filter.trim()) {
+      return searchableColumns;
+    }
+    const query = filter.toLowerCase().trim();
+    return searchableColumns.filter((column) => {
+      const title = column.title?.toString() ?? "";
+      return title.toLowerCase().includes(query);
+    });
+  }, [searchableColumns, filter]);
 
   const onSearchAccessorsChange = (accessor: string) => {
     if (search.accessors.includes(accessor)) {
@@ -54,40 +81,51 @@ function DataTableSearchAccessorsToggle() {
           </ActionIcon>
         </Indicator>
       </Popover.Target>
-      <Popover.Dropdown>
-        <Stack>
-          {searchableColumns.map((column) => (
-            <Checkbox
-              checked={search.accessors.includes(column.accessor.toString())}
-              key={column.accessor.toString()}
-              label={column.title?.toString() ?? ""}
-              labelPosition="left"
-              onChange={() =>
-                onSearchAccessorsChange(column.accessor.toString())
-              }
-              styles={{
-                labelWrapper: {
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "100%",
-                },
-              }}
-              variant="outline"
-            />
-          ))}
-        </Stack>
+      <Popover.Dropdown p="0">
+        <TextInput
+          autoFocus
+          leftSection={<IconSearch size={16} />}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFilter(e.target.value)
+          }
+          p="4"
+          placeholder={i18n.searchAccessorsSearchPlaceholder}
+          styles={{
+            input: {
+              border: "none",
+            },
+          }}
+          value={filter}
+        />
+        <Divider />
+        <ScrollArea.Autosize mah={180} type="auto">
+          <Stack gap="0">
+            {filteredColumns.map((column) => (
+              <Checkbox
+                checked={search.accessors.includes(column.accessor.toString())}
+                classNames={{
+                  root: "mantine-dte-checkbox-root",
+                  body: "mantine-dte-checkbox-body",
+                  labelWrapper: "mantine-dte-checkbox-label-wrapper",
+                  label: "mantine-dte-checkbox-label",
+                  input: "mantine-dte-checkbox-input",
+                }}
+                key={column.accessor.toString()}
+                label={column.title?.toString() ?? ""}
+                labelPosition="left"
+                onChange={() =>
+                  onSearchAccessorsChange(column.accessor.toString())
+                }
+                size="xs"
+                variant="outline"
+              />
+            ))}
+          </Stack>
+        </ScrollArea.Autosize>
       </Popover.Dropdown>
     </Popover>
   );
 }
-
-type TDataTableSearchProps = {
-  i18n?: i18nDataTableSearchOptions;
-};
-
-const defaultI18n: i18nDataTableSearchOptions = {
-  search: "Search",
-};
 
 export function DataTableSearch({ i18n = defaultI18n }: TDataTableSearchProps) {
   const { search, setSearch } = useDataTableQueryParams();
@@ -98,7 +136,7 @@ export function DataTableSearch({ i18n = defaultI18n }: TDataTableSearchProps) {
 
   return (
     <Group gap="xs">
-      <DataTableSearchAccessorsToggle />
+      <DataTableSearchAccessorsToggle i18n={i18n} />
       <TextInput
         onChange={(e) => onSearchValueChange(e.target.value)}
         placeholder={i18n.search}
