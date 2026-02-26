@@ -67,6 +67,8 @@ export function DataTableFilterDateRange<T = Record<string, unknown>>({
     setFilters(filters.filter((filter) => filter.accessor !== accessor));
   };
 
+  const defaultDateValue = values[1] && values[0];
+
   return (
     <Popover shadow="md" width="max-content" withArrow>
       <Popover.Target>
@@ -84,6 +86,9 @@ export function DataTableFilterDateRange<T = Record<string, unknown>>({
       <Popover.Dropdown>
         <DatePicker
           allowSingleDateInRange
+          defaultDate={
+            defaultDateValue ? new Date(defaultDateValue) : undefined
+          }
           onChange={onFilterChange}
           type="range"
           value={values}

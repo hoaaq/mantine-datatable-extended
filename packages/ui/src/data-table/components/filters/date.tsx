@@ -75,7 +75,11 @@ export function DataTableFilterDate<T = Record<string, unknown>>({
         </Indicator>
       </Popover.Target>
       <Popover.Dropdown>
-        <DatePicker onChange={onFilterChange} value={value} />
+        <DatePicker
+          defaultDate={value ? new Date(value) : undefined}
+          onChange={onFilterChange}
+          value={value}
+        />
       </Popover.Dropdown>
     </Popover>
   );
